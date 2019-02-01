@@ -1,1 +1,7 @@
-<text>Hello World!</text>
+<view wx:for="{{ classes }}" wx:key="_id">
+  <text>{{ item.name }}</text>
+</view>
+
+<button bindtap="addClass">添加一门课程</button>
+
+<button bindtap="getOpenid">获取openid</button>
