@@ -8,13 +8,17 @@ Page({
   addClass() {
     wx.cloud.callFunction({
       name: 'addClass',
-      data: {},
-      success: res => {
-        console.log(res)
-      },
-      fail: err => {
-        console.error(err)
-      }
+      data: {}
+    }).then(res => {
+      console.log(res)
+      const newClasses = JSON.parse(JSON.stringify(this.data.classes))
+      newClasses.push({
+        name: '毛笔',
+        _id: res.result._id
+      })
+      this.setData({
+        classes: newClasses
+      })
     })
     // classesCollection.add({
     //   data: {

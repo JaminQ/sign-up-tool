@@ -8,12 +8,8 @@ exports.main = async (event, context) => new Promise((resolve, reject) => {
   classesCollection.add({
     data: {
       name: '毛笔'
-    },
-    success: res => {
-      resolve(res)
-    },
-    fail: res => {
-      resolve(res)
     }
+  }).then(res => {
+    resolve(res)
   })
 })
