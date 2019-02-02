@@ -3,34 +3,64 @@ const classesCollection = db.collection('classes')
 
 Page({
   data: {
+    classInputValue: '',
     classes: []
   },
+  classInput(e) {
+    this.setData({
+      classInputValue: e.detail.value
+    })
+  },
   addClass() {
+    const className = this.data.classInputValue.trim()
+    if (className === '') {
+      this.setData({
+        classInputValue: className
+      }, () => {
+        wx.showToast({
+          title: '请输入课程名',
+          icon: 'none',
+          duration: 2000
+        })
+      })
+      return false
+    }
     wx.cloud.callFunction({
       name: 'addClass',
-      data: {}
+      data: {
+        name: className
+      }
     }).then(res => {
       console.log(res)
+
       const newClasses = JSON.parse(JSON.stringify(this.data.classes))
       newClasses.push({
-        name: '毛笔',
+        name: className,
         _id: res.result._id
       })
       this.setData({
-        classes: newClasses
+        classes: newClasses,
+        classInputValue: ''
       })
     })
-    // classesCollection.add({
-    //   data: {
-    //     name: '国画'
-    //   },
-    //   success: res => {
-    //     console.log(res)
-    //   },
-    //   fail: res => {
-    //     console.log(res)
-    //   }
-    // })
+  },
+  emptyClass() {
+    wx.cloud.callFunction({
+      name: 'removeClass',
+      data: {}
+    }).then(res => {
+      console.log(res.result.stats.removed)
+
+      this.setData({
+        classes: []
+      }, () => {
+        wx.showToast({
+          title: '成功',
+          icon: 'success',
+          duration: 2000
+        })
+      })
+    })
   },
   getOpenid() {
     // 调用云函数

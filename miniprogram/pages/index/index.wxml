@@ -1,7 +1,10 @@
-<view wx:for="{{ classes }}" wx:key="_id">
-  <text>{{ item.name }}</text>
+<view class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
+  <text>课程名：{{ item.name }}</text>
 </view>
 
-<button bindtap="addClass">添加一门课程</button>
+<input placeholder="在这里输入课程名" bindinput="classInput" value="{{ classInputValue }}" />
+<button bindtap="addClass">添加课程</button>
+
+<button bindtap="emptyClass">清空课程</button>
 
 <button bindtap="getOpenid">获取openid</button>

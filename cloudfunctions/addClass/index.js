@@ -7,7 +7,8 @@ const classesCollection = db.collection('classes')
 exports.main = async (event, context) => new Promise((resolve, reject) => {
   classesCollection.add({
     data: {
-      name: '毛笔'
+      name: event.name,
+      _openid: event.userInfo.openId
     }
   }).then(res => {
     resolve(res)
