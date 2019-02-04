@@ -1,0 +1,11 @@
+<input placeholder="在这里输入课程名" bindinput="nameInput" value="{{ nameInputValue }}" />
+<picker bindchange="bindTypeChange" value="{{ typeIdx }}" range="{{ typeList }}" range-key="name">
+  <view class="picker">当前选择：{{ typeList[typeIdx].name }}</view>
+</picker>
+人数
+上课时间
+时长
+周期
+费用
+
+<button type="primary" bindtap="addClass">添加</button>

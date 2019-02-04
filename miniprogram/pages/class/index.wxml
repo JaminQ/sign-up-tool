@@ -1,0 +1,3 @@
+<button bindtap="addClass">添加课程</button>
+<button bindtap="emptyClass">清空课程</button>
+<button bindtap="getOpenid">获取openid</button>
