@@ -14,7 +14,8 @@ exports.main = async (event, context) => new Promise((resolve, reject) => {
       studyDuration: event.studyDuration,
       cycle: event.cycle,
       cost: event.cost,
-      _openid: event.userInfo.openId
+      _openid: event.userInfo.openId,
+      createTime: db.serverDate()
     }
   }).then(res => {
     resolve(res)

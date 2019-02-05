@@ -1,3 +1,40 @@
-button {
-  margin: 10px 0;
+.class-container {
+  height: 100vh;
+  padding-bottom: 66px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.class-container movable-area {
+  position: relative;
+  left: -50vw;
+  width: 150vw;
+  height: 200px;
+}
+
+.class-container movable-view {
+  width: 100vw;
+  height: 200px;
+  left: 50vw;
+}
+
+.class-wrap {
+  margin: 0 10px;
+  padding: 10px 0;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.class-container movable-area:last-child .class-wrap {
+  border: 0;
+}
+
+.btn-wrap {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.btn-wrap button {
+  margin: 10px 15px;
 }

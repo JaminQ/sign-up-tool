@@ -1,3 +1,24 @@
-<button bindtap="addClass">添加课程</button>
-<button bindtap="emptyClass">清空课程</button>
-<button bindtap="getOpenid">获取openid</button>
+<view class="page">
+  <scroll-view class="class-container" scroll-y>
+    <movable-area wx:for="{{ classes }}" wx:key="_id">
+      <movable-view direction="horizontal" out-of-bounds inertia>
+        <view class="class-wrap">
+          <view>课程名：{{ item.name }}</view>
+          <view>课程类型：{{ item.type }}</view>
+          <view>人数：{{ item.maxNum }}人</view>
+          <view>上课时间：{{ item.studyTime }}</view>
+          <view>时长：{{ item.studyDuration }}分钟</view>
+          <view>周期：{{ item.cycle }}课时</view>
+          <view>费用：{{ item.cost }}元</view>
+        </view>
+      </movable-view>
+    </movable-area>
+  </scroll-view>
+
+  <view class="btn-wrap">
+    <button type="primary" bindtap="addClass">添加课程</button>
+  </view>
+
+  <!-- <button bindtap="emptyClass">清空课程</button> -->
+  <!-- <button bindtap="getOpenid">获取openid</button> -->
+</view>

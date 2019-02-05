@@ -40,5 +40,15 @@ Page({
         console.error('[云函数] [login] 调用失败', err)
       }
     })
+  },
+  onLoad() {
+    classesCollection.orderBy('createTime', 'desc').get({
+      success: res => {
+        console.log(res);
+        this.setData({
+          classes: res.data
+        })
+      }
+    })
   }
 })

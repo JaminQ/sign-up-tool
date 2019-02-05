@@ -3,11 +3,10 @@ const classesCollection = db.collection('classes')
 
 Page({
   data: {
-    classInputValue: '',
     classes: []
   },
   onLoad() {
-    classesCollection.get({
+    classesCollection.orderBy('createTime', 'desc').get({
       success: res => {
         console.log(res);
         this.setData({
