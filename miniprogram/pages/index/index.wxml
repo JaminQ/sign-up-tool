@@ -1,3 +1,11 @@
-<view class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
-  <text>课程名：{{ item.name }}</text>
+<view class="page with-tab-bar">
+  <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
+    <view>课程名：{{ item.name }}</view>
+    <view>课程类型：{{ item.type }}</view>
+    <view>人数：{{ item.maxNum }}人</view>
+    <view>上课时间：{{ item.studyTime }}</view>
+    <view>时长：{{ item.studyDuration }}分钟</view>
+    <view>周期：{{ item.cycle }}课时</view>
+    <view>费用：{{ item.cost }}元</view>
+  </view>
 </view>

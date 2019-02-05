@@ -1,11 +1,87 @@
-<input placeholder="在这里输入课程名" bindinput="nameInput" value="{{ nameInputValue }}" />
-<picker bindchange="bindTypeChange" value="{{ typeIdx }}" range="{{ typeList }}" range-key="name">
-  <view class="picker">当前选择：{{ typeList[typeIdx].name }}</view>
-</picker>
-人数
-上课时间
-时长
-周期
-费用
+<view class="page">
+  <view class="page__bd">
+    <view class="weui-cells__title">课程信息</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">课程名</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" data-name="name" bindinput="formItemChange" value="{{ formValue.name }}" />
+        </view>
+      </view>
 
-<button type="primary" bindtap="addClass">添加</button>
+      <view class="weui-cell weui-cell_select">
+        <view class="weui-cell__hd weui-cell__hd_in-select-after">
+          <view class="weui-label">课程类型</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker data-name="typeIdx" bindchange="formItemChange" value="{{ formValue.typeIdx }}" range="{{ typeList }}" range-key="name">
+            <view class="weui-select weui-select_in-select-after">{{ typeList[formValue.typeIdx].name }}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">人数</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input type="number" class="weui-input" data-name="maxNum" bindinput="formItemChange" value="{{ formValue.maxNum }}" />
+        </view>
+        <view class="weui-cell__ft">
+          <view class="">人</view>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">上课时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" data-name="studyTime" bindinput="formItemChange" value="{{ formValue.studyTime }}" />
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">时长</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input type="number" class="weui-input" data-name="studyDuration" bindinput="formItemChange" value="{{ formValue.studyDuration }}" />
+        </view>
+        <view class="weui-cell__ft">
+          <view class="">分钟</view>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">周期</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input type="number" class="weui-input" data-name="cycle" bindinput="formItemChange" value="{{ formValue.cycle }}" />
+        </view>
+        <view class="weui-cell__ft">
+          <view class="">课时</view>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">费用</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input type="digit" class="weui-input" data-name="cost" bindinput="formItemChange" value="{{ formValue.cost }}" />
+        </view>
+        <view class="weui-cell__ft">
+          <view class="">元</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-btn-area">
+      <button class="weui-btn" type="primary" bindtap="addClass">添加</button>
+    </view>
+  </view>
+</view>

@@ -6,7 +6,8 @@
 		"es6": true,
 		"postcss": true,
 		"minified": true,
-		"newFeature": true
+		"newFeature": true,
+		"autoAudits": false
 	},
 	"appid": "wx07c39ed912de3e72",
 	"projectname": "%E6%8A%A5%E5%90%8D%E5%B0%8F%E7%A8%8B%E5%BA%8F",
