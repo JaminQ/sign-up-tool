@@ -2,7 +2,7 @@
   <view class="page__bd">
     <view class="weui-cells__title">课程信息</view>
     <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input{{ formError.name ? ' weui-cell_warn' : '' }}{{ formError.name ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">课程名</view>
         </view>
@@ -22,7 +22,7 @@
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input{{ formError.maxNum ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">人数</view>
         </view>
@@ -34,7 +34,7 @@
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input{{ formError.studyTime ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">上课时间</view>
         </view>
@@ -43,7 +43,7 @@
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input{{ formError.studyDuration ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">时长</view>
         </view>
@@ -55,7 +55,7 @@
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input{{ formError.cycle ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">周期</view>
         </view>
@@ -67,7 +67,7 @@
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_input">
+      <view class="weui-cell weui-cell_input{{ formError.cost ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">费用</view>
         </view>
@@ -81,7 +81,8 @@
     </view>
 
     <view class="weui-btn-area">
-      <button class="weui-btn" type="primary" bindtap="addClass">添加</button>
+      <button wx:if="{{ mode === 'add' }}" class="weui-btn" type="primary" bindtap="addClass">添加</button>
+      <button wx:else class="weui-btn" type="primary" bindtap="editClass">更新</button>
     </view>
   </view>
 </view>

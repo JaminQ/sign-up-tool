@@ -7,26 +7,47 @@
 
 .class-container movable-area {
   position: relative;
-  left: -50vw;
-  width: 150vw;
+  width: 180vw;
   height: 200px;
+  left: -40vw;
 }
 
 .class-container movable-view {
-  width: 100vw;
+  box-sizing: border-box;
+  width: 140vw;
   height: 200px;
-  left: 50vw;
+  left: 40vw;
+  display: flex;
 }
 
 .class-wrap {
-  margin: 0 10px;
-  padding: 10px 0;
+  width: 100vw;
+  padding: 10px;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
 }
 
 .class-container movable-area:last-child .class-wrap {
   border: 0;
+}
+
+.class-btn-wrap {
+  display: flex;
+  width: 40vw;
+}
+
+.class-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20vw;
+  height: 100%;
+  color: #fff;
+  background-color: #c7c7cb;
+}
+
+.class-btn.del {
+  background-color: #ff3725;
 }
 
 .btn-wrap {

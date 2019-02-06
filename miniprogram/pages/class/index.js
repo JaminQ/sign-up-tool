@@ -1,5 +1,4 @@
-const db = wx.cloud.database()
-const classesCollection = db.collection('classes')
+const app = getApp()
 
 Page({
   data: {
@@ -9,6 +8,27 @@ Page({
     wx.navigateTo({
       url: 'addClass'
     })
+  },
+  editClass(e) {
+    wx.navigateTo({
+      url: `addClass?idx=${e.target.dataset.idx}`
+    })
+  },
+  delClass(e) {
+    const classItem = this.data.classes[e.target.dataset.idx * 1]
+    wx.showModal({
+      title: '确定删除吗',
+      content: `课程名：${classItem.name}`,
+      confirmText: '删除',
+      cancelText: '取消',
+      success(res) {
+        if (res.confirm) {
+          console.log('del')
+        } else {
+          console.log('cancel')
+        }
+      }
+    });
   },
   emptyClass() {
     wx.cloud.callFunction({
@@ -41,14 +61,16 @@ Page({
       }
     })
   },
-  onLoad() {
-    classesCollection.orderBy('createTime', 'desc').get({
-      success: res => {
-        console.log(res);
-        this.setData({
-          classes: res.data
-        })
-      }
+  initClasses() {
+    this.setData({
+      classes: app.globalData.classes
     })
+  },
+  onLoad() {
+    if (app.globalData.classes === null) {
+      app.getClasses(this.initClasses)
+    } else {
+      this.initClasses(e)
+    }
   }
 })

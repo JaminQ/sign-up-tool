@@ -11,6 +11,10 @@
           <view>周期：{{ item.cycle }}课时</view>
           <view>费用：{{ item.cost }}元</view>
         </view>
+        <view class="class-btn-wrap">
+          <view class="class-btn" bindtap="editClass" data-idx="{{ index }}">编辑</view>
+          <view class="class-btn del" bindtap="delClass" data-idx="{{ index }}">删除</view>
+        </view>
       </movable-view>
     </movable-area>
   </scroll-view>
@@ -18,7 +22,4 @@
   <view class="btn-wrap">
     <button type="primary" bindtap="addClass">添加课程</button>
   </view>
-
-  <!-- <button bindtap="emptyClass">清空课程</button> -->
-  <!-- <button bindtap="getOpenid">获取openid</button> -->
 </view>
