@@ -16,8 +16,8 @@
           <view class="weui-label">课程类型</view>
         </view>
         <view class="weui-cell__bd">
-          <picker data-name="typeIdx" bindchange="formItemChange" value="{{ formValue.typeIdx }}" range="{{ typeList }}" range-key="name">
-            <view class="weui-select weui-select_in-select-after">{{ typeList[formValue.typeIdx].name }}</view>
+          <picker data-name="typeIdx" bindchange="formItemChange" value="{{ formValue.typeIdx }}" range="{{ classType }}" range-key="name">
+            <view class="weui-select weui-select_in-select-after">{{ classType[formValue.typeIdx].name }}</view>
           </picker>
         </view>
       </view>

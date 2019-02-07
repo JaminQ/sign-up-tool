@@ -1,12 +1,9 @@
 const app = getApp()
-const db = wx.cloud.database()
-const classesCollection = db.collection('classes')
-const { classType } = require('../../data/class-type.js')
 
 Page({
   data: {
     mode: 'add',
-    typeList: classType,
+    classType: [],
     formValue: {
       name: '',
       typeIdx: 0,
@@ -34,31 +31,46 @@ Page({
     const formValue = this.getFormValue(this.data.formValue)
 
     if (this.validFormValue(formValue)) {
-      wx.cloud.callFunction({
-        name: 'addClass',
-        data: formValue
-      }).then(res => {
-        console.log(res)
+      wx.showLoading({
+        title: '课程添加中',
+        mask: true
+      })
 
-        wx.showToast({
-          title: '添加成功',
-          duration: 60000
-        })
-        setTimeout(() => {
-          wx.hideToast({
+      // 调用server端添加课程
+      wx.cloud.callFunction({
+        name: 'class',
+        data: {
+          type: 'add',
+          formValue
+        }
+      }).then(res => {
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
+        formValue._id = res.result._id
+        newClasses.unshift(formValue)
+        app.setClasses(newClasses)
+        prevPage.setData({
+          classes: newClasses
+        }, () => {
+          wx.hideLoading({
             success() {
-              wx.navigateBack({
-                delta: 1
+              wx.showToast({
+                title: '添加成功',
+                duration: 60000
               })
+              setTimeout(() => {
+                wx.hideToast({
+                  success() {
+                    wx.navigateBack({
+                      delta: 1
+                    })
+                  }
+                })
+              }, 500)
             }
           })
-        }, 500)
-
-        // const newClasses = JSON.parse(JSON.stringify(this.data.classes))
-        // newClasses.push({
-        //   name: formValue.name,
-        //   _id: res.result._id
-        // })
+        })
       })
     }
   },
@@ -66,14 +78,45 @@ Page({
     const formValue = this.getFormValue(this.data.formValue)
 
     if (this.validFormValue(formValue)) {
-      classesCollection.doc(this._id).update({
-        data: formValue,
-        success(res) {
-          console.log(res)
-        },
-        fail(res) {
-          console.log(res)
+      wx.showLoading({
+        title: '课程更新中',
+        mask: true
+      })
+
+      wx.cloud.callFunction({
+        name: 'class',
+        data: {
+          type: 'update',
+          _id: this._id,
+          formValue
         }
+      }).then(res => {
+        const pages = getCurrentPages()
+        const prevPage = pages[pages.length - 2]
+        const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
+        newClasses[this.idx] = formValue
+        app.setClasses(newClasses)
+        prevPage.setData({
+          classes: newClasses
+        }, () => {
+          wx.hideLoading({
+            success() {
+              wx.showToast({
+                title: '更新成功',
+                duration: 60000
+              })
+              setTimeout(() => {
+                wx.hideToast({
+                  success() {
+                    wx.navigateBack({
+                      delta: 1
+                    })
+                  }
+                })
+              }, 500)
+            }
+          })
+        })
       })
     }
   },
@@ -81,7 +124,7 @@ Page({
     formValue = JSON.parse(JSON.stringify(formValue))
 
     formValue.name = formValue.name.trim()
-    formValue.type = this.data.typeList[formValue.typeIdx].name
+    formValue.type = this.data.classType[formValue.typeIdx].name
     delete formValue.typeIdx
     formValue.maxNum = formValue.maxNum * 1
     formValue.studyTime = formValue.studyTime.trim()
@@ -140,10 +183,10 @@ Page({
     }
     return true
   },
-  initEditForm(e) {
-    const formValue = JSON.parse(JSON.stringify(app.globalData.classes[e.idx * 1]))
+  initEditForm() {
+    const formValue = JSON.parse(JSON.stringify(app.globalData.classes[this.idx * 1]))
     this._id = formValue._id
-    this.data.typeList.forEach((val, idx) => {
+    this.data.classType.forEach((val, idx) => {
       if (val.name === formValue.type) {
         formValue.typeIdx = idx
       }
@@ -157,21 +200,29 @@ Page({
       formValue
     })
   },
-  onLoad(e) {
-    if (e.idx !== undefined) { // 表示编辑
+  initClassType() {
+    this.setData({
+      classType: app.globalData.classType
+    }, () => {
+      this.initMode()
+    })
+  },
+  initMode() {
+    if (this.idx !== undefined) { // 表示编辑
       if (app.globalData.classes === null) {
-        app.getClasses(() => this.initEditForm(e))
+        app.getClasses(() => this.initEditForm())
       } else {
-        this.initEditForm(e)
+        this.initEditForm()
       }
     }
-    // db.collection('class-type').get({
-    //   success: res => {
-    //     console.log(res);
-    //     this.setData({
-    //       typeList: res.data
-    //     })
-    //   }
-    // })
+  },
+  onLoad(e) {
+    this.idx = e.idx
+
+    if (app.globalData.classType === null) {
+      app.getClassType(this.initClassType)
+    } else {
+      this.initClassType()
+    }
   }
 })

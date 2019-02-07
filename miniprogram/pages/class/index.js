@@ -14,63 +14,65 @@ Page({
       url: `addClass?idx=${e.target.dataset.idx}`
     })
   },
-  delClass(e) {
-    const classItem = this.data.classes[e.target.dataset.idx * 1]
+  removeClass(e) {
+    const idx = e.target.dataset.idx * 1
+    const classItem = this.data.classes[idx]
     wx.showModal({
       title: '确定删除吗',
       content: `课程名：${classItem.name}`,
       confirmText: '删除',
       cancelText: '取消',
-      success(res) {
+      success: res => {
         if (res.confirm) {
-          console.log('del')
-        } else {
-          console.log('cancel')
+          wx.showLoading({
+            title: '课程删除中',
+            mask: true
+          })
+
+          wx.cloud.callFunction({
+            name: 'class',
+            data: {
+              type: 'remove',
+              _id: classItem._id
+            }
+          }).then(res => {
+            const newClasses = JSON.parse(JSON.stringify(this.data.classes))
+            newClasses.splice(idx, 1)
+            app.setClasses(newClasses)
+            this.setData({
+              classes: newClasses
+            }, () => {
+              wx.hideLoading({
+                success() {
+                  wx.showToast({
+                    title: '删除成功',
+                    duration: 500
+                  })
+                }
+              })
+            })
+          })
         }
       }
     });
   },
-  emptyClass() {
-    wx.cloud.callFunction({
-      name: 'removeClass',
-      data: {}
-    }).then(res => {
-      console.log(res.result.stats.removed)
-
-      this.setData({
-        classes: []
-      }, () => {
-        wx.showToast({
-          title: '成功',
-          icon: 'success',
-          duration: 2000
-        })
-      })
-    })
-  },
-  getOpenid() {
-    // 调用云函数
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        console.log('[云函数] [login] user openid: ', res.result.openid)
-      },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-      }
-    })
-  },
-  initClasses() {
+  initClasses(cb) {
     this.setData({
       classes: app.globalData.classes
+    }, () => {
+      typeof cb === 'function' && cb()
     })
   },
   onLoad() {
     if (app.globalData.classes === null) {
       app.getClasses(this.initClasses)
     } else {
-      this.initClasses(e)
+      this.initClasses()
     }
+  },
+  onPullDownRefresh() {
+    app.getClasses(() => {
+      this.initClasses(wx.stopPullDownRefresh)
+    })
   }
 })

@@ -1,0 +1,17 @@
+<view class="page with-tab-bar">
+  <view class="class-wrap">
+    <view>课程名：{{ class.name }}</view>
+    <view>课程类型：{{ class.type }}</view>
+    <view>人数：{{ class.maxNum }}人</view>
+    <view>上课时间：{{ class.studyTime }}</view>
+    <view>时长：{{ class.studyDuration }}分钟</view>
+    <view>周期：{{ class.cycle }}课时</view>
+    <view>费用：{{ class.cost }}元</view>
+    <view>剩余名额：{{ spaceLeft }}</view>
+  </view>
+
+  <view class="weui-btn-area">
+    <button wx:if="{{ !isSignUp }}" class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp">报名</button>
+    <button wx:else class="weui-btn" bindtap="signOut">退出报名</button>
+  </view>
+</view>

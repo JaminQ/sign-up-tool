@@ -1,5 +1,5 @@
 <view class="page with-tab-bar">
-  <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
+  <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
     <view>课程名：{{ item.name }}</view>
     <view>课程类型：{{ item.type }}</view>
     <view>人数：{{ item.maxNum }}人</view>

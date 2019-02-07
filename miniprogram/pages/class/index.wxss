@@ -46,7 +46,7 @@
   background-color: #c7c7cb;
 }
 
-.class-btn.del {
+.class-btn.remove {
   background-color: #ff3725;
 }
 

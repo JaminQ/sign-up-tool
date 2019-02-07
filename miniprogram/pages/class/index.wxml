@@ -13,7 +13,7 @@
         </view>
         <view class="class-btn-wrap">
           <view class="class-btn" bindtap="editClass" data-idx="{{ index }}">编辑</view>
-          <view class="class-btn del" bindtap="delClass" data-idx="{{ index }}">删除</view>
+          <view class="class-btn remove" bindtap="removeClass" data-idx="{{ index }}">删除</view>
         </view>
       </movable-view>
     </movable-area>

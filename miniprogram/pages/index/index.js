@@ -1,19 +1,27 @@
-const db = wx.cloud.database()
-const classesCollection = db.collection('classes')
+const app = getApp()
 
 Page({
   data: {
     classes: []
   },
-  onLoad() {
-    classesCollection.orderBy('createTime', 'desc').get({
-      success: res => {
-        console.log(res);
-        this.setData({
-          classes: res.data
-        })
-      }
+  viewDetail(e) {
+    wx.navigateTo({
+      url: `classDetail?idx=${e.currentTarget.dataset.idx}`,
     })
+  },
+  initClasses(cb) {
+    this.setData({
+      classes: app.globalData.classes
+    }, () => {
+      typeof cb === 'function' && cb()
+    })
+  },
+  onLoad() {
+    if (app.globalData.classes === null) {
+      app.getClasses(this.initClasses)
+    } else {
+      this.initClasses()
+    }
   },
   onShow() {
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
@@ -21,5 +29,10 @@ Page({
         selected: 0
       })
     }
+  },
+  onPullDownRefresh() {
+    app.getClasses(() => {
+      this.initClasses(wx.stopPullDownRefresh)
+    })
   }
 })
