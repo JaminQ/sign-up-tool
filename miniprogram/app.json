@@ -3,8 +3,10 @@
     "pages/index/index",
     "pages/index/classDetail",
     "pages/user/index",
+    "pages/user/class",
     "pages/class/index",
-    "pages/class/addClass"
+    "pages/class/addClass",
+    "pages/class/classDetail"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

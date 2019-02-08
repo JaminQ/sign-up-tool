@@ -4,6 +4,7 @@ cloud.init()
 const db = cloud.database()
 const _ = db.command
 const classesCollection = db.collection('classes')
+const signedUpCollection = db.collection('signed-up-class')
 
 exports.main = async (event, context) => {
   switch (event.type) {
@@ -39,15 +40,29 @@ exports.main = async (event, context) => {
       break
     case 'signUp':
       try {
-        return await classesCollection.doc(event._id).update({
-          data: {
-            menberList: _.push({
-              _openid: event.userInfo.openId,
-              name: event.name,
-              createTime: db.serverDate()
-            })
+        const { data: { menberList, maxNum } } = await classesCollection.doc(event._id).get()
+        if (menberList.length < maxNum) {
+          await classesCollection.doc(event._id).update({
+            data: {
+              menberList: _.push({
+                _openid: event.userInfo.openId,
+                name: event.name,
+                createTime: db.serverDate()
+              })
+            }
+          })
+          return await signedUpCollection.where({
+            _openid: event.userInfo.openId
+          }).update({
+            data: {
+              classes: _.push(event._id)
+            }
+          })
+        } else {
+          return {
+            ret: -10001 // 课程报名人数已满
           }
-        })
+        }
       } catch (e) {
         console.error(e)
       }
@@ -56,9 +71,22 @@ exports.main = async (event, context) => {
       try {
         const { data: { menberList } } = await classesCollection.doc(event._id).get()
         menberList.splice(event.menberIdx, 1)
-        return await classesCollection.doc(event._id).update({
+        await classesCollection.doc(event._id).update({
           data: {
             menberList: _.set(menberList)
+          }
+        })
+
+        const signedUpList = await signedUpCollection.where({
+          _openid: event.userInfo.openId
+        }).get()
+        const classes = signedUpList.data[0].classes
+        classes.splice(classes.indexOf(event._id), 1)
+        return await signedUpCollection.where({
+          _openid: event.userInfo.openId
+        }).update({
+          data: {
+            classes: _.set(classes)
           }
         })
       } catch (e) {

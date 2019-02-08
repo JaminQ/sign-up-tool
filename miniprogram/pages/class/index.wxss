@@ -1,18 +1,18 @@
-.class-container {
+scroll-view {
   height: 100vh;
   padding-bottom: 66px;
   box-sizing: border-box;
   background-color: #fff;
 }
 
-.class-container movable-area {
+movable-area {
   position: relative;
   width: 180vw;
   height: 200px;
   left: -40vw;
 }
 
-.class-container movable-view {
+movable-view {
   box-sizing: border-box;
   width: 140vw;
   height: 200px;
@@ -27,7 +27,7 @@
   border-bottom: 1px solid #ddd;
 }
 
-.class-container movable-area:last-child .class-wrap {
+movable-area:last-child .class-wrap {
   border: 0;
 }
 

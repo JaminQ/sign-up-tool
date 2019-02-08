@@ -20,9 +20,6 @@ App({
         wx.hideLoading()
       }
     })
-
-    // this.setClasses(require('data/classes.js').classes)
-    // typeof cb === 'function' && cb()
   },
   setClasses(classes) {
     this.globalData.classes = classes
@@ -43,9 +40,6 @@ App({
         wx.hideLoading()
       }
     })
-
-    // this.setClassType(require('data/class-type.js').classType)
-    // typeof cb === 'function' && cb()
   },
   setClassType(classType) {
     this.globalData.classType = classType

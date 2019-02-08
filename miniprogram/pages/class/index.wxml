@@ -1,8 +1,8 @@
 <view class="page">
-  <scroll-view class="class-container" scroll-y>
+  <scroll-view scroll-y>
     <movable-area wx:for="{{ classes }}" wx:key="_id">
       <movable-view direction="horizontal" out-of-bounds inertia>
-        <view class="class-wrap">
+        <view class="class-wrap" bindtap="viewDetail" data-idx="{{ index }}">
           <view>课程名：{{ item.name }}</view>
           <view>课程类型：{{ item.type }}</view>
           <view>人数：{{ item.maxNum }}人</view>

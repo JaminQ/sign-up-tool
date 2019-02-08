@@ -1,0 +1,18 @@
+@import 'index.wxss';
+
+scroll-view {
+  height: 100vh;
+  padding-bottom: 66px;
+  box-sizing: border-box;
+  background-color: #fff;
+}
+
+.btn-wrap {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.btn-wrap button {
+  margin: 10px 15px;
+}

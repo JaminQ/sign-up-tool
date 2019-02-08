@@ -29,41 +29,55 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 4,
+			"current": 6,
 			"list": [
 				{
 					"id": 0,
-					"name": "课程管理",
-					"pathName": "pages/class/index",
-					"query": "",
+					"name": "报名页面",
+					"pathName": "pages/index/classDetail",
+					"query": "idx=0",
 					"scene": null
 				},
 				{
 					"id": 1,
-					"name": "添加课程",
-					"pathName": "pages/class/addClass",
-					"query": "",
-					"scene": null
-				},
-				{
-					"id": 2,
 					"name": "用户profile",
 					"pathName": "pages/user/index",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 2,
+					"name": "课程管理",
+					"pathName": "pages/class/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 3,
+					"name": "添加课程",
+					"pathName": "pages/class/addClass",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 4,
 					"name": "编辑课程",
 					"pathName": "pages/class/addClass",
 					"query": "idx=0",
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 5,
 					"name": "课程详情",
-					"pathName": "pages/index/classDetail",
+					"pathName": "pages/class/classDetail",
 					"query": "idx=0",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "已报名课程",
+					"pathName": "pages/user/class",
+					"query": "",
 					"scene": null
 				}
 			]

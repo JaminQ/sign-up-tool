@@ -1,0 +1,26 @@
+<view class="page">
+  <scroll-view scroll-y>
+    <view class="class-wrap">
+      <view>课程名：{{ class.name }}</view>
+      <view>课程类型：{{ class.type }}</view>
+      <view>人数：{{ class.maxNum }}人</view>
+      <view>上课时间：{{ class.studyTime }}</view>
+      <view>时长：{{ class.studyDuration }}分钟</view>
+      <view>周期：{{ class.cycle }}课时</view>
+      <view>费用：{{ class.cost }}元</view>
+      <view>剩余名额：{{ spaceLeft }}</view>
+    </view>
+
+    <view class="weui-cells__title">报名人员</view>
+    <view class="weui-cells weui-cells_after-title" wx:for="{{ class.menberList }}" wx:key="{{ _openid }}">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">{{ item.name }}</view>
+        <view class="weui-cell__ft">手机号码</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view class="btn-wrap">
+    <button type="primary" bindtap="exportData">导出报名数据</button>
+  </view>
+</view>

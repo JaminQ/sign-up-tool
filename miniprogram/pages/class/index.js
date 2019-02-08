@@ -4,6 +4,11 @@ Page({
   data: {
     classes: []
   },
+  viewDetail(e) {
+    wx.navigateTo({
+      url: `classDetail?idx=${e.currentTarget.dataset.idx}`,
+    })
+  },
   addClass() {
     wx.navigateTo({
       url: 'addClass'

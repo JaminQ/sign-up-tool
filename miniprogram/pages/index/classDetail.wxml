@@ -11,7 +11,7 @@
   </view>
 
   <view class="weui-btn-area">
-    <button wx:if="{{ !isSignUp }}" class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp">报名</button>
+    <button wx:if="{{ !isSignUp }}" class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft === 0 }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
     <button wx:else class="weui-btn" bindtap="signOut">退出报名</button>
   </view>
 </view>
