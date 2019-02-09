@@ -4,7 +4,7 @@ cloud.init()
 const db = cloud.database()
 const _ = db.command
 const classesCollection = db.collection('classes')
-const signedUpCollection = db.collection('signed-up-class')
+const userCollection = db.collection('user')
 
 exports.main = async (event, context) => {
   switch (event.type) {
@@ -51,7 +51,7 @@ exports.main = async (event, context) => {
               })
             }
           })
-          return await signedUpCollection.where({
+          return await userCollection.where({
             _openid: event.userInfo.openId
           }).update({
             data: {
@@ -77,12 +77,12 @@ exports.main = async (event, context) => {
           }
         })
 
-        const signedUpList = await signedUpCollection.where({
+        const signedUpList = await userCollection.where({
           _openid: event.userInfo.openId
         }).get()
         const classes = signedUpList.data[0].classes
         classes.splice(classes.indexOf(event._id), 1)
-        return await signedUpCollection.where({
+        return await userCollection.where({
           _openid: event.userInfo.openId
         }).update({
           data: {

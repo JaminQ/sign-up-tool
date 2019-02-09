@@ -1,14 +1,32 @@
 const cloud = require('wx-server-sdk')
-
 cloud.init()
 
-exports.main = (event, context) => {
+const db = cloud.database()
+const userCollection = db.collection('user')
+
+exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext()
 
+  const userData = await userCollection.where({
+    _openid: wxContext.OPENID
+  }).get()
+
+  if (userData.data.length === 0) {
+    try {
+      await userCollection.add({
+        data: {
+          _openid: wxContext.OPENID,
+          classes: []
+        }
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return {
-    event,
     openid: wxContext.OPENID,
     appid: wxContext.APPID,
-    unionid: wxContext.UNIONID,
+    unionid: wxContext.UNIONID
   }
 }

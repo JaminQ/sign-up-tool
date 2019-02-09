@@ -7,7 +7,7 @@ Page({
     classes: []
   },
   initClasses(cb) {
-    db.collection('signed-up-class').where({
+    db.collection('user').where({
       _openid: app.globalData.openId
     }).get().then(res => {
       db.collection('classes').where({
