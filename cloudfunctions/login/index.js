@@ -16,7 +16,9 @@ exports.main = async (event, context) => {
       await userCollection.add({
         data: {
           _openid: wxContext.OPENID,
-          classes: []
+          classes: [],
+          childInfo: [],
+          tel: ''
         }
       })
     } catch (e) {

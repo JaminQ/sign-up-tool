@@ -2,7 +2,7 @@ const app = getApp()
 
 Page({
   data: {
-    mode: 'add',
+    mode: 'add', // add, edit
     classType: [],
     formValue: {
       name: '',
@@ -36,42 +36,13 @@ Page({
         mask: true
       })
 
-      // 调用server端添加课程
       wx.cloud.callFunction({
         name: 'class',
         data: {
           type: 'add',
           formValue
         }
-      }).then(res => {
-        const pages = getCurrentPages()
-        const prevPage = pages[pages.length - 2]
-        const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
-        formValue._id = res.result._id
-        newClasses.unshift(formValue)
-        app.setClasses(newClasses)
-        prevPage.setData({
-          classes: newClasses
-        }, () => {
-          wx.hideLoading({
-            success() {
-              wx.showToast({
-                title: '添加成功',
-                duration: 60000
-              })
-              setTimeout(() => {
-                wx.hideToast({
-                  success() {
-                    wx.navigateBack({
-                      delta: 1
-                    })
-                  }
-                })
-              }, 500)
-            }
-          })
-        })
-      })
+      }).then(res => this.afterAjax(res, formValue))
     }
   },
   editClass() {
@@ -90,34 +61,7 @@ Page({
           _id: this._id,
           formValue
         }
-      }).then(res => {
-        const pages = getCurrentPages()
-        const prevPage = pages[pages.length - 2]
-        const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
-        newClasses[this.idx] = formValue
-        app.setClasses(newClasses)
-        prevPage.setData({
-          classes: newClasses
-        }, () => {
-          wx.hideLoading({
-            success() {
-              wx.showToast({
-                title: '更新成功',
-                duration: 60000
-              })
-              setTimeout(() => {
-                wx.hideToast({
-                  success() {
-                    wx.navigateBack({
-                      delta: 1
-                    })
-                  }
-                })
-              }, 500)
-            }
-          })
-        })
-      })
+      }).then(res => this.afterAjax(res, formValue))
     }
   },
   getFormValue(formValue) {
@@ -182,6 +126,40 @@ Page({
       return false
     }
     return true
+  },
+  afterAjax(res, formValue) {
+    const mode = this.data.mode
+    const pages = getCurrentPages()
+    const prevPage = pages[pages.length - 2]
+    const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
+
+    if (mode === 'add') {
+      newClasses.unshift(res.result._data)
+    } else {
+      newClasses[this.idx] = formValue
+    }
+    app.setClasses(newClasses)
+    prevPage.setData({
+      classes: newClasses
+    }, () => {
+      wx.hideLoading({
+        success() {
+          wx.showToast({
+            title: `${mode === 'add' ? '添加' : '更新'}成功`,
+            duration: 60000
+          })
+          setTimeout(() => {
+            wx.hideToast({
+              success() {
+                wx.navigateBack({
+                  delta: 1
+                })
+              }
+            })
+          }, 500)
+        }
+      })
+    })
   },
   initEditForm() {
     const formValue = JSON.parse(JSON.stringify(app.globalData.classes[this.idx * 1]))

@@ -1,8 +1,8 @@
 <view class="page">
-  <scroll-view scroll-y>
+  <scroll-view wx:if="{{ classes.length }}" scroll-y>
     <movable-area wx:for="{{ classes }}" wx:key="_id">
       <movable-view direction="horizontal" out-of-bounds inertia>
-        <view class="class-wrap" bindtap="viewDetail" data-idx="{{ index }}">
+        <navigator url="classDetail?idx={{ index }}" class="class-wrap">
           <view>课程名：{{ item.name }}</view>
           <view>课程类型：{{ item.type }}</view>
           <view>人数：{{ item.maxNum }}人</view>
@@ -10,14 +10,17 @@
           <view>时长：{{ item.studyDuration }}分钟</view>
           <view>周期：{{ item.cycle }}课时</view>
           <view>费用：{{ item.cost }}元</view>
-        </view>
+        </navigator>
         <view class="class-btn-wrap">
-          <view class="class-btn" bindtap="editClass" data-idx="{{ index }}">编辑</view>
+          <navigator url="addClass?idx={{ index }}" class="class-btn">编辑</navigator>
           <view class="class-btn remove" bindtap="removeClass" data-idx="{{ index }}">删除</view>
         </view>
       </movable-view>
     </movable-area>
   </scroll-view>
+  <view wx:else class="weui-loadmore weui-loadmore_line">
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
+  </view>
 
   <view class="btn-wrap">
     <button type="primary" bindtap="addClass">添加课程</button>

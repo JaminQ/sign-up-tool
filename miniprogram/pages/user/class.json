@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "已报名的课程",
+  "enablePullDownRefresh": true,
   "usingComponents": {}
 }

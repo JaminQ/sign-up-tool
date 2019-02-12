@@ -1,0 +1,14 @@
+<view class="page">
+  <view class="weui-cells weui-cells_after-title">
+    <view class="weui-cell weui-cell_input">
+      <view class="weui-cell__bd">
+        <input class="weui-input" placeholder="请输入孩子真实姓名" bindinput="nameChange" value="{{ name }}" />
+      </view>
+    </view>
+  </view>
+
+  <view class="weui-btn-area">
+    <button wx:if="{{ idx === null }}" class="weui-btn" type="primary" bindtap="addChild">确定</button>
+    <button wx:else class="weui-btn" type="primary" bindtap="updateChild">确定</button>
+  </view>
+</view>

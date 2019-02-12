@@ -24,7 +24,7 @@ Page({
   },
   onLoad() {
     wx.showLoading({
-      title: '资源加载中',
+      title: '资源加载中'
     })
 
     if (app.globalData.openId === null) {
@@ -32,5 +32,8 @@ Page({
     } else {
       this.initClasses()
     }
+  },
+  onPullDownRefresh() {
+    this.initClasses(wx.stopPullDownRefresh)
   }
 })

@@ -4,19 +4,9 @@ Page({
   data: {
     classes: []
   },
-  viewDetail(e) {
-    wx.navigateTo({
-      url: `classDetail?idx=${e.currentTarget.dataset.idx}`,
-    })
-  },
   addClass() {
     wx.navigateTo({
       url: 'addClass'
-    })
-  },
-  editClass(e) {
-    wx.navigateTo({
-      url: `addClass?idx=${e.target.dataset.idx}`
     })
   },
   removeClass(e) {

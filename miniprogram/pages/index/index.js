@@ -4,11 +4,6 @@ Page({
   data: {
     classes: []
   },
-  viewDetail(e) {
-    wx.navigateTo({
-      url: `classDetail?idx=${e.currentTarget.dataset.idx}`,
-    })
-  },
   initClasses(cb) {
     this.setData({
       classes: app.globalData.classes

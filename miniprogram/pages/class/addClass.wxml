@@ -2,7 +2,7 @@
   <view class="page__bd">
     <view class="weui-cells__title">课程信息</view>
     <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_input{{ formError.name ? ' weui-cell_warn' : '' }}{{ formError.name ? ' weui-cell_warn' : '' }}">
+      <view class="weui-cell weui-cell_input{{ formError.name ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">课程名</view>
         </view>

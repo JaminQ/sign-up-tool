@@ -14,9 +14,14 @@ exports.main = async (event, context) => {
         data.menberList = []
         data._openid = event.userInfo.openId
         data.createTime = db.serverDate()
-        return await classesCollection.add({
+
+        const res = await classesCollection.add({
           data
         })
+        data._id = res._id
+        res._data = data
+
+        return res
       } catch (e) {
         console.error(e)
       }

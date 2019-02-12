@@ -1,0 +1,17 @@
+<view class="page">
+  <view class="weui-cells__title"></view>
+  <view class="weui-cells weui-cells_after-title">
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">名字</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">Jamin</view>
+    </navigator>
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">手机号</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">13640875587</view>
+    </navigator>
+    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+      <view class="weui-cell__bd">微信号</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">JaminXXX</view>
+    </navigator>
+  </view>
+</view>

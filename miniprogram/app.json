@@ -6,7 +6,10 @@
     "pages/user/class",
     "pages/class/index",
     "pages/class/addClass",
-    "pages/class/classDetail"
+    "pages/class/classDetail",
+    "pages/user/childInfo/index",
+    "pages/user/childInfo/addChild",
+    "pages/user/userInfo/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

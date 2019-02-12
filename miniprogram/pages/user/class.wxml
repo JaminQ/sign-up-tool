@@ -1,11 +1,16 @@
 <view class="page">
-  <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
-    <view>课程名：{{ item.name }}</view>
-    <view>课程类型：{{ item.type }}</view>
-    <view>人数：{{ item.maxNum }}人</view>
-    <view>上课时间：{{ item.studyTime }}</view>
-    <view>时长：{{ item.studyDuration }}分钟</view>
-    <view>周期：{{ item.cycle }}课时</view>
-    <view>费用：{{ item.cost }}元</view>
+  <block wx:if="{{ classes.length }}">
+    <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
+      <view>课程名：{{ item.name }}</view>
+      <view>课程类型：{{ item.type }}</view>
+      <view>人数：{{ item.maxNum }}人</view>
+      <view>上课时间：{{ item.studyTime }}</view>
+      <view>时长：{{ item.studyDuration }}分钟</view>
+      <view>周期：{{ item.cycle }}课时</view>
+      <view>费用：{{ item.cost }}元</view>
+    </view>
+  </block>
+  <view wx:else class="weui-loadmore weui-loadmore_line">
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
   </view>
 </view>
