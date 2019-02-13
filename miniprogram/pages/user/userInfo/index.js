@@ -1,8 +1,24 @@
 const app = getApp()
 
 Page({
-  data: {},
+  data: {
+    name: '',
+    tel: '',
+    wxAlias: ''
+  },
+  initData() {
+    const userInfo = app.globalData.userInfo
+    this.setData({
+      name: userInfo.name || '',
+      tel: userInfo.tel || '',
+      wxAlias: userInfo.wxAlias || ''
+    })
+  },
   onLoad() {
-    this.setData()
+    if (app.globalData.userInfo === null) {
+      app.getUserInfo(this.initData)
+    } else {
+      this.initData()
+    }
   }
 })

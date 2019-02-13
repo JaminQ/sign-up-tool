@@ -1,7 +1,4 @@
 const app = getApp()
-const db = wx.cloud.database()
-const _ = db.command
-const userCollection = db.collection('user')
 
 Page({
   data: {
@@ -35,19 +32,20 @@ Page({
     const mode = this.data.idx === null ? 'add' : 'edit'
     const pages = getCurrentPages()
     const prevPage = pages[pages.length - 2]
-    const newChildInfo = JSON.parse(JSON.stringify(prevPage.data.childInfo))
 
+    const newChildInfo = JSON.parse(JSON.stringify(prevPage.data.childInfo))
     if (mode === 'add') {
       newChildInfo.push(name)
     } else {
       newChildInfo[this.data.idx] = name
     }
-    const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
-    newUserInfo.childInfo = newChildInfo
-    app.setUserInfo(newUserInfo)
     prevPage.setData({
       childInfo: newChildInfo
     }, () => {
+      const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
+      newUserInfo.childInfo = newChildInfo
+      app.setGlobalData('userInfo', newUserInfo)
+
       wx.hideLoading({
         success() {
           wx.showToast({
@@ -74,7 +72,10 @@ Page({
         title: '添加中'
       })
 
-      userCollection.doc(this._id).update({
+      const db = wx.cloud.database()
+      const _ = db.command
+
+      db.collection('user').doc(app.globalData.userInfo._id).update({
         data: {
           childInfo: _.push([name])
         }
@@ -88,26 +89,32 @@ Page({
         title: '更新中'
       })
 
-      const doc = userCollection.doc(this._id)
-      doc.get().then(res => {
-        const childInfo = res.data.childInfo
-        childInfo[this.data.idx] = name
+      const db = wx.cloud.database()
+      const _ = db.command
 
-        doc.update({
-          data: {
-            childInfo: _.set(childInfo)
-          }
-        }).then(res => this.afterAjax(res, name))
+      const newChildInfo = JSON.parse(JSON.stringify(app.globalData.userInfo.childInfo))
+      newChildInfo[this.data.idx] = name
+      db.collection('user').doc(app.globalData.userInfo._id).update({
+        data: {
+          childInfo: _.set(newChildInfo)
+        }
+      }).then(res => this.afterAjax(res, name))
+    }
+  },
+  initData(e) {
+    if (e.idx !== undefined) { // 编辑模式
+      const idx = e.idx * 1
+      this.setData({
+        idx,
+        name: app.globalData.userInfo.childInfo[idx]
       })
     }
   },
   onLoad(e) {
-    this._id = e._id
-    if (e.idx !== undefined && e.name !== undefined) { // 编辑模式
-      this.setData({
-        idx: e.idx,
-        name: e.name
-      })
+    if (app.globalData.userInfo === null) {
+      app.getUserInfo(() => this.initData(e))
+    } else {
+      this.initData(e)
     }
   }
 })

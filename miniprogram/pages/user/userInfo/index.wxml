@@ -1,17 +1,17 @@
 <view class="page">
   <view class="weui-cells__title"></view>
   <view class="weui-cells weui-cells_after-title">
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <navigator url="info?key=name" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
       <view class="weui-cell__bd">名字</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access">Jamin</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">{{ name || '未设置' }}</view>
     </navigator>
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <navigator url="info?key=tel" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
       <view class="weui-cell__bd">手机号</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access">13640875587</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">{{ tel || '未设置' }}</view>
     </navigator>
-    <navigator url="" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <navigator url="info?key=wxAlias" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
       <view class="weui-cell__bd">微信号</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access">JaminXXX</view>
+      <view class="weui-cell__ft weui-cell__ft_in-access">{{ wxAlias || '未设置' }}</view>
     </navigator>
   </view>
 </view>

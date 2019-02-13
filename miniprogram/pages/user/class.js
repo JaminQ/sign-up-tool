@@ -19,6 +19,8 @@ Page({
     }
   },
   onPullDownRefresh() {
-    this.initClasses(wx.stopPullDownRefresh)
+    app.getSignedUpClasses(() => {
+      this.initClasses(wx.stopPullDownRefresh)
+    })
   }
 })

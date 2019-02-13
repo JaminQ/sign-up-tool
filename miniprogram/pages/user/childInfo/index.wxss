@@ -1,0 +1,44 @@
+movable-area.weui-cell {
+  width: 130vw;
+  height: 44px;
+  padding: 0;
+  left: -15vw;
+}
+
+movable-view {
+  display: flex;
+  width: 115vw;
+  height: 44px;
+  left: 15vw;
+}
+
+navigator {
+  position: relative;
+  width: 100vw;
+  padding: 10px 15px;
+}
+
+.weui-cell__ft_in-access {
+  top: -10px;
+}
+
+.weui-cell.weui-cell_access:before {
+  content: " ";
+  position: absolute;
+  margin-left: 15px;
+  left: 15vw;
+  top: 0;
+  right: 0;
+  height: 1px;
+  border-top: 1rpx solid #d9d9d9;
+  color: #d9d9d9;
+}
+
+.del-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 15vw;
+  color: #fff;
+  background-color: #ff3725;
+}

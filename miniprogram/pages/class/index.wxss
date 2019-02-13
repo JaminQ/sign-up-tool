@@ -2,11 +2,9 @@ scroll-view {
   height: 100vh;
   padding-bottom: 66px;
   box-sizing: border-box;
-  background-color: #fff;
 }
 
 movable-area {
-  position: relative;
   width: 180vw;
   height: 200px;
   left: -40vw;
@@ -14,10 +12,10 @@ movable-area {
 
 movable-view {
   box-sizing: border-box;
+  display: flex;
   width: 140vw;
   height: 200px;
   left: 40vw;
-  display: flex;
 }
 
 .class-wrap {

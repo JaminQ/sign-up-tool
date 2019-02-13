@@ -9,7 +9,8 @@
     "pages/class/classDetail",
     "pages/user/childInfo/index",
     "pages/user/childInfo/addChild",
-    "pages/user/userInfo/index"
+    "pages/user/userInfo/index",
+    "pages/user/userInfo/info"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",

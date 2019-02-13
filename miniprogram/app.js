@@ -1,3 +1,5 @@
+import { setStorage } from 'common/utils'
+
 App({
   globalData: {
     classes: null,
@@ -6,6 +8,8 @@ App({
     signedUpClasses: null,
     openId: null
   },
+
+  // 不走缓存
   getClasses(cb) {
     wx.showLoading({
       title: '资源加载中',
@@ -23,81 +27,100 @@ App({
   setClasses(classes) {
     this.globalData.classes = classes
   },
-  getClassType(cb) {
-    wx.showLoading({
-      title: '资源加载中',
-      mask: true
-    })
 
-    wx.cloud.database().collection('class-type').get({
-      success: res => {
-        this.setClassType(res.data)
-        typeof cb === 'function' && cb()
-        wx.hideLoading()
-      }
-    })
-  },
-  setClassType(classType) {
-    this.globalData.classType = classType
+  // 以下3个走时效缓存
+  getClassType(cb) {
+    this.getGlobalData('classType', cb, key => {
+      wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, cb))
+    }) // 暂时采用永久有效期
   },
   getUserInfo(cb) {
-    wx.showLoading({
-      title: '资源加载中',
-      mask: true
-    })
-
-    if (this.globalData.openId === null) {
-      this.getOpenId(() => this.getUserInfo(cb))
-    } else {
-      wx.cloud.database().collection('user').where({
-        _openid: this.globalData.openId
-      }).get().then(res => {
-        this.globalData.userInfo = res.data[0]
-        typeof cb === 'function' && cb()
-        wx.hideLoading()
-      })
-    }
-  },
-  setUserInfo(userInfo) {
-    this.globalData.userInfo = userInfo
+    this.getGlobalData('userInfo', cb, key => {
+      if (this.globalData.openId === null) {
+        this.getOpenId(() => this.getUserInfo(cb))
+      } else {
+        wx.cloud.database().collection('user').where({
+          _openid: this.globalData.openId
+        }).get().then(res => this.afterAjax(key, res.data[0], cb))
+      }
+    }, 259200000) // 3天有效期
   },
   getSignedUpClasses(cb) {
-    wx.showLoading({
-      title: '资源加载中',
-      mask: true
-    })
+    this.getGlobalData('signedUpClasses', cb, key => {
+      if (this.globalData.userInfo === null) {
+        this.getUserInfo(() => this.getSignedUpClasses(cb))
+      } else {
+        const db = wx.cloud.database()
+        const _ = db.command
 
-    if (this.globalData.userInfo === null) {
-      this.getUserInfo(() => this.getSignedUpClasses(cb))
-    } else {
-      const db = wx.cloud.database()
-      const _ = db.command
+        db.collection('classes').where({
+          _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
+        }).get().then(res => this.afterAjax(key, res.data, cb))
+      }
+    }, 259200000) // 3天有效期
+  },
 
-      db.collection('classes').where({
-        _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
-      }).get().then(res => {
-        this.globalData.signedUpClasses = res.data
-        typeof cb === 'function' && cb()
-        wx.hideLoading()
-      })
-    }
-  },
-  setSignedUpClasses(signedUpClasses) {
-    this.globalData.signedUpClasses = signedUpClasses
-  },
+  // 走永久缓存
   getOpenId(cb) {
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        this.globalData.openId = res.result.openid
+    wx.getStorage({
+      key: 'openid',
+      success: res => { // 有缓存
+        this.globalData.openId = res.data
         typeof cb === 'function' && cb()
       },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
+      fail: () => { // 无缓存
+        wx.cloud.callFunction({
+          name: 'login',
+          data: {},
+          success: res => {
+            this.globalData.openId = res.result.openid
+            wx.setStorage({ // 缓存openid
+              key: 'openid',
+              data: this.globalData.openId
+            })
+            typeof cb === 'function' && cb()
+          },
+          fail: err => {
+            console.error('[云函数] [login] 调用失败', err)
+          }
+        })
       }
     })
   },
+
+  // 时效缓存通用函数
+  getGlobalData(key, cb, ajaxCb, timeout) {
+    const ajax = () => {
+      wx.showLoading({
+        title: '资源加载中',
+        mask: true
+      })
+      typeof ajaxCb === 'function' && ajaxCb(key)
+    }
+
+    wx.getStorage({
+      key,
+      success: res => {
+        if (timeout && ((new Date()) * 1 - res.data.time) > timeout) { // 超时，重新拉取数据
+          ajax()
+        } else {
+          this.setGlobalData(key, res.data.data, true)
+          typeof cb === 'function' && cb()
+        }
+      },
+      fail: ajax
+    })
+  },
+  setGlobalData(key, val, notUpdate) {
+    this.globalData[key] = val
+    !notUpdate && setStorage(key, val)
+  },
+  afterAjax(key, val, cb) {
+    this.setGlobalData(key, val)
+    typeof cb === 'function' && cb()
+    wx.hideLoading()
+  },
+
   onLaunch() {
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
@@ -105,7 +128,6 @@ App({
       wx.cloud.init({
         traceUser: true
       })
-      // this.getOpenId()
     }
   }
 })

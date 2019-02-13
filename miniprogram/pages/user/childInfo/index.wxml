@@ -1,11 +1,16 @@
 <view class="page">
   <view class="weui-cells__title"></view>
   <view wx:if="{{ childInfo.length }}" class="weui-cells weui-cells_after-title">
-    <navigator url="addChild?_id={{ _id }}&name={{ item }}&idx={{ index }}" class="weui-cell weui-cell_access" hover-class="weui-cell_active" wx:for="{{ childInfo }}" wx:key="">
-      <view class="weui-cell__bd">{{ item }}</view>
-      <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-    </navigator>
-    <navigator url="addChild?_id={{ _id }}" class="weui-cell weui-cell_link">
+    <movable-area class="weui-cell weui-cell_access" wx:for="{{ childInfo }}" wx:key="">
+      <movable-view direction="horizontal" out-of-bounds inertia>
+        <navigator url="addChild?idx={{ index }}">
+          <view class="weui-cell__bd">{{ item }}</view>
+          <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+        </navigator>
+        <view class="del-btn" bindtap="removeChild" data-idx="{{ index }}">删除</view>
+      </movable-view>
+    </movable-area>
+    <navigator url="addChild" class="weui-cell weui-cell_link">
       <view class="weui-cell__bd">添加</view>
     </navigator>
   </view>

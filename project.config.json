@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 9,
+			"current": 8,
 			"list": [
 				{
 					"id": 0,
@@ -91,7 +91,7 @@
 					"id": 8,
 					"name": "添加孩子信息",
 					"pathName": "pages/user/childInfo/addChild",
-					"query": "_id=XF5kpXffS3SWQtSf",
+					"query": "",
 					"scene": null
 				},
 				{
@@ -99,6 +99,13 @@
 					"name": "个人信息",
 					"pathName": "pages/user/userInfo/index",
 					"query": "",
+					"scene": null
+				},
+				{
+					"id": 10,
+					"name": "编辑名字",
+					"pathName": "pages/user/userInfo/info",
+					"query": "key=name",
 					"scene": null
 				}
 			]
