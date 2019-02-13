@@ -127,7 +127,7 @@ Page({
   },
   initOpenId() {
     if (app.globalData.openId === null) {
-      app.getOpenid(this.initClass)
+      app.getOpenId(this.initClass)
     } else {
       this.initClass()
     }

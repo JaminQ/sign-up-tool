@@ -2,6 +2,8 @@ App({
   globalData: {
     classes: null,
     classType: null,
+    userInfo: null,
+    signedUpClasses: null,
     openId: null
   },
   getClasses(cb) {
@@ -10,10 +12,7 @@ App({
       mask: true
     })
 
-    const db = wx.cloud.database()
-    const classesCollection = db.collection('classes')
-
-    classesCollection.orderBy('createTime', 'desc').get({
+    wx.cloud.database().collection('classes').orderBy('createTime', 'desc').get({
       success: res => {
         this.setClasses(res.data)
         typeof cb === 'function' && cb()
@@ -30,10 +29,7 @@ App({
       mask: true
     })
 
-    const db = wx.cloud.database()
-    const classTypeCollection = db.collection('class-type')
-
-    classTypeCollection.get({
+    wx.cloud.database().collection('class-type').get({
       success: res => {
         this.setClassType(res.data)
         typeof cb === 'function' && cb()
@@ -44,7 +40,52 @@ App({
   setClassType(classType) {
     this.globalData.classType = classType
   },
-  getOpenid(cb) {
+  getUserInfo(cb) {
+    wx.showLoading({
+      title: '资源加载中',
+      mask: true
+    })
+
+    if (this.globalData.openId === null) {
+      this.getOpenId(() => this.getUserInfo(cb))
+    } else {
+      wx.cloud.database().collection('user').where({
+        _openid: this.globalData.openId
+      }).get().then(res => {
+        this.globalData.userInfo = res.data[0]
+        typeof cb === 'function' && cb()
+        wx.hideLoading()
+      })
+    }
+  },
+  setUserInfo(userInfo) {
+    this.globalData.userInfo = userInfo
+  },
+  getSignedUpClasses(cb) {
+    wx.showLoading({
+      title: '资源加载中',
+      mask: true
+    })
+
+    if (this.globalData.userInfo === null) {
+      this.getUserInfo(() => this.getSignedUpClasses(cb))
+    } else {
+      const db = wx.cloud.database()
+      const _ = db.command
+
+      db.collection('classes').where({
+        _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
+      }).get().then(res => {
+        this.globalData.signedUpClasses = res.data
+        typeof cb === 'function' && cb()
+        wx.hideLoading()
+      })
+    }
+  },
+  setSignedUpClasses(signedUpClasses) {
+    this.globalData.signedUpClasses = signedUpClasses
+  },
+  getOpenId(cb) {
     wx.cloud.callFunction({
       name: 'login',
       data: {},
@@ -64,7 +105,7 @@ App({
       wx.cloud.init({
         traceUser: true
       })
-      this.getOpenid()
+      // this.getOpenId()
     }
   }
 })

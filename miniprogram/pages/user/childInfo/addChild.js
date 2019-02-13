@@ -1,3 +1,4 @@
+const app = getApp()
 const db = wx.cloud.database()
 const _ = db.command
 const userCollection = db.collection('user')
@@ -41,7 +42,9 @@ Page({
     } else {
       newChildInfo[this.data.idx] = name
     }
-    // app.setClasses(newChildInfo)
+    const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
+    newUserInfo.childInfo = newChildInfo
+    app.setUserInfo(newUserInfo)
     prevPage.setData({
       childInfo: newChildInfo
     }, () => {

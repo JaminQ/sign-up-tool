@@ -1,35 +1,24 @@
 const app = getApp()
-const db = wx.cloud.database()
-const _ = db.command
 
 Page({
   data: {
     _id: '',
     childInfo: []
   },
-  initChild(cb) {
-    db.collection('user').where({
-      _openid: app.globalData.openId
-    }).get().then(res => {
-      const data = res.data[0]
-      this.setData({
-        _id: data._id,
-        childInfo: data.childInfo
-      }, () => {
-        wx.hideLoading()
-        typeof cb === 'function' && cb()
-      })
+  initData(cb) {
+    const userInfo = app.globalData.userInfo
+    this.setData({
+      _id: userInfo._id,
+      childInfo: userInfo.childInfo
+    }, () => {
+      typeof cb === 'function' && cb()
     })
   },
   onLoad() {
-    wx.showLoading({
-      title: '资源加载中'
-    })
-
-    if (app.globalData.openId === null) {
-      app.getOpenid(this.initChild)
+    if (app.globalData.userInfo === null) {
+      app.getUserInfo(this.initData)
     } else {
-      this.initChild()
+      this.initData()
     }
   }
 })
