@@ -29,26 +29,26 @@ App({
   },
 
   // 以下3个走时效缓存
-  getClassType(cb) {
+  getClassType(cb, forceUpdate) {
     this.getGlobalData('classType', cb, key => {
       wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, cb))
-    }) // 暂时采用永久有效期
+    }, 0, forceUpdate) // 暂时采用永久有效期
   },
-  getUserInfo(cb) {
+  getUserInfo(cb, forceUpdate) {
     this.getGlobalData('userInfo', cb, key => {
       if (this.globalData.openId === null) {
-        this.getOpenId(() => this.getUserInfo(cb))
+        this.getOpenId(() => this.getUserInfo(cb, forceUpdate))
       } else {
         wx.cloud.database().collection('user').where({
           _openid: this.globalData.openId
         }).get().then(res => this.afterAjax(key, res.data[0], cb))
       }
-    }, 259200000) // 3天有效期
+    }, 259200000, forceUpdate) // 3天有效期
   },
-  getSignedUpClasses(cb) {
+  getSignedUpClasses(cb, forceUpdate) {
     this.getGlobalData('signedUpClasses', cb, key => {
       if (this.globalData.userInfo === null) {
-        this.getUserInfo(() => this.getSignedUpClasses(cb))
+        this.getUserInfo(() => this.getSignedUpClasses(cb, forceUpdate), forceUpdate)
       } else {
         const db = wx.cloud.database()
         const _ = db.command
@@ -57,7 +57,7 @@ App({
           _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
         }).get().then(res => this.afterAjax(key, res.data, cb))
       }
-    }, 259200000) // 3天有效期
+    }, 259200000, forceUpdate) // 3天有效期
   },
 
   // 走永久缓存
@@ -89,7 +89,7 @@ App({
   },
 
   // 时效缓存通用函数
-  getGlobalData(key, cb, ajaxCb, timeout) {
+  getGlobalData(key, cb, ajaxCb, timeout, forceUpdate) {
     const ajax = () => {
       wx.showLoading({
         title: '资源加载中',
@@ -101,7 +101,7 @@ App({
     wx.getStorage({
       key,
       success: res => {
-        if (timeout && ((new Date()) * 1 - res.data.time) > timeout) { // 超时，重新拉取数据
+        if (forceUpdate || timeout && ((new Date()) * 1 - res.data.time) > timeout) { // 超时，重新拉取数据
           ajax()
         } else {
           this.setGlobalData(key, res.data.data, true)

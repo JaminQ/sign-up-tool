@@ -7,6 +7,7 @@ const classesCollection = db.collection('classes')
 const userCollection = db.collection('user')
 
 exports.main = async (event, context) => {
+  console.log('event:', event)
   switch (event.type) {
     case 'add':
       try {
@@ -74,22 +75,22 @@ exports.main = async (event, context) => {
       break
     case 'signOut':
       try {
-        const { data: { menberList } } = await classesCollection.doc(event._id).get()
+        const doc = classesCollection.doc(event._id)
+        const { data: { menberList } } = await doc.get()
         menberList.splice(event.menberIdx, 1)
-        await classesCollection.doc(event._id).update({
+        await doc.update({
           data: {
             menberList: _.set(menberList)
           }
         })
 
-        const signedUpList = await userCollection.where({
+        const query = userCollection.where({
           _openid: event.userInfo.openId
-        }).get()
+        })
+        const signedUpList = await query.get()
         const classes = signedUpList.data[0].classes
         classes.splice(classes.indexOf(event._id), 1)
-        return await userCollection.where({
-          _openid: event.userInfo.openId
-        }).update({
+        return await query.update({
           data: {
             classes: _.set(classes)
           }

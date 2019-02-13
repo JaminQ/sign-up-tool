@@ -98,6 +98,7 @@ Page({
         menberIdx: this.menberIdx
       }
     }).then(res => {
+      console.log(res)
       const pages = getCurrentPages()
       const prevPage = pages[pages.length - 2]
       const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
