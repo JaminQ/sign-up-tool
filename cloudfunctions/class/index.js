@@ -56,6 +56,7 @@ exports.main = async (event, context) => {
               menberList: _.push({
                 _openid,
                 name: event.name,
+                tel: event.tel,
                 createTime: db.serverDate()
               })
             }
@@ -88,11 +89,11 @@ exports.main = async (event, context) => {
           }
         })
         menberList.splice(menberIdx, 1)
-        await doc.update({
+        console.log(await doc.update({
           data: {
             menberList: _.set(menberList)
           }
-        })
+        }))
 
         const query = userCollection.where({
           _openid

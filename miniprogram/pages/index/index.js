@@ -29,5 +29,10 @@ Page({
     app.getClasses(() => {
       this.initClasses(wx.stopPullDownRefresh)
     })
+  },
+  onShareAppMessage(res) {
+    return {
+      title: '罗老师艺术工作室'
+    }
   }
 })

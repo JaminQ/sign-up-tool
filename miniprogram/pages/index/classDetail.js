@@ -16,12 +16,14 @@ Page({
         })
 
         const name = e.target.dataset.name
+        const tel = app.globalData.userInfo.tel
         wx.cloud.callFunction({
           name: 'class',
           data: {
             type: 'signUp',
             _id: this.data.class._id,
-            name
+            name,
+            tel
           }
         }).then(res => {
           if (res.result.ret === -10001) { // 课程报名人数已满
@@ -44,7 +46,8 @@ Page({
             const newClass = JSON.parse(JSON.stringify(this.data.class))
             newClass.menberList.push({
               _openid: app.globalData.openId,
-              name
+              name,
+              tel
             })
 
             this.setData({
@@ -52,17 +55,15 @@ Page({
               spaceLeft: this.data.spaceLeft - 1,
               isSignedUp: newIsSignedUp
             }, () => {
-              const pages = getCurrentPages()
-              const prevPage = pages[pages.length - 2]
-              const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
+              const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
               newClasses[this.idx].menberList.push({
                 _openid: app.globalData.openId,
-                name
+                name,
+                tel
               })
               app.setClasses(newClasses)
-              prevPage.setData({
-                classes: newClasses
-              }, () => {
+
+              const cb = () => {
                 const done = () => {
                   const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
                   newSignedUpClasses.unshift(newClass)
@@ -83,7 +84,16 @@ Page({
                 } else {
                   done()
                 }
-              })
+              }
+
+              const pages = getCurrentPages()
+              if (pages.length > 1) {
+                pages[pages.length - 2].setData({
+                  classes: newClasses
+                }, cb)
+              } else {
+                cb()
+              }
             })
           }
         })
@@ -126,14 +136,11 @@ Page({
         spaceLeft: this.data.spaceLeft + 1,
         isSignedUp: newIsSignedUp
       }, () => {
-        const pages = getCurrentPages()
-        const prevPage = pages[pages.length - 2]
-        const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
+        const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
         newClasses[this.idx].menberList.splice(menberIdx, 1)
         app.setClasses(newClasses)
-        prevPage.setData({
-          classes: newClasses
-        }, () => {
+
+        const cb = () => {
           const done = () => {
             const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
             let idx = 0
@@ -158,31 +165,40 @@ Page({
           } else {
             done()
           }
-        })
+        }
+
+        const pages = getCurrentPages()
+        if (pages.length > 1) {
+          pages[pages.length - 2].setData({
+            classes: newClasses
+          }, cb)
+        } else {
+          cb()
+        }
       })
     })
   },
-  initChildInfo() {
+  initChildInfo(cb, forceUpdate) {
     const userInfo = app.globalData.userInfo
     this.setData({
       childInfo: app.globalData.userInfo.childInfo,
       isSignedUp: app.globalData.userInfo.childInfo.map(() => false)
     }, () => {
-      if (app.globalData.classes === null) {
-        app.getClasses(this.initOpenId)
+      if (forceUpdate || app.globalData.classes === null) {
+        app.getClasses(() => this.initOpenId(cb))
       } else {
-        this.initOpenId()
+        this.initOpenId(cb)
       }
     })
   },
-  initOpenId() {
+  initOpenId(cb) {
     if (app.globalData.openId === null) {
-      app.getOpenId(this.initClass)
+      app.getOpenId(() => this.initClass(cb))
     } else {
-      this.initClass()
+      this.initClass(cb)
     }
   },
-  initClass() {
+  initClass(cb) {
     const classItem = app.globalData.classes[this.idx]
     let spaceLeft = classItem.maxNum
     const childInfo = this.data.childInfo
@@ -199,6 +215,8 @@ Page({
       class: classItem,
       spaceLeft,
       isSignedUp
+    }, () => {
+      typeof cb === 'function' && cb()
     })
   },
   onLoad(e) {
@@ -208,6 +226,16 @@ Page({
       app.getUserInfo(this.initChildInfo)
     } else {
       this.initChildInfo()
+    }
+  },
+  onPullDownRefresh() {
+    app.getUserInfo(() => {
+      this.initChildInfo(wx.stopPullDownRefresh, true)
+    }, true)
+  },
+  onShareAppMessage(res) {
+    return {
+      title: `“${this.data.class.name}”开始报名啦~`
     }
   }
 })
