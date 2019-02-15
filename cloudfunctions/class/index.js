@@ -8,6 +8,7 @@ const userCollection = db.collection('user')
 
 exports.main = async (event, context) => {
   console.log('event:', event)
+
   switch (event.type) {
     case 'add':
       try {
@@ -47,18 +48,20 @@ exports.main = async (event, context) => {
     case 'signUp':
       try {
         const { data: { menberList, maxNum } } = await classesCollection.doc(event._id).get()
+
         if (menberList.length < maxNum) {
+          const _openid = event.userInfo.openId
           await classesCollection.doc(event._id).update({
             data: {
               menberList: _.push({
-                _openid: event.userInfo.openId,
+                _openid,
                 name: event.name,
                 createTime: db.serverDate()
               })
             }
           })
           return await userCollection.where({
-            _openid: event.userInfo.openId
+            _openid
           }).update({
             data: {
               classes: _.push(event._id)
@@ -77,7 +80,14 @@ exports.main = async (event, context) => {
       try {
         const doc = classesCollection.doc(event._id)
         const { data: { menberList } } = await doc.get()
-        menberList.splice(event.menberIdx, 1)
+        let menberIdx = -1
+        const _openid = event.userInfo.openId
+        menberList.forEach((menber, idx) => {
+          if (menber !== null && menber._openid === _openid && menber.name === event.name) {
+            menberIdx = idx
+          }
+        })
+        menberList.splice(menberIdx, 1)
         await doc.update({
           data: {
             menberList: _.set(menberList)
@@ -85,16 +95,20 @@ exports.main = async (event, context) => {
         })
 
         const query = userCollection.where({
-          _openid: event.userInfo.openId
+          _openid
         })
         const signedUpList = await query.get()
         const classes = signedUpList.data[0].classes
         classes.splice(classes.indexOf(event._id), 1)
-        return await query.update({
+        await query.update({
           data: {
             classes: _.set(classes)
           }
         })
+        return {
+          ret: 0,
+          menberIdx
+        }
       } catch (e) {
         console.error(e)
       }

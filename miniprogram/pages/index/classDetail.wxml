@@ -10,8 +10,17 @@
     <view>剩余名额：{{ spaceLeft }}</view>
   </view>
 
-  <view class="weui-btn-area">
-    <button wx:if="{{ !isSignUp }}" class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft === 0 }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
-    <button wx:else class="weui-btn" bindtap="signOut">退出报名</button>
+  <view class="weui-cells__title">报名</view>
+  <view wx:if="{{ childInfo.length }}" class="weui-cells weui-cells_after-title">
+    <view class="weui-cell" wx:for="{{ childInfo }}" wx:key="">
+      <view class="weui-cell__bd">{{ item }}</view>
+      <view class="weui-cell__ft">
+        <button wx:if="{{ !isSignedUp[index] }}" class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft === 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
+        <button wx:else class="weui-btn" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
+      </view>
+    </view>
+  </view>
+  <view wx:else class="weui-loadmore weui-loadmore_line">
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
   </view>
 </view>
