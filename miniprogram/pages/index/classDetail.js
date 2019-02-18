@@ -235,7 +235,8 @@ Page({
   },
   onShareAppMessage(res) {
     return {
-      title: `“${this.data.class.name}”开始报名啦~`
+      title: `“${this.data.class.name}”开始报名啦~`,
+      imageUrl: '../../image/share.jpg'
     }
   }
 })

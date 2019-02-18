@@ -7,7 +7,7 @@ page {
 }
 
 .page.with-tab-bar {
-  margin-bottom: 58px;
+  padding-bottom: 48px;
 }
 
 .page__hd {
@@ -46,5 +46,11 @@ page {
 }
 
 .weui-loadmore__tips_in-line {
-  background-color: #F6F6F6;
+  background-color: #f6f6f6;
+}
+
+@media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
+  page {
+    padding-bottom: 34px;
+  }
 }

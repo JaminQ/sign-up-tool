@@ -32,7 +32,8 @@ Page({
   },
   onShareAppMessage(res) {
     return {
-      title: '罗老师艺术工作室'
+      title: '罗老师艺术工作室',
+      imageUrl: '../../image/share.jpg'
     }
   }
 })
