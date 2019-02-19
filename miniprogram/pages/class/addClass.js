@@ -8,24 +8,36 @@ Page({
       name: '',
       typeIdx: 0,
       maxNum: '',
-      studyTime: '',
-      studyDuration: '',
       cycle: '',
-      cost: ''
+      cost: '',
+      beginTime: '10:00',
+      endTime: '11:00',
+      studyDate: [false, false, false, false, false, false, false]
     },
     formError: {
       name: false,
       maxNum: false,
-      studyTime: false,
-      studyDuration: false,
       cycle: false,
-      cost: false
+      cost: false,
+      beginTime: false,
+      studyDate: false
     }
   },
   formItemChange(e) {
     const data = {}
     data[`formValue.${e.target.dataset.name}`] = e.detail.value
     this.setData(data)
+  },
+  studyDateChange(e) {
+    const studyDate = [false, false, false, false, false, false, false]
+
+    e.detail.value.forEach(idx => {
+      studyDate[idx * 1] = true
+    })
+
+    this.setData({
+      'formValue.studyDate': studyDate
+    });
   },
   addClass() {
     const formValue = this.getFormValue(this.data.formValue)
@@ -71,50 +83,55 @@ Page({
     formValue.type = this.data.classType[formValue.typeIdx].name
     delete formValue.typeIdx
     formValue.maxNum = formValue.maxNum * 1
-    formValue.studyTime = formValue.studyTime.trim()
-    formValue.studyDuration = formValue.studyDuration * 1
     formValue.cycle = formValue.cycle * 1
     formValue.cost = formValue.cost * 1
 
     return formValue
   },
   validFormValue(formValue) {
-    let isValid = true
+    let isFull = true // 表单是否完整
+    let isTimeCorrect = true // 时间是否正确
     const formError = {}
 
     if (formValue.name === '') {
       formError.name = true
-      isValid = false
+      isFull = false
     }
     if (formValue.maxNum <= 0) {
       formError.maxNum = true
-      isValid = false
-    }
-    if (formValue.studyTime === '') {
-      formError.studyTime = true
-      isValid = false
-    }
-    if (formValue.studyDuration <= 0) {
-      formError.studyDuration = true
-      isValid = false
+      isFull = false
     }
     if (formValue.cycle <= 0) {
       formError.cycle = true
-      isValid = false
+      isFull = false
     }
     if (formValue.cost <= 0) {
       formError.cost = true
-      isValid = false
+      isFull = false
+    }
+    formError.studyDate = false
+    formValue.studyDate.forEach(val => {
+      if (val) formError.studyDate = true
+    })
+    formError.studyDate = !formError.studyDate
+    if (formError.studyDate) {
+      isFull = false
     }
 
-    if (!isValid) {
+    const beginTime = formValue.beginTime.split(':').map(val => val * 1)
+    const endTime = formValue.endTime.split(':').map(val => val * 1)
+    if (beginTime[0] >= endTime[0] && beginTime[1] >= endTime[1]) {
+      formError.beginTime = true
+      isTimeCorrect = false
+    }
+
+    if (!isFull || !isTimeCorrect) {
       const data = {
         formValue: this.data.formValue,
         formError
       }
 
       if (formError.name) data.formValue.name = formValue.name
-      if (formError.studyTime) data.formValue.studyTime = formValue.studyTime
 
       this.setData(data, () => {
         wx.showToast({
@@ -125,6 +142,9 @@ Page({
       })
       return false
     }
+    this.setData({
+      formError
+    })
     return true
   },
   afterAjax(res, formValue) {
@@ -162,7 +182,7 @@ Page({
     })
   },
   initEditForm() {
-    const formValue = JSON.parse(JSON.stringify(app.globalData.classes[this.idx * 1]))
+    const formValue = JSON.parse(JSON.stringify(app.globalData.classes[this.idx]))
     this._id = formValue._id
     this.data.classType.forEach((val, idx) => {
       if (val.name === formValue.type) {
@@ -195,7 +215,7 @@ Page({
     }
   },
   onLoad(e) {
-    this.idx = e.idx
+    this.idx = e.idx * 1
 
     if (app.globalData.classType === null) {
       app.getClassType(this.initClassType)

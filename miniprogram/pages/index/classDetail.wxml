@@ -1,10 +1,12 @@
+<wxs src="../class/index.wxs" module="wxs" />
+
 <view class="page with-tab-bar">
   <view class="class-wrap">
     <view>课程名：{{ class.name }}</view>
     <view>课程类型：{{ class.type }}</view>
     <view>人数：{{ class.maxNum }}人</view>
-    <view>上课时间：{{ class.studyTime }}</view>
-    <view>时长：{{ class.studyDuration }}分钟</view>
+    <view>上课时间：{{ wxs.getStudyTime(class.studyDate) }} {{ class.beginTime }}-{{ class.endTime }}</view>
+    <view>时长：{{ wxs.getStudyDuration(class.beginTime, class.endTime) }}分钟</view>
     <view>周期：{{ class.cycle }}课时</view>
     <view>费用：{{ class.cost }}元</view>
     <view>剩余名额：{{ spaceLeft }}</view>
@@ -15,8 +17,8 @@
     <view class="weui-cell" wx:for="{{ childInfo }}" wx:key="">
       <view class="weui-cell__bd">{{ item }}</view>
       <view class="weui-cell__ft">
-        <button wx:if="{{ !isSignedUp[index] }}" class="weui-btn" type="primary" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft === 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
-        <button wx:else class="weui-btn" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
+        <button wx:if="{{ !isSignedUp[index] }}" class="weui-btn mini-btn" type="primary" size="mini" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft === 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
+        <button wx:else class="weui-btn mini-btn" size="mini" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
       </view>
     </view>
   </view>

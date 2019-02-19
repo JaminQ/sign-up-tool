@@ -18,7 +18,9 @@ exports.main = async (event, context) => {
           _openid: wxContext.OPENID,
           classes: [],
           childInfo: [],
-          tel: ''
+          name: '',
+          tel: '',
+          wxAlias: ''
         }
       })
     } catch (e) {

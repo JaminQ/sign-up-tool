@@ -1,11 +1,13 @@
+<wxs src="index.wxs" module="wxs" />
+
 <view class="page">
   <scroll-view scroll-y>
     <view class="class-wrap">
       <view>课程名：{{ class.name }}</view>
       <view>课程类型：{{ class.type }}</view>
       <view>人数：{{ class.maxNum }}人</view>
-      <view>上课时间：{{ class.studyTime }}</view>
-      <view>时长：{{ class.studyDuration }}分钟</view>
+      <view>上课时间：{{ wxs.getStudyTime(class.studyDate) }} {{ class.beginTime }}-{{ class.endTime }}</view>
+      <view>时长：{{ wxs.getStudyDuration(class.beginTime, class.endTime) }}分钟</view>
       <view>周期：{{ class.cycle }}课时</view>
       <view>费用：{{ class.cost }}元</view>
       <view>剩余名额：{{ spaceLeft }}</view>

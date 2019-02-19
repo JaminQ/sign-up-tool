@@ -34,7 +34,7 @@ Page({
   onShareAppMessage(res) {
     return {
       title: `“${this.data.class.name}”开始报名啦~`,
-      path: `/pages/index/classDetail?idx=${this.idx}`,
+      path: `/pages/index/classDetail?id=${this.data.class._id}&share=1`,
       imageUrl: '../../image/share.jpg'
     }
   }

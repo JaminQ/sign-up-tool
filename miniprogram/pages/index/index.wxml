@@ -1,11 +1,13 @@
+<wxs src="../class/index.wxs" module="wxs" />
+
 <view class="page with-tab-bar">
   <block wx:if="{{ classes.length }}">
     <navigator url="classDetail?idx={{ index }}" class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
       <view>课程名：{{ item.name }}</view>
       <view>课程类型：{{ item.type }}</view>
       <view>人数：{{ item.maxNum }}人</view>
-      <view>上课时间：{{ item.studyTime }}</view>
-      <view>时长：{{ item.studyDuration }}分钟</view>
+      <view>上课时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>
+      <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
       <view>周期：{{ item.cycle }}课时</view>
       <view>费用：{{ item.cost }}元</view>
     </navigator>

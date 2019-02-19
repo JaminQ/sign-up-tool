@@ -1,0 +1,43 @@
+module.exports = {
+  getStudyDuration: function(beginTime, endTime) {
+    var begin = beginTime.split(':').map(function(val) {
+      return val * 1
+    })
+    var end = endTime.split(':').map(function (val) {
+      return val * 1
+    })
+    return (end[0] - begin[0]) * 60 + end[1] - begin[1]
+  },
+  getStudyTime: function (studyDate) {
+    var dateArr = []
+    studyDate.forEach(function (val, i) {
+      if (val) {
+        switch (i) {
+          case 0:
+            dateArr.push('周一')
+            break
+          case 1:
+            dateArr.push('周二')
+            break
+          case 2:
+            dateArr.push('周三')
+            break
+          case 3:
+            dateArr.push('周四')
+            break
+          case 4:
+            dateArr.push('周五')
+            break
+          case 5:
+            dateArr.push('周六')
+            break
+          case 6:
+            dateArr.push('周日')
+            break
+          default:
+        }
+      }
+    })
+    return dateArr.join('、')
+  }
+}

@@ -1,7 +1,7 @@
 <view class="page">
   <view class="weui-cells__title"></view>
-  <view wx:if="{{ childInfo.length }}" class="weui-cells weui-cells_after-title">
-    <movable-area class="weui-cell weui-cell_access" wx:for="{{ childInfo }}" wx:key="">
+  <view class="weui-cells weui-cells_after-title">
+    <movable-area class="weui-cell weui-cell_access" wx:if="{{ childInfo.length }}" wx:for="{{ childInfo }}" wx:key="">
       <movable-view direction="horizontal" out-of-bounds inertia>
         <navigator url="addChild?idx={{ index }}">
           <view class="weui-cell__bd">{{ item }}</view>

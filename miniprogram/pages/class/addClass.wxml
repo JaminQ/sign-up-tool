@@ -34,27 +34,6 @@
         </view>
       </view>
 
-      <view class="weui-cell weui-cell_input{{ formError.studyTime ? ' weui-cell_warn' : '' }}">
-        <view class="weui-cell__hd">
-          <view class="weui-label">上课时间</view>
-        </view>
-        <view class="weui-cell__bd">
-          <input class="weui-input" data-name="studyTime" bindinput="formItemChange" value="{{ formValue.studyTime }}" />
-        </view>
-      </view>
-
-      <view class="weui-cell weui-cell_input{{ formError.studyDuration ? ' weui-cell_warn' : '' }}">
-        <view class="weui-cell__hd">
-          <view class="weui-label">时长</view>
-        </view>
-        <view class="weui-cell__bd">
-          <input type="number" class="weui-input" data-name="studyDuration" bindinput="formItemChange" value="{{ formValue.studyDuration }}" />
-        </view>
-        <view class="weui-cell__ft">
-          <view class="">分钟</view>
-        </view>
-      </view>
-
       <view class="weui-cell weui-cell_input{{ formError.cycle ? ' weui-cell_warn' : '' }}">
         <view class="weui-cell__hd">
           <view class="weui-label">周期</view>
@@ -78,6 +57,106 @@
           <view class="">元</view>
         </view>
       </view>
+    </view>
+
+    <view class="weui-cells__title">上课时间</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input{{ formError.beginTime ? ' weui-cell_warn' : '' }}">
+        <view class="weui-cell__hd">
+          <view class="weui-label">开始时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="time" data-name="beginTime" value="{{ formValue.beginTime }}" bindchange="formItemChange">
+            <view class="weui-input">{{ formValue.beginTime }}</view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="weui-cell weui-cell_input{{ formError.beginTime ? ' weui-cell_warn' : '' }}">
+        <view class="weui-cell__hd">
+          <view class="weui-label">结束时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <picker mode="time" data-name="endTime" value="{{ formValue.endTime }}" bindchange="formItemChange">
+            <view class="weui-input">{{ formValue.endTime }}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-cells__title">上课日期</view>
+    <view class="weui-cells weui-cells_after-title">
+      <checkbox-group bindchange="studyDateChange">
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="0" checked="{{ formValue.studyDate[0] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[0] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期一</view>
+        </label>
+
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="1" checked="{{ formValue.studyDate[1] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[1] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期二</view>
+        </label>
+
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="2" checked="{{ formValue.studyDate[2] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[2] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期三</view>
+        </label>
+
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="3" checked="{{ formValue.studyDate[3] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[3] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期四</view>
+        </label>
+
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="4" checked="{{ formValue.studyDate[4] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[4] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期五</view>
+        </label>
+
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="5" checked="{{ formValue.studyDate[5] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[5] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期六</view>
+        </label>
+
+        <label class="weui-cell weui-check__label">
+          <checkbox class="weui-check" value="6" checked="{{ formValue.studyDate[6] }}" />
+
+          <view class="weui-cell__hd weui-check__hd_in-checkbox">
+            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{ !formValue.studyDate[6] }}"></icon>
+            <icon class="weui-icon-checkbox_success" type="success" size="23" wx:else></icon>
+          </view>
+          <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期日</view>
+        </label>
+      </checkbox-group>
     </view>
 
     <view class="weui-btn-area">

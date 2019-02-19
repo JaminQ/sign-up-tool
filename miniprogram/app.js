@@ -77,16 +77,21 @@ App({
       } else {
         _getData(key)
       }
-    }, 259200000, forceUpdate) // 3天有效期
+    }, 1, forceUpdate) // 3天有效期
+    // 259200000
   },
   getSignedUpClasses(cb, forceUpdate, isLoading) {
     const _getData = key => {
       const db = wx.cloud.database()
       const _ = db.command
 
-      db.collection('classes').where({
-        _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
-      }).get().then(res => this.afterAjax(key, res.data, cb, isLoading))
+      if (this.globalData.userInfo.classes.length) {
+        db.collection('classes').where({
+          _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
+        }).get().then(res => this.afterAjax(key, res.data, cb, isLoading))
+      } else {
+        this.afterAjax(key, [], cb, isLoading)
+      }
     }
 
     this.getGlobalData('signedUpClasses', cb, key => {
@@ -97,7 +102,7 @@ App({
       } else {
         _getData(key)
       }
-    }, 259200000, forceUpdate) // 3天有效期
+    }, 1, forceUpdate) // 3天有效期
   },
 
   // 时效缓存通用函数

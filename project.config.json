@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 0,
+			"current": 1,
 			"list": [
 				{
 					"id": 0,
@@ -38,71 +38,78 @@
 					"query": "idx=0",
 					"scene": null
 				},
+        {
+          "id": 1,
+          "name": "报名页面（分享）",
+          "pathName": "pages/index/classDetail",
+          "query": "id=XGqm9ZT75u22AV0Q&share=1",
+          "scene": 1008
+        },
 				{
-					"id": 1,
+					"id": 2,
 					"name": "用户profile",
 					"pathName": "pages/user/index",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": 2,
+					"id": 3,
 					"name": "课程管理",
 					"pathName": "pages/class/index",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": 3,
+					"id": 4,
 					"name": "添加课程",
 					"pathName": "pages/class/addClass",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": 4,
+					"id": 5,
 					"name": "编辑课程",
 					"pathName": "pages/class/addClass",
 					"query": "idx=0",
 					"scene": null
 				},
 				{
-					"id": 5,
+					"id": 6,
 					"name": "课程详情",
 					"pathName": "pages/class/classDetail",
 					"query": "idx=0",
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 7,
 					"name": "已报名课程",
 					"pathName": "pages/user/class",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 8,
 					"name": "孩子信息",
 					"pathName": "pages/user/childInfo/index",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": 8,
+					"id": 9,
 					"name": "添加孩子信息",
 					"pathName": "pages/user/childInfo/addChild",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 10,
 					"name": "个人信息",
 					"pathName": "pages/user/userInfo/index",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": 10,
+					"id": 11,
 					"name": "编辑名字",
 					"pathName": "pages/user/userInfo/info",
 					"query": "key=name",

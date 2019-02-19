@@ -179,17 +179,11 @@ Page({
     })
   },
   initChildInfo(cb, forceUpdate) {
-    const userInfo = app.globalData.userInfo
-    this.setData({
-      childInfo: app.globalData.userInfo.childInfo,
-      isSignedUp: app.globalData.userInfo.childInfo.map(() => false)
-    }, () => {
-      if (forceUpdate || app.globalData.classes === null) {
-        app.getClasses(() => this.initOpenId(cb))
-      } else {
-        this.initOpenId(cb)
-      }
-    })
+    if (this.options.share === undefined && (forceUpdate || app.globalData.classes === null)) {
+      app.getClasses(() => this.initOpenId(cb))
+    } else {
+      this.initOpenId(cb)
+    }
   },
   initOpenId(cb) {
     if (app.globalData.openId === null) {
@@ -199,29 +193,46 @@ Page({
     }
   },
   initClass(cb) {
-    const classItem = app.globalData.classes[this.idx]
-    let spaceLeft = classItem.maxNum
-    const childInfo = this.data.childInfo
-    const isSignedUp = this.data.isSignedUp
-    classItem.menberList.forEach(menber => {
-      if (menber !== null) {
-        spaceLeft--
-        if (menber._openid === app.globalData.openId) {
-          isSignedUp[childInfo.indexOf(menber.name)] = true
+    const done = classItem => {
+      let spaceLeft = classItem.maxNum
+      const childInfo = app.globalData.userInfo.childInfo
+      const isSignedUp = childInfo.map(() => false)
+      classItem.menberList.forEach(menber => {
+        if (menber !== null) {
+          spaceLeft--
+          if (menber._openid === app.globalData.openId) {
+            isSignedUp[childInfo.indexOf(menber.name)] = true
+          }
         }
-      }
-    })
-    this.setData({
-      class: classItem,
-      spaceLeft,
-      isSignedUp
-    }, () => {
-      typeof cb === 'function' && cb()
-    })
-  },
-  onLoad(e) {
-    this.idx = e.idx * 1
+      })
+      this.setData({
+        class: classItem,
+        spaceLeft,
+        childInfo,
+        isSignedUp
+      }, () => {
+        typeof cb === 'function' && cb()
+      })
+    }
 
+    if (this.options.share === '1') { // 从分享入口进来的
+      wx.showLoading({
+        title: '资源加载中',
+        mask: true
+      })
+
+      wx.cloud.database().collection('classes').doc(this.options.id).get({
+        success: res => {
+          done(res.data)
+          wx.hideLoading()
+        }
+      })
+    } else {
+      this.idx = this.options.idx * 1
+      done(app.globalData.classes[this.idx])
+    }
+  },
+  onLoad() {
     if (app.globalData.userInfo === null) {
       app.getUserInfo(this.initChildInfo)
     } else {
@@ -236,6 +247,7 @@ Page({
   onShareAppMessage(res) {
     return {
       title: `“${this.data.class.name}”开始报名啦~`,
+      path: `/pages/index/classDetail?id=${this.data.class._id}&share=1`,
       imageUrl: '../../image/share.jpg'
     }
   }
