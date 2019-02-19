@@ -133,9 +133,12 @@ Page({
 
       if (formError.name) data.formValue.name = formValue.name
 
+      const titleArr = []
+      if (!isFull) titleArr.push('请填写完整的信息')
+      if (!isTimeCorrect) titleArr.push('结束时间不能小于开始时间')
       this.setData(data, () => {
         wx.showToast({
-          title: '请填写完整的信息',
+          title: titleArr.join('，'),
           icon: 'none',
           duration: 2000
         })
@@ -182,6 +185,7 @@ Page({
     })
   },
   initEditForm() {
+    this.idx = this.idx * 1
     const formValue = JSON.parse(JSON.stringify(app.globalData.classes[this.idx]))
     this._id = formValue._id
     this.data.classType.forEach((val, idx) => {
@@ -215,7 +219,7 @@ Page({
     }
   },
   onLoad(e) {
-    this.idx = e.idx * 1
+    this.idx = e.idx
 
     if (app.globalData.classType === null) {
       app.getClassType(this.initClassType)
