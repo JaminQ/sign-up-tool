@@ -6,6 +6,11 @@ page {
   font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 }
 
+.page {
+  width: 100vw;
+  overflow: hidden;
+}
+
 .page.with-tab-bar {
   padding-bottom: 48px;
 }
@@ -47,6 +52,10 @@ page {
 
 .weui-loadmore__tips_in-line {
   background-color: #f6f6f6;
+}
+
+.inline {
+  display: inline;
 }
 
 @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {

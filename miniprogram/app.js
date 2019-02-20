@@ -11,16 +11,11 @@ App({
 
   // 不走缓存
   getClasses(cb) {
-    wx.showLoading({
-      title: '资源加载中',
-      mask: true
-    })
-
     wx.cloud.database().collection('classes').orderBy('createTime', 'desc').get({
       success: res => {
+        console.log('classes', res)
         this.setClasses(res.data)
         typeof cb === 'function' && cb()
-        wx.hideLoading()
       }
     })
   },
@@ -108,10 +103,10 @@ App({
   // 时效缓存通用函数
   getGlobalData(key, cb, ajaxCb, timeout, forceUpdate) {
     const ajax = () => {
-      wx.showLoading({
-        title: '资源加载中',
-        mask: true
-      })
+      // wx.showLoading({
+      //   title: '资源加载中',
+      //   mask: true
+      // })
       typeof ajaxCb === 'function' && ajaxCb(key)
     }
 
@@ -133,9 +128,10 @@ App({
     !notUpdate && setStorage(key, val)
   },
   afterAjax(key, val, cb, isLoading) {
+    console.log(key, val)
     this.setGlobalData(key, val)
     typeof cb === 'function' && cb()
-    !isLoading && wx.hideLoading()
+    // !isLoading && wx.hideLoading()
   },
 
   onLaunch() {

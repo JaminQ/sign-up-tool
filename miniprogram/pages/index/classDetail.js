@@ -2,11 +2,14 @@ const app = getApp()
 
 Page({
   data: {
+    loading: true,
     class: {},
     spaceLeft: '',
     childInfo: [],
     isSignedUp: []
   },
+
+  // TODO: 待重构优化
   signUp(e) {
     if (this.data.spaceLeft >= 0) {
       if (e.detail.userInfo !== undefined) {
@@ -178,71 +181,81 @@ Page({
       })
     })
   },
-  initChildInfo(cb, forceUpdate) {
-    if (this.options.share === undefined && (forceUpdate || app.globalData.classes === null)) {
-      app.getClasses(() => this.initOpenId(cb))
-    } else {
-      this.initOpenId(cb)
-    }
+
+  showLoading() {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
   },
-  initOpenId(cb) {
-    if (app.globalData.openId === null) {
-      app.getOpenId(() => this.initClass(cb))
-    } else {
-      this.initClass(cb)
-    }
-  },
-  initClass(cb) {
-    const done = classItem => {
-      let spaceLeft = classItem.maxNum
-      const childInfo = app.globalData.userInfo.childInfo
-      const isSignedUp = childInfo.map(() => false)
-      classItem.menberList.forEach(menber => {
-        if (menber !== null) {
-          spaceLeft--
-          if (menber._openid === app.globalData.openId) {
-            isSignedUp[childInfo.indexOf(menber.name)] = true
+  init(forceUpdate, cb) {
+    const getClasses = () => {
+      const getOpenId = () => {
+        const getClass = () => {
+          const render = classItem => {
+            let spaceLeft = classItem.maxNum
+            const childInfo = app.globalData.userInfo.childInfo
+            const isSignedUp = childInfo.map(() => false)
+            classItem.menberList.forEach(menber => {
+              if (menber !== null) {
+                spaceLeft--
+                if (menber._openid === app.globalData.openId) {
+                  isSignedUp[childInfo.indexOf(menber.name)] = true
+                }
+              }
+            })
+            this.setData({
+              loading: false,
+              class: classItem,
+              spaceLeft,
+              childInfo,
+              isSignedUp
+            }, () => {
+              wx.hideLoading()
+              typeof cb === 'function' && cb()
+            })
+          }
+
+          if (this.options.share === '1') { // 从分享入口进来的
+            this.showLoading()
+            wx.cloud.database().collection('classes').doc(this.options.id).get({
+              success: res => render(res.data)
+            })
+          } else {
+            this.idx = this.options.idx * 1
+            render(app.globalData.classes[this.idx])
           }
         }
-      })
-      this.setData({
-        class: classItem,
-        spaceLeft,
-        childInfo,
-        isSignedUp
-      }, () => {
-        typeof cb === 'function' && cb()
-      })
+
+        if (app.globalData.openId === null) {
+          this.showLoading()
+          app.getOpenId(getClass)
+        } else {
+          getClass()
+        }
+      }
+
+      // TODO: 改为用_id查找课程而不是索引
+      if (this.options.share === undefined && (forceUpdate || app.globalData.classes === null)) {
+        this.showLoading()
+        app.getClasses(getOpenId)
+      } else {
+        getOpenId()
+      }
     }
 
-    if (this.options.share === '1') { // 从分享入口进来的
-      wx.showLoading({
-        title: '资源加载中',
-        mask: true
-      })
-
-      wx.cloud.database().collection('classes').doc(this.options.id).get({
-        success: res => {
-          done(res.data)
-          wx.hideLoading()
-        }
-      })
+    if (forceUpdate || app.globalData.userInfo === null) {
+      this.showLoading()
+      app.getUserInfo(getClasses, forceUpdate)
     } else {
-      this.idx = this.options.idx * 1
-      done(app.globalData.classes[this.idx])
+      getClasses()
     }
   },
   onLoad() {
-    if (app.globalData.userInfo === null) {
-      app.getUserInfo(this.initChildInfo)
-    } else {
-      this.initChildInfo()
-    }
+    this.init()
   },
   onPullDownRefresh() {
-    app.getUserInfo(() => {
-      this.initChildInfo(wx.stopPullDownRefresh, true)
-    }, true)
+    this.init(true, wx.stopPullDownRefresh)
   },
   onShareAppMessage(res) {
     return {

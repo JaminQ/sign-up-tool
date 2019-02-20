@@ -1,6 +1,6 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
-<view class="page">
+<view hidden="{{ loading }}" class="page">
   <block wx:if="{{ classes.length }}">
     <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
       <view>课程名：{{ item.name }}</view>
@@ -13,6 +13,6 @@
     </view>
   </block>
   <view wx:else class="weui-loadmore weui-loadmore_line">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无数据</view>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator></view>
   </view>
 </view>

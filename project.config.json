@@ -38,13 +38,13 @@
 					"query": "idx=0",
 					"scene": null
 				},
-        {
-          "id": 1,
-          "name": "报名页面（分享）",
-          "pathName": "pages/index/classDetail",
-          "query": "id=XGqm9ZT75u22AV0Q&share=1",
-          "scene": 1008
-        },
+				{
+					"id": 1,
+					"name": "报名页面（分享）",
+					"pathName": "pages/index/classDetail",
+					"query": "id=XGvwFZT75u22CFVU&share=1",
+					"scene": 1008
+				},
 				{
 					"id": 2,
 					"name": "用户profile",

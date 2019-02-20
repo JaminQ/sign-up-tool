@@ -1,6 +1,6 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
-<view class="page with-tab-bar">
+<view hidden="{{ loading }}" class="page with-tab-bar">
   <block wx:if="{{ classes.length }}">
     <navigator url="classDetail?idx={{ index }}" class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
       <view>课程名：{{ item.name }}</view>
