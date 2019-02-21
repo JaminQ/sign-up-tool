@@ -29,7 +29,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 12,
 			"list": [
 				{
 					"id": 0,
@@ -103,13 +103,20 @@
 				},
 				{
 					"id": 10,
+					"name": "编辑孩子信息",
+					"pathName": "pages/user/childInfo/addChild",
+					"query": "name=钱小宝",
+					"scene": null
+				},
+				{
+					"id": 11,
 					"name": "个人信息",
 					"pathName": "pages/user/userInfo/index",
 					"query": "",
 					"scene": null
 				},
 				{
-					"id": 11,
+					"id": 12,
 					"name": "编辑名字",
 					"pathName": "pages/user/userInfo/info",
 					"query": "key=name",

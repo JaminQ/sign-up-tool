@@ -1,4 +1,5 @@
 {
   "navigationBarTitleText": "孩子信息",
+  "enablePullDownRefresh": true,
   "usingComponents": {}
 }

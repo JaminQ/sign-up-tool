@@ -1,3 +1,8 @@
+import {
+  alert,
+  hideLoadingAndShowSucToast
+} from '../../common/utils'
+
 const app = getApp()
 
 Page({
@@ -35,10 +40,7 @@ Page({
             }, () => {
               wx.hideLoading({
                 success() {
-                  wx.showModal({
-                    content: '已经没有名额啦~',
-                    showCancel: false
-                  });
+                  alert('已经没有名额啦~')
                 }
               })
             })
@@ -72,14 +74,7 @@ Page({
                   newSignedUpClasses.unshift(newClass)
                   app.setGlobalData('signedUpClasses', newSignedUpClasses)
 
-                  wx.hideLoading({
-                    success() {
-                      wx.showToast({
-                        title: '报名成功',
-                        duration: 500
-                      })
-                    }
-                  })
+                  hideLoadingAndShowSucToast('报名成功')
                 }
 
                 if (app.globalData.signedUpClasses === null) {
@@ -101,16 +96,10 @@ Page({
           }
         })
       } else { // 拒绝授权
-        wx.showModal({
-          content: '拒绝授权的话不能报名哦~',
-          showCancel: false
-        });
+        alert('拒绝授权的话不能报名哦~')
       }
     } else {
-      wx.showModal({
-        content: '已经没有名额啦~',
-        showCancel: false
-      });
+      alert('已经没有名额啦~')
     }
   },
   signOut(e) {
@@ -153,14 +142,7 @@ Page({
             newSignedUpClasses.splice(idx, 1)
             app.setGlobalData('signedUpClasses', newSignedUpClasses)
 
-            wx.hideLoading({
-              success() {
-                wx.showToast({
-                  title: '退出报名成功',
-                  duration: 500
-                })
-              }
-            })
+            hideLoadingAndShowSucToast('退出报名成功')
           }
 
           if (app.globalData.signedUpClasses === null) {

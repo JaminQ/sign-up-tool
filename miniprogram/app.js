@@ -1,4 +1,6 @@
-import { setStorage } from 'common/utils'
+import {
+  setStorage
+} from 'common/utils'
 
 App({
   globalData: {

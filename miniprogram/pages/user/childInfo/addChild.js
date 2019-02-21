@@ -1,9 +1,49 @@
+import {
+  alert,
+  showNoneToast,
+  hideLoadingAndBack
+} from '../../../common/utils'
+
 const app = getApp()
 
 Page({
   data: {
-    idx: null,
+    loading: true,
+    mode: 'add', // add, edit
     name: ''
+  },
+
+  addChild() {
+    const name = this.getName()
+
+    if (this.validName(name)) {
+      this.getDoc(name, (childInfo, doc, _) => {
+        childInfo.push(name)
+        doc.update({
+          data: {
+            childInfo: _.push([name])
+          }
+        }).then(res => this.setPrevPageData(childInfo, () => {
+          hideLoadingAndBack('添加成功')
+        }))
+      })
+    }
+  },
+  updateChild() {
+    const name = this.getName()
+
+    if (this.validName(name)) {
+      this.getDoc(name, (childInfo, doc, _) => {
+        childInfo[childInfo.indexOf(this.options.name)] = name
+        doc.update({
+          data: {
+            childInfo: _.set(childInfo)
+          }
+        }).then(res => this.setPrevPageData(childInfo, () => {
+          hideLoadingAndBack('更新成功')
+        }))
+      })
+    }
   },
   nameChange(e) {
     this.setData({
@@ -18,103 +58,80 @@ Page({
       this.setData({
         name
       }, () => {
-        wx.showToast({
-          title: '请输入孩子真实姓名',
-          icon: 'none',
-          duration: 2000
-        })
+        showNoneToast('请输入孩子真实姓名')
       })
       return false
     }
     return true
   },
-  afterAjax(res, name) {
-    const mode = this.data.idx === null ? 'add' : 'edit'
-    const pages = getCurrentPages()
-    const prevPage = pages[pages.length - 2]
-
-    const newChildInfo = JSON.parse(JSON.stringify(prevPage.data.childInfo))
-    if (mode === 'add') {
-      newChildInfo.push(name)
+  getDoc(name, cb) {
+    if (this.data.mode === 'edit' && this.options.name === name) { // 编辑模式时值没变化，直接结束
+      wx.navigateBack({
+        delta: 1
+      })
     } else {
-      newChildInfo[this.data.idx] = name
-    }
-    prevPage.setData({
-      childInfo: newChildInfo
-    }, () => {
-      const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
-      newUserInfo.childInfo = newChildInfo
-      app.setGlobalData('userInfo', newUserInfo)
+      wx.showLoading({
+        title: `${this.data.mode === 'add' ? '添加' : '更新'}中`
+      })
 
-      wx.hideLoading({
-        success() {
-          wx.showToast({
-            title: `${mode === 'add' ? '添加' : '更新'}成功`,
-            duration: 60000
-          })
-          setTimeout(() => {
-            wx.hideToast({
+      const db = wx.cloud.database()
+      const doc = db.collection('user').doc(app.globalData.userInfo._id)
+      doc.get().then(res => {
+        if (res.data.childInfo.indexOf(name) > -1) { // 查重
+          this.setPrevPageData(res.data.childInfo, () => {
+            wx.hideLoading({
               success() {
-                wx.navigateBack({
-                  delta: 1
-                })
+                alert(`“${name}”该孩子已存在`)
               }
             })
-          }, 500)
+          })
+        } else {
+          typeof cb === 'function' && cb(res.data.childInfo, doc, db.command)
         }
       })
+    }
+  },
+  setPrevPageData(childInfo, cb) {
+    const pages = getCurrentPages()
+    const prevPage = pages[pages.length - 2]
+    prevPage.setData({
+      childInfo
+    }, () => {
+      const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
+      newUserInfo.childInfo = childInfo
+      app.setGlobalData('userInfo', newUserInfo)
+
+      typeof cb === 'function' && cb()
     })
   },
-  addChild() {
-    const name = this.getName()
-    if (this.validName(name)) {
-      wx.showLoading({
-        title: '添加中'
-      })
 
-      const db = wx.cloud.database()
-      const _ = db.command
-
-      db.collection('user').doc(app.globalData.userInfo._id).update({
-        data: {
-          childInfo: _.push([name])
-        }
-      }).then(res => this.afterAjax(res, name))
+  init() {
+    const render = () => {
+      const name = this.options.name
+      if (name !== undefined) { // 编辑模式
+        this.setData({
+          loading: false,
+          mode: 'edit',
+          name
+        }, wx.hideLoading)
+      } else {
+        this.setData({
+          loading: false
+        }, wx.hideLoading)
+      }
     }
-  },
-  updateChild() {
-    const name = this.getName()
-    if (this.validName(name)) {
-      wx.showLoading({
-        title: '更新中'
-      })
 
-      const db = wx.cloud.database()
-      const _ = db.command
-
-      const newChildInfo = JSON.parse(JSON.stringify(app.globalData.userInfo.childInfo))
-      newChildInfo[this.data.idx] = name
-      db.collection('user').doc(app.globalData.userInfo._id).update({
-        data: {
-          childInfo: _.set(newChildInfo)
-        }
-      }).then(res => this.afterAjax(res, name))
-    }
-  },
-  initData(e) {
-    if (e.idx !== undefined) { // 编辑模式
-      const idx = e.idx * 1
-      this.setData({
-        idx,
-        name: app.globalData.userInfo.childInfo[idx]
-      })
-    }
-  },
-  onLoad(e) {
     if (app.globalData.userInfo === null) {
-      app.getUserInfo(() => this.initData(e))
+      wx.showLoading({
+        title: '加载中',
+        mask: true
+      })
+      app.getUserInfo(render)
     } else {
-      this.initData(e)
+      render()
     }
+  },
+  onLoad() {
+    this.init()
   }
 })

@@ -1,3 +1,7 @@
+import {
+  alert
+} from '../../common/utils'
+
 const app = getApp()
 
 Page({
@@ -6,10 +10,7 @@ Page({
     spaceLeft: ''
   },
   exportData() {
-    wx.showModal({
-      content: '还没做哦~要不你请我吃饭，我给你加班做出来？',
-      showCancel: false
-    });
+    alert('还没做哦~要不你请我吃饭，我给你加班做出来？')
   },
   initClass() {
     const classItem = app.globalData.classes[this.idx]

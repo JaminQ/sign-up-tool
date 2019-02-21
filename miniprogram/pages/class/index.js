@@ -1,3 +1,7 @@
+import {
+  hideLoadingAndShowSucToast
+} from '../../common/utils'
+
 const app = getApp()
 
 Page({
@@ -37,19 +41,12 @@ Page({
             this.setData({
               classes: newClasses
             }, () => {
-              wx.hideLoading({
-                success() {
-                  wx.showToast({
-                    title: '删除成功',
-                    duration: 500
-                  })
-                }
-              })
+              hideLoadingAndShowSucToast('删除成功')
             })
           })
         }
       }
-    });
+    })
   },
   initClasses(cb) {
     this.setData({

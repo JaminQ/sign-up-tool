@@ -1,3 +1,8 @@
+import {
+  showNoneToast,
+  hideLoadingAndBack
+} from '../../common/utils'
+
 const app = getApp()
 
 Page({
@@ -37,7 +42,7 @@ Page({
 
     this.setData({
       'formValue.studyDate': studyDate
-    });
+    })
   },
   addClass() {
     const formValue = this.getFormValue(this.data.formValue)
@@ -137,11 +142,7 @@ Page({
       if (!isFull) titleArr.push('请填写完整的信息')
       if (!isTimeCorrect) titleArr.push('结束时间不能小于开始时间')
       this.setData(data, () => {
-        wx.showToast({
-          title: titleArr.join('，'),
-          icon: 'none',
-          duration: 2000
-        })
+        showNoneToast(titleArr.join('，'))
       })
       return false
     }
@@ -165,23 +166,7 @@ Page({
     prevPage.setData({
       classes: newClasses
     }, () => {
-      wx.hideLoading({
-        success() {
-          wx.showToast({
-            title: `${mode === 'add' ? '添加' : '更新'}成功`,
-            duration: 60000
-          })
-          setTimeout(() => {
-            wx.hideToast({
-              success() {
-                wx.navigateBack({
-                  delta: 1
-                })
-              }
-            })
-          }, 500)
-        }
-      })
+      hideLoadingAndBack(`${mode === 'add' ? '添加' : '更新'}成功`)
     })
   },
   initEditForm() {

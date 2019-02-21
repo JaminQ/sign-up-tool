@@ -1,12 +1,17 @@
+import {
+  hideLoadingAndShowSucToast
+} from '../../../common/utils'
+
 const app = getApp()
 
 Page({
   data: {
+    loading: true,
     childInfo: []
   },
+
   removeChild(e) {
-    const idx = e.target.dataset.idx * 1
-    const name = this.data.childInfo[idx]
+    const name = e.target.dataset.name
     wx.showModal({
       title: '确定删除吗',
       content: name,
@@ -20,49 +25,58 @@ Page({
           })
 
           const db = wx.cloud.database()
+          const doc = db.collection('user').doc(app.globalData.userInfo._id)
           const _ = db.command
 
-          const newChildInfo = JSON.parse(JSON.stringify(this.data.childInfo))
-          newChildInfo.splice(idx, 1)
-          db.collection('user').doc(app.globalData.userInfo._id).update({
-            data: {
-              childInfo: _.set(newChildInfo)
-            }
-          }).then(res => {
-            this.setData({
-              childInfo: newChildInfo
-            }, () => {
-              const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
-              newUserInfo.childInfo = newChildInfo
-              app.setGlobalData('userInfo', newUserInfo)
+          doc.get().then(res => {
+            const childInfo = res.data.childInfo
+            childInfo.splice(childInfo.indexOf(name), 1)
+            doc.update({
+              data: {
+                childInfo: _.set(childInfo)
+              }
+            }).then(res => {
+              this.setData({
+                childInfo
+              }, () => {
+                const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
+                newUserInfo.childInfo = childInfo
+                app.setGlobalData('userInfo', newUserInfo)
 
-              wx.hideLoading({
-                success() {
-                  wx.showToast({
-                    title: '删除成功',
-                    duration: 500
-                  })
-                }
+                hideLoadingAndShowSucToast('删除成功')
               })
             })
           })
         }
       }
-    });
-  },
-  initChildInfo(cb) {
-    const userInfo = app.globalData.userInfo
-    this.setData({
-      childInfo: app.globalData.userInfo.childInfo
-    }, () => {
-      typeof cb === 'function' && cb()
     })
   },
-  onLoad() {
-    if (app.globalData.userInfo === null) {
-      app.getUserInfo(this.initChildInfo)
-    } else {
-      this.initChildInfo()
+
+  init(forceUpdate, cb) {
+    const render = () => {
+      this.setData({
+        loading: false,
+        childInfo: app.globalData.userInfo.childInfo
+      }, () => {
+        wx.hideLoading()
+        typeof cb === 'function' && cb()
+      })
     }
+
+    if (forceUpdate || app.globalData.userInfo === null) {
+      wx.showLoading({
+        title: '加载中',
+        mask: true
+      })
+      app.getUserInfo(render, forceUpdate)
+    } else {
+      render()
+    }
+  },
+  onLoad() {
+    this.init()
+  },
+  onPullDownRefresh() {
+    this.init(true, wx.stopPullDownRefresh)
   }
 })
