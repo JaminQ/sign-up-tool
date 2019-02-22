@@ -1,1 +1,32 @@
 @import '../index/index.wxss';
+
+.picker-bar {
+  display: flex;
+  font-size: 14px;
+  line-height: 36px;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.picker-bar-item {
+  width: 50%;
+}
+
+.picker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.picker-label {
+  padding: 0 5px;
+}
+
+.triangle {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #dddddd transparent transparent transparent;
+}

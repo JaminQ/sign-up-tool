@@ -42,5 +42,12 @@ module.exports = {
   },
   getSpaceLeft: function (classItem) {
     return classItem.maxNum - classItem.menberList.length
+  },
+  getMyChildren: function (menberList, openid) {
+    var children = []
+    menberList.forEach(function(menber) {
+      if (menber._openid === openid) children.push(menber.name)
+    })
+    return children.join('，')
   }
 }

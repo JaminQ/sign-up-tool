@@ -1,6 +1,25 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
 <view hidden="{{ loading }}" class="page">
+  <view class="picker-bar">
+    <view class="picker-bar-item">
+      <picker bindchange="pickerChange" value="{{ classTypeIdx }}" range="{{ classType }}" data-key="classTypeIdx">
+        <view class="picker">
+          <text class="picker-label">{{ classType[classTypeIdx] }}</text>
+          <text class="triangle"></text>
+        </view>
+      </picker>
+    </view>
+    <view class="picker-bar-item">
+      <picker bindchange="pickerChange" value="{{ childInfoIdx }}" range="{{ childInfo }}" data-key="childInfoIdx">
+        <view class="picker">
+          <text class="picker-label">{{ childInfo[childInfoIdx] }}</text>
+          <text class="triangle"></text>
+        </view>
+      </picker>
+    </view>
+  </view>
+
   <block wx:if="{{ classes.length }}">
     <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
       <view>课程名：{{ item.name }}</view>
@@ -10,9 +29,12 @@
       <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
       <view>周期：{{ item.cycle }}课时</view>
       <view>费用：{{ item.cost }}元</view>
+      <view>报名孩子：{{ wxs.getMyChildren(item.menberList, openid) }}</view>
     </view>
   </block>
   <view wx:else class="weui-loadmore weui-loadmore_line">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator></view>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无已报名课程，去
+      <navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator>
+    </view>
   </view>
 </view>

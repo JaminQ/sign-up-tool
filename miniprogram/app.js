@@ -8,7 +8,7 @@ App({
     classType: null,
     userInfo: null,
     signedUpClasses: null,
-    openId: null
+    openid: null
   },
 
   // 业务代码自己保证globalData.classes有值
@@ -40,11 +40,11 @@ App({
   },
 
   // 走永久缓存
-  getOpenId(cb) {
+  getOpenid(cb) {
     wx.getStorage({
       key: 'openid',
       success: res => { // 有缓存
-        this.globalData.openId = res.data
+        this.globalData.openid = res.data
         typeof cb === 'function' && cb()
       },
       fail: () => { // 无缓存
@@ -52,10 +52,10 @@ App({
           name: 'login',
           data: {},
           success: res => {
-            this.globalData.openId = res.result.openid
+            this.globalData.openid = res.result.openid
             wx.setStorage({ // 缓存openid
               key: 'openid',
-              data: this.globalData.openId
+              data: this.globalData.openid
             })
             typeof cb === 'function' && cb()
           },
@@ -77,12 +77,12 @@ App({
     this.getGlobalData('userInfo', cb, key => {
       const _getUserInfo = () => {
         wx.cloud.database().collection('user').where({
-          _openid: this.globalData.openId
+          _openid: this.globalData.openid
         }).get().then(res => this.afterAjax(key, res.data[0], cb))
       }
 
-      if (this.globalData.openId === null) {
-        this.getOpenId(_getUserInfo)
+      if (this.globalData.openid === null) {
+        this.getOpenid(_getUserInfo)
       } else {
         _getUserInfo()
       }

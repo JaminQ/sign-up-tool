@@ -45,7 +45,7 @@ Page({
         } else {
           const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
           newClasses[this.idx].menberList.push({
-            _openid: app.globalData.openId,
+            _openid: app.globalData.openid,
             name,
             tel
           })
@@ -55,7 +55,7 @@ Page({
             const afterGetSingedUpClasses = () => {
               const newClass = JSON.parse(JSON.stringify(this.data.class))
               newClass.menberList.push({
-                _openid: app.globalData.openId,
+                _openid: app.globalData.openid,
                 name,
                 tel
               })
@@ -167,13 +167,13 @@ Page({
   },
   init(forceUpdate, cb) {
     const getClasses = () => {
-      const getOpenId = () => {
+      const getOpenid = () => {
         const getClass = () => {
           const render = classItem => {
             const childInfo = app.globalData.userInfo.childInfo
             const isSignedUp = childInfo.map(() => false)
             classItem.menberList.forEach(menber => {
-              if (menber._openid === app.globalData.openId) isSignedUp[childInfo.indexOf(menber.name)] = true
+              if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
             })
             this.setData({
               loading: false,
@@ -199,9 +199,9 @@ Page({
           }
         }
 
-        if (app.globalData.openId === null) {
+        if (app.globalData.openid === null) {
           this.showLoading()
-          app.getOpenId(getClass)
+          app.getOpenid(getClass)
         } else {
           getClass()
         }
@@ -209,9 +209,9 @@ Page({
 
       if (this.options.share !== undefined || forceUpdate || app.globalData.classes === null) {
         this.showLoading()
-        app.getClasses(getOpenId)
+        app.getClasses(getOpenid)
       } else {
-        getOpenId()
+        getOpenid()
       }
     }
 
