@@ -6,13 +6,10 @@ const app = getApp()
 
 Page({
   data: {
+    loading: true,
     classes: []
   },
-  addClass() {
-    wx.navigateTo({
-      url: 'addClass'
-    })
-  },
+
   removeClass(e) {
     const idx = e.target.dataset.idx * 1
     const classItem = this.data.classes[idx]
@@ -48,23 +45,32 @@ Page({
       }
     })
   },
-  initClasses(cb) {
-    this.setData({
-      classes: app.globalData.classes
-    }, () => {
-      typeof cb === 'function' && cb()
-    })
-  },
-  onLoad() {
-    if (app.globalData.classes === null) {
-      app.getClasses(this.initClasses)
+
+  init(forceUpdate, cb) {
+    const render = () => {
+      this.setData({
+        loading: false,
+        classes: app.globalData.classes
+      }, () => {
+        wx.hideLoading()
+        typeof cb === 'function' && cb()
+      })
+    }
+
+    if (forceUpdate || app.globalData.classes === null) {
+      wx.showLoading({
+        title: '加载中',
+        mask: true
+      })
+      app.getClasses(render)
     } else {
-      this.initClasses()
+      render()
     }
   },
+  onLoad() {
+    this.init()
+  },
   onPullDownRefresh() {
-    app.getClasses(() => {
-      this.initClasses(wx.stopPullDownRefresh)
-    })
+    this.init(true, wx.stopPullDownRefresh)
   }
 })

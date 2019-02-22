@@ -1,10 +1,10 @@
 <wxs src="index.wxs" module="wxs" />
 
-<view class="page">
+<view hidden="{{ loading }}" class="page">
   <scroll-view wx:if="{{ classes.length }}" scroll-y>
     <movable-area wx:for="{{ classes }}" wx:key="_id">
       <movable-view direction="horizontal" out-of-bounds inertia>
-        <navigator url="classDetail?idx={{ index }}" class="class-wrap">
+        <navigator url="classDetail?id={{ item._id }}" class="class-wrap">
           <view>课程名：{{ item.name }}</view>
           <view>课程类型：{{ item.type }}</view>
           <view>人数：{{ item.maxNum }}人</view>
@@ -14,7 +14,7 @@
           <view>费用：{{ item.cost }}元</view>
         </navigator>
         <view class="class-btn-wrap">
-          <navigator url="addClass?idx={{ index }}" class="class-btn">编辑</navigator>
+          <navigator url="addClass?id={{ item._id }}" class="class-btn">编辑</navigator>
           <view class="class-btn remove" bindtap="removeClass" data-idx="{{ index }}">删除</view>
         </view>
       </movable-view>
@@ -25,6 +25,8 @@
   </view>
 
   <view class="btn-wrap">
-    <button type="primary" bindtap="addClass">添加课程</button>
+    <navigator url="addClass">
+      <button type="primary">添加课程</button>
+    </navigator>
   </view>
 </view>

@@ -7,6 +7,7 @@ const app = getApp()
 Page({
   data: {
     loading: true,
+    from: 'profile', // profile: 表示从用户profile页进入  class: 表示从课程详情页（报名页）进入
     childInfo: []
   },
 
@@ -56,6 +57,7 @@ Page({
     const render = () => {
       this.setData({
         loading: false,
+        from: this.options.from,
         childInfo: app.globalData.userInfo.childInfo
       }, () => {
         wx.hideLoading()

@@ -6,31 +6,40 @@ const app = getApp()
 
 Page({
   data: {
-    class: {},
-    spaceLeft: ''
+    loading: true,
+    class: {}
   },
+
   exportData() {
     alert('还没做哦~要不你请我吃饭，我给你加班做出来？')
   },
-  initClass() {
-    const classItem = app.globalData.classes[this.idx]
-    let spaceLeft = classItem.maxNum
-    classItem.menberList.forEach((menber, menberIdx) => {
-      if (menber !== null) spaceLeft--
-    })
-    this.setData({
-      class: classItem,
-      spaceLeft
-    })
+
+  init(forceUpdate, cb) {
+    const render = () => {
+      this.setData({
+        loading: false,
+        class: app.getClass(this.options.id)
+      }, () => {
+        wx.hideLoading()
+        typeof cb === 'function' && cb()
+      })
+    }
+
+    if (forceUpdate || app.globalData.classes === null) {
+      wx.showLoading({
+        title: '加载中',
+        mask: true
+      })
+      app.getClasses(render)
+    } else {
+      render()
+    }
   },
   onLoad(e) {
-    this.idx = e.idx * 1
-
-    if (app.globalData.classes === null) {
-      app.getClasses(this.initClass)
-    } else {
-      this.initClass()
-    }
+    this.init()
+  },
+  onPullDownRefresh() {
+    this.init(true, wx.stopPullDownRefresh)
   },
   onShareAppMessage(res) {
     return {

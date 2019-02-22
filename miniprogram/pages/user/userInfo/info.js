@@ -38,8 +38,7 @@ Page({
         data
       }).then(res => {
         const pages = getCurrentPages()
-        const prevPage = pages[pages.length - 2]
-        prevPage.setData(data, () => {
+        pages[pages.length - 2].setData(data, () => {
           const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
           Object.assign(newUserInfo, data)
           app.setGlobalData('userInfo', newUserInfo)

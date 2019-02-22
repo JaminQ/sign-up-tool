@@ -1,6 +1,6 @@
 module.exports = {
-  getStudyDuration: function(beginTime, endTime) {
-    var begin = beginTime.split(':').map(function(val) {
+  getStudyDuration: function (beginTime, endTime) {
+    var begin = beginTime.split(':').map(function (val) {
       return val * 1
     })
     var end = endTime.split(':').map(function (val) {
@@ -39,5 +39,8 @@ module.exports = {
       }
     })
     return dateArr.join('、')
+  },
+  getSpaceLeft: function (classItem) {
+    return classItem.maxNum - classItem.menberList.length
   }
 }

@@ -1,6 +1,6 @@
 <wxs src="index.wxs" module="wxs" />
 
-<view class="page">
+<view hidden="{{ loading }}" class="page">
   <scroll-view scroll-y>
     <view class="class-wrap">
       <view>课程名：{{ class.name }}</view>
@@ -10,7 +10,7 @@
       <view>时长：{{ wxs.getStudyDuration(class.beginTime, class.endTime) }}分钟</view>
       <view>周期：{{ class.cycle }}课时</view>
       <view>费用：{{ class.cost }}元</view>
-      <view>剩余名额：{{ spaceLeft }}</view>
+      <view>剩余名额：{{ wxs.getSpaceLeft(class) }}</view>
     </view>
 
     <view class="weui-cells__title">报名人员</view>

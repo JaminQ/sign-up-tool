@@ -7,6 +7,7 @@ const app = getApp()
 
 Page({
   data: {
+    loading: true,
     mode: 'add', // add, edit
     classType: [],
     formValue: {
@@ -28,6 +29,7 @@ Page({
       studyDate: false
     }
   },
+
   formItemChange(e) {
     const data = {}
     data[`formValue.${e.target.dataset.name}`] = e.detail.value
@@ -45,7 +47,7 @@ Page({
     })
   },
   addClass() {
-    const formValue = this.getFormValue(this.data.formValue)
+    const formValue = this.getFormValue()
 
     if (this.validFormValue(formValue)) {
       wx.showLoading({
@@ -59,11 +61,11 @@ Page({
           type: 'add',
           formValue
         }
-      }).then(res => this.afterAjax(res, formValue))
+      }).then(res => this.afterAjax(res.result._data))
     }
   },
   editClass() {
-    const formValue = this.getFormValue(this.data.formValue)
+    const formValue = this.getFormValue()
 
     if (this.validFormValue(formValue)) {
       wx.showLoading({
@@ -78,11 +80,11 @@ Page({
           _id: this._id,
           formValue
         }
-      }).then(res => this.afterAjax(res, formValue))
+      }).then(res => this.afterAjax(formValue))
     }
   },
-  getFormValue(formValue) {
-    formValue = JSON.parse(JSON.stringify(formValue))
+  getFormValue() {
+    const formValue = JSON.parse(JSON.stringify(this.data.formValue))
 
     formValue.name = formValue.name.trim()
     formValue.type = this.data.classType[formValue.typeIdx].name
@@ -98,6 +100,7 @@ Page({
     let isTimeCorrect = true // 时间是否正确
     const formError = {}
 
+    // 验证表单是否完整
     if (formValue.name === '') {
       formError.name = true
       isFull = false
@@ -123,6 +126,7 @@ Page({
       isFull = false
     }
 
+    // 验证时间是否正确
     const beginTime = formValue.beginTime.split(':').map(val => val * 1)
     const endTime = formValue.endTime.split(':').map(val => val * 1)
     if (beginTime[0] >= endTime[0] && beginTime[1] >= endTime[1]) {
@@ -151,65 +155,73 @@ Page({
     })
     return true
   },
-  afterAjax(res, formValue) {
+  afterAjax(classItem) {
     const mode = this.data.mode
-    const pages = getCurrentPages()
-    const prevPage = pages[pages.length - 2]
-    const newClasses = JSON.parse(JSON.stringify(prevPage.data.classes))
+    const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
 
     if (mode === 'add') {
-      newClasses.unshift(res.result._data)
+      newClasses.unshift(classItem)
     } else {
-      newClasses[this.idx] = formValue
+      Object.assign(newClasses[app.getClassIdx(this.options.id)], classItem)
     }
     app.setClasses(newClasses)
-    prevPage.setData({
+
+    const pages = getCurrentPages()
+    pages[pages.length - 2].setData({
       classes: newClasses
     }, () => {
       hideLoadingAndBack(`${mode === 'add' ? '添加' : '更新'}成功`)
     })
   },
-  initEditForm() {
-    this.idx = this.idx * 1
-    const formValue = JSON.parse(JSON.stringify(app.globalData.classes[this.idx]))
-    this._id = formValue._id
-    this.data.classType.forEach((val, idx) => {
-      if (val.name === formValue.type) {
-        formValue.typeIdx = idx
-      }
-    })
-    delete formValue._id
-    delete formValue._openid
-    delete formValue.createTime
-    delete formValue.type
-    this.setData({
-      mode: 'edit',
-      formValue
-    })
-  },
-  initClassType() {
-    this.setData({
-      classType: app.globalData.classType
-    }, () => {
-      this.initMode()
-    })
-  },
-  initMode() {
-    if (this.idx !== undefined) { // 表示编辑
-      if (app.globalData.classes === null) {
-        app.getClasses(() => this.initEditForm())
+
+  init() {
+    const initMode = () => {
+      if (this.options.id !== undefined) { // 表示编辑
+        const renderEditForm = () => {
+          const formValue = app.getClass(this.options.id)
+          app.globalData.classType.forEach((val, idx) => {
+            if (val.name === formValue.type) formValue.typeIdx = idx
+          })
+          delete formValue._id
+          delete formValue._openid
+          delete formValue.createTime
+          delete formValue.type
+          this.setData({
+            loading: false,
+            mode: 'edit',
+            classType: app.globalData.classType,
+            formValue
+          }, wx.hideLoading)
+        }
+
+        if (app.globalData.classes === null) {
+          wx.showLoading({
+            title: '加载中',
+            mask: true
+          })
+          app.getClasses(renderEditForm)
+        } else {
+          renderEditForm()
+        }
       } else {
-        this.initEditForm()
+        this.setData({
+          loading: false,
+          classType: app.globalData.classType
+        }, wx.hideLoading)
       }
     }
-  },
-  onLoad(e) {
-    this.idx = e.idx
 
     if (app.globalData.classType === null) {
-      app.getClassType(this.initClassType)
+      wx.showLoading({
+        title: '加载中',
+        mask: true
+      })
+      app.getClassType(initMode)
     } else {
-      this.initClassType()
+      initMode()
     }
+  },
+  onLoad() {
+    this.init()
   }
 })

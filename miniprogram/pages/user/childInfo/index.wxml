@@ -10,7 +10,7 @@
         <view class="del-btn" bindtap="removeChild" data-name="{{ item }}">删除</view>
       </movable-view>
     </movable-area>
-    <navigator url="addChild" class="weui-cell weui-cell_link">
+    <navigator url="addChild?from={{ from }}" class="weui-cell weui-cell_link">
       <view class="weui-cell__bd">{{ childInfo.length ? '' : '暂无孩子信息，点击此处' }}添加</view>
     </navigator>
   </view>

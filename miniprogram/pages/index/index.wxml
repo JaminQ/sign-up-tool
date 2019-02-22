@@ -2,7 +2,7 @@
 
 <view hidden="{{ loading }}" class="page with-tab-bar">
   <block wx:if="{{ classes.length }}">
-    <navigator url="classDetail?idx={{ index }}" class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
+    <navigator url="classDetail?id={{ item._id }}" class="class-wrap" wx:for="{{ classes }}" wx:key="_id">
       <view>课程名：{{ item.name }}</view>
       <view>课程类型：{{ item.type }}</view>
       <view>人数：{{ item.maxNum }}人</view>

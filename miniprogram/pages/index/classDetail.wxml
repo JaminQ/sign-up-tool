@@ -17,12 +17,12 @@
     <view class="weui-cell" wx:for="{{ childInfo }}" wx:key="">
       <view class="weui-cell__bd">{{ item }}</view>
       <view class="weui-cell__ft">
-        <button wx:if="{{ !isSignedUp[index] }}" class="weui-btn mini-btn" type="primary" size="mini" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft === 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
+        <button wx:if="{{ !isSignedUp[index] }}" class="weui-btn mini-btn" type="primary" size="mini" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft <= 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
         <button wx:else class="weui-btn mini-btn" size="mini" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
       </view>
     </view>
   </view>
   <view wx:else class="weui-loadmore weui-loadmore_line">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无孩子信息，去<navigator url="../user/childInfo/index" class="weui-cell_link inline">添加</navigator></view>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无孩子信息，去<navigator url="../user/childInfo/index?from=class" class="weui-cell_link inline">添加</navigator></view>
   </view>
 </view>

@@ -11,6 +11,20 @@ App({
     openId: null
   },
 
+  // 业务代码自己保证globalData.classes有值
+  getClass(_id) {
+    const classes = JSON.parse(JSON.stringify(this.globalData.classes))
+    for (let i = 0, len = classes.length; i < len; i++) {
+      if (classes[i]._id === _id) return classes[i]
+    }
+  },
+  getClassIdx(_id) {
+    const classes = JSON.parse(JSON.stringify(this.globalData.classes))
+    for (let i = 0, len = classes.length; i < len; i++) {
+      if (classes[i]._id === _id) return i
+    }
+  },
+
   // 不走缓存
   getClasses(cb) {
     wx.cloud.database().collection('classes').orderBy('createTime', 'desc').get({
@@ -54,61 +68,52 @@ App({
   },
 
   // 以下3个走时效缓存
-  getClassType(cb, forceUpdate, isLoading) {
+  getClassType(cb, forceUpdate) {
     this.getGlobalData('classType', cb, key => {
-      wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, cb, isLoading))
+      wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, cb))
     }, 0, forceUpdate) // 暂时采用永久有效期
   },
-  getUserInfo(cb, forceUpdate, isLoading) {
-    const _getData = key => {
-      wx.cloud.database().collection('user').where({
-        _openid: this.globalData.openId
-      }).get().then(res => this.afterAjax(key, res.data[0], cb, isLoading))
-    }
-
+  getUserInfo(cb, forceUpdate) {
     this.getGlobalData('userInfo', cb, key => {
+      const _getUserInfo = () => {
+        wx.cloud.database().collection('user').where({
+          _openid: this.globalData.openId
+        }).get().then(res => this.afterAjax(key, res.data[0], cb))
+      }
+
       if (this.globalData.openId === null) {
-        this.getOpenId(() => {
-          _getData(key)
-        })
+        this.getOpenId(_getUserInfo)
       } else {
-        _getData(key)
+        _getUserInfo()
       }
-    }, 1, forceUpdate) // 3天有效期
-    // 259200000
+    }, 86400000, forceUpdate) // 1天有效期
   },
-  getSignedUpClasses(cb, forceUpdate, isLoading) {
-    const _getData = key => {
-      const db = wx.cloud.database()
-      const _ = db.command
-
-      if (this.globalData.userInfo.classes.length) {
-        db.collection('classes').where({
-          _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
-        }).get().then(res => this.afterAjax(key, res.data, cb, isLoading))
-      } else {
-        this.afterAjax(key, [], cb, isLoading)
-      }
-    }
-
+  getSignedUpClasses(cb, forceUpdate) {
     this.getGlobalData('signedUpClasses', cb, key => {
-      if (forceUpdate || this.globalData.userInfo === null) {
-        this.getUserInfo(() => {
-          _getData(key)
-        }, forceUpdate, true)
-      } else {
-        _getData(key)
+      const _getSignedUpClasses = () => {
+        const db = wx.cloud.database()
+        const _ = db.command
+
+        if (this.globalData.userInfo.classes.length) { // 有报过名
+          db.collection('classes').where({
+            _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
+          }).get().then(res => this.afterAjax(key, res.data, cb))
+        } else {
+          this.afterAjax(key, [], cb)
+        }
       }
-    }, 1, forceUpdate) // 3天有效期
+
+      if (forceUpdate || this.globalData.userInfo === null) {
+        this.getUserInfo(_getSignedUpClasses, forceUpdate)
+      } else {
+        _getSignedUpClasses()
+      }
+    }, 86400000, forceUpdate) // 1天有效期
   },
 
   // 时效缓存通用函数
   getGlobalData(key, cb, ajaxCb, timeout, forceUpdate) {
     const ajax = () => {
-      // wx.showLoading({
-      //   title: '资源加载中',
-      //   mask: true
-      // })
       typeof ajaxCb === 'function' && ajaxCb(key)
     }
 
@@ -118,7 +123,7 @@ App({
         if (forceUpdate || timeout && ((new Date()) * 1 - res.data.time) > timeout) { // 超时，重新拉取数据
           ajax()
         } else {
-          this.setGlobalData(key, res.data.data, true)
+          this.setGlobalData(key, res.data.data, true) // 无需重新写入缓存
           typeof cb === 'function' && cb()
         }
       },
@@ -129,11 +134,10 @@ App({
     this.globalData[key] = val
     !notUpdate && setStorage(key, val)
   },
-  afterAjax(key, val, cb, isLoading) {
+  afterAjax(key, val, cb) {
     console.log(key, val)
-    this.setGlobalData(key, val)
+    this.setGlobalData(key, val) // 需要写入缓存
     typeof cb === 'function' && cb()
-    // !isLoading && wx.hideLoading()
   },
 
   onLaunch() {

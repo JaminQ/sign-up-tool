@@ -93,15 +93,20 @@ Page({
   },
   setPrevPageData(childInfo, cb) {
     const pages = getCurrentPages()
-    const prevPage = pages[pages.length - 2]
-    prevPage.setData({
+    pages[pages.length - 2].setData({
       childInfo
     }, () => {
       const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
       newUserInfo.childInfo = childInfo
       app.setGlobalData('userInfo', newUserInfo)
 
-      typeof cb === 'function' && cb()
+      if (this.options.from === 'class') { // 如果是从课程详情页（报名页）进入孩子信息页的，则更新这个页面的childInfo
+        pages[pages.length - 3].setData({
+          childInfo
+        }, cb)
+      } else {
+        typeof cb === 'function' && cb()
+      }
     })
   },
 
