@@ -12,6 +12,7 @@
           <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
           <view>周期：{{ item.cycle }}课时</view>
           <view>费用：{{ item.cost }}元</view>
+          <view>剩余名额：{{ wxs.getSpaceLeft(item) }}</view>
         </navigator>
         <view class="class-btn-wrap">
           <navigator url="addClass?id={{ item._id }}" class="class-btn">编辑</navigator>

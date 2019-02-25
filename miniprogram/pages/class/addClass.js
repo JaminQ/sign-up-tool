@@ -1,6 +1,8 @@
 import {
   showNoneToast,
-  hideLoadingAndBack
+  hideLoadingAndBack,
+  getClass,
+  getClassIdx
 } from '../../common/utils'
 
 const app = getApp()
@@ -162,7 +164,7 @@ Page({
     if (mode === 'add') {
       newClasses.unshift(classItem)
     } else {
-      Object.assign(newClasses[app.getClassIdx(this.options.id)], classItem)
+      Object.assign(newClasses[getClassIdx(app.globalData.classes, this.options.id)], classItem)
     }
     app.setClasses(newClasses)
 
@@ -178,7 +180,7 @@ Page({
     const initMode = () => {
       if (this.options.id !== undefined) { // 表示编辑
         const renderEditForm = () => {
-          const formValue = app.getClass(this.options.id)
+          const formValue = getClass(app.globalData.classes, this.options.id)
           app.globalData.classType.forEach((val, idx) => {
             if (val.name === formValue.type) formValue.typeIdx = idx
           })

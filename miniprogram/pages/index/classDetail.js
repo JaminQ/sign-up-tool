@@ -1,6 +1,8 @@
 import {
   alert,
-  hideLoadingAndShowSucToast
+  hideLoadingAndShowSucToast,
+  getClass,
+  getClassIdx
 } from '../../common/utils'
 
 const app = getApp()
@@ -63,15 +65,20 @@ Page({
               const newIsSignedUp = JSON.parse(JSON.stringify(this.data.isSignedUp))
               newIsSignedUp[e.target.dataset.idx * 1] = true
 
-              const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-              newSignedUpClasses.unshift(newClass)
-              app.setGlobalData('signedUpClasses', newSignedUpClasses)
-
               this.setData({
                 class: newClass,
                 spaceLeft: this.data.spaceLeft - 1,
                 isSignedUp: newIsSignedUp
               }, () => {
+                const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+                const signedUpClassIdx = getClassIdx(newSignedUpClasses, newClass._id)
+                if (signedUpClassIdx === -1) { // 没有其余孩子报名过这门课
+                  newSignedUpClasses.unshift(newClass)
+                } else { // 其余孩子已报名过这门课
+                  newSignedUpClasses[signedUpClassIdx] = newClass
+                }
+                app.setGlobalData('signedUpClasses', newSignedUpClasses)
+
                 hideLoadingAndShowSucToast('报名成功')
               })
             }
@@ -118,14 +125,6 @@ Page({
 
       const afterSetPrevPage = () => {
         const afterGetSignedUpClasses = () => {
-          const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-          let idx = 0
-          for (let len = newSignedUpClasses.length; idx < len; idx++) {
-            if (newSignedUpClasses[idx]._id === this.data.class._id) break
-          }
-          newSignedUpClasses.splice(idx, 1)
-          app.setGlobalData('signedUpClasses', newSignedUpClasses)
-
           const newClass = JSON.parse(JSON.stringify(this.data.class))
           newClass.menberList.splice(menberIdx, 1)
 
@@ -137,6 +136,23 @@ Page({
             spaceLeft: this.data.spaceLeft + 1,
             isSignedUp: newIsSignedUp
           }, () => {
+            const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+            const signedUpClassIdx = getClassIdx(newSignedUpClasses, newClass._id)
+            // 如果所有孩子都未报名，就移除掉这条记录
+            let shouldSplice = true
+            for (let i = 0, len = newIsSignedUp.length; i < len; i++) {
+              if (newIsSignedUp[i]) {
+                shouldSplice = false
+                break
+              }
+            }
+            if (shouldSplice) {
+              newSignedUpClasses.splice(signedUpClassIdx, 1)
+            } else {
+              newSignedUpClasses[signedUpClassIdx] = newClass
+            }
+            app.setGlobalData('signedUpClasses', newSignedUpClasses)
+
             hideLoadingAndShowSucToast('退出报名成功')
           })
         }
@@ -187,7 +203,7 @@ Page({
             })
           }
 
-          this.idx = app.getClassIdx(this.options.id)
+          this.idx = getClassIdx(app.globalData.classes, this.options.id)
 
           if (this.options.share === '1') { // 从分享入口进来的
             this.showLoading()

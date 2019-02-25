@@ -11,20 +11,6 @@ App({
     openid: null
   },
 
-  // 业务代码自己保证globalData.classes有值
-  getClass(_id) {
-    const classes = JSON.parse(JSON.stringify(this.globalData.classes))
-    for (let i = 0, len = classes.length; i < len; i++) {
-      if (classes[i]._id === _id) return classes[i]
-    }
-  },
-  getClassIdx(_id) {
-    const classes = JSON.parse(JSON.stringify(this.globalData.classes))
-    for (let i = 0, len = classes.length; i < len; i++) {
-      if (classes[i]._id === _id) return i
-    }
-  },
-
   // 不走缓存
   getClasses(cb) {
     wx.cloud.database().collection('classes').orderBy('createTime', 'desc').get({
@@ -86,7 +72,8 @@ App({
       } else {
         _getUserInfo()
       }
-    }, 86400000, forceUpdate) // 1天有效期
+    }, 1, forceUpdate) // 1天有效期
+    // 86400000
   },
   getSignedUpClasses(cb, forceUpdate) {
     this.getGlobalData('signedUpClasses', cb, key => {
@@ -108,7 +95,7 @@ App({
       } else {
         _getSignedUpClasses()
       }
-    }, 86400000, forceUpdate) // 1天有效期
+    }, 1, forceUpdate) // 1天有效期
   },
 
   // 时效缓存通用函数

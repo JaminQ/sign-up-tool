@@ -33,8 +33,8 @@
     </view>
   </block>
   <view wx:else class="weui-loadmore weui-loadmore_line">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无已报名课程，去
-      <navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator>
+    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">
+      暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator>
     </view>
   </view>
 </view>

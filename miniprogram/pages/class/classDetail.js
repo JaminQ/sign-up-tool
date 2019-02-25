@@ -1,5 +1,6 @@
 import {
-  alert
+  alert,
+  getClass
 } from '../../common/utils'
 
 const app = getApp()
@@ -18,7 +19,7 @@ Page({
     const render = () => {
       this.setData({
         loading: false,
-        class: app.getClass(this.options.id)
+        class: getClass(app.globalData.classes, this.options.id)
       }, () => {
         wx.hideLoading()
         typeof cb === 'function' && cb()

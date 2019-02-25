@@ -6,7 +6,7 @@ scroll-view {
 
 movable-area {
   width: 180vw;
-  height: 200px;
+  height: 220px;
   left: -40vw;
 }
 
@@ -14,7 +14,7 @@ movable-view {
   box-sizing: border-box;
   display: flex;
   width: 140vw;
-  height: 200px;
+  height: 220px;
   left: 40vw;
 }
 
