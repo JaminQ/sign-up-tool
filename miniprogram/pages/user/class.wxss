@@ -1,6 +1,16 @@
 @import '../index/index.wxss';
 
+page {
+  box-sizing: border-box;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .picker-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   display: flex;
   font-size: 14px;
   line-height: 36px;
@@ -29,4 +39,16 @@
   border-style: solid;
   border-width: 5px 5px 0 5px;
   border-color: #dddddd transparent transparent transparent;
+}
+
+scroll-view {
+  height: 100vh;
+  padding-top: 38px;
+  box-sizing: border-box;
+}
+
+@media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
+  scroll-view {
+    padding-bottom: 34px;
+  }
 }

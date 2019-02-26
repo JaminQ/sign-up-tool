@@ -20,7 +20,7 @@
     </view>
   </view>
 
-  <block wx:if="{{ classes.length }}">
+  <scroll-view wx:if="{{ classes.length }}" scroll-y>
     <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
       <view>课程名：{{ item.name }}</view>
       <view>课程类型：{{ item.type }}</view>
@@ -31,7 +31,7 @@
       <view>费用：{{ item.cost }}元</view>
       <view>报名孩子：{{ wxs.getMyChildren(item.menberList, openid) }}</view>
     </view>
-  </block>
+  </scroll-view>
   <view wx:else class="weui-loadmore weui-loadmore_line">
     <view class="weui-loadmore__tips weui-loadmore__tips_in-line">
       暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator>
