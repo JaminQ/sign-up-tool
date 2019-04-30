@@ -12,6 +12,8 @@
 	"appid": "wx07c39ed912de3e72",
 	"projectname": "%E6%8A%A5%E5%90%8D%E5%B0%8F%E7%A8%8B%E5%BA%8F",
 	"libVersion": "2.5.2",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,
@@ -33,6 +35,13 @@
 			"list": [
 				{
 					"id": 0,
+					"name": "报名课程列表",
+					"pathName": "pages/index/class",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 0,
 					"name": "报名页面",
 					"pathName": "pages/index/classDetail",
 					"query": "id=XGvwFZT75u22CFVU",
@@ -52,20 +61,20 @@
 					"query": "",
 					"scene": null
 				},
-        {
-          "id": 3,
-          "name": "个人信息",
-          "pathName": "pages/user/userInfo/index",
-          "query": "",
-          "scene": null
-        },
-        {
-          "id": 4,
-          "name": "编辑名字",
-          "pathName": "pages/user/userInfo/info",
-          "query": "key=name",
-          "scene": null
-        },
+				{
+					"id": 3,
+					"name": "个人信息",
+					"pathName": "pages/user/userInfo/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 4,
+					"name": "编辑名字",
+					"pathName": "pages/user/userInfo/info",
+					"query": "key=name",
+					"scene": null
+				},
 				{
 					"id": 5,
 					"name": "孩子信息",
@@ -87,41 +96,41 @@
 					"query": "name=钱小宝",
 					"scene": null
 				},
-        {
-          "id": 8,
-          "name": "已报名课程",
-          "pathName": "pages/user/class",
-          "query": "",
-          "scene": null
-        },
-        {
-          "id": 9,
-          "name": "课程管理",
-          "pathName": "pages/class/index",
-          "query": "",
-          "scene": null
-        },
-        {
-          "id": 10,
-          "name": "添加课程",
-          "pathName": "pages/class/addClass",
-          "query": "",
-          "scene": null
-        },
-        {
-          "id": 11,
-          "name": "编辑课程",
-          "pathName": "pages/class/addClass",
-          "query": "id=XGvwFZT75u22CFVU",
-          "scene": null
-        },
-        {
-          "id": 12,
-          "name": "课程详情",
-          "pathName": "pages/class/classDetail",
-          "query": "id=XGvwFZT75u22CFVU",
-          "scene": null
-        }
+				{
+					"id": 8,
+					"name": "已报名课程",
+					"pathName": "pages/user/class",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 9,
+					"name": "课程管理",
+					"pathName": "pages/class/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 10,
+					"name": "添加课程",
+					"pathName": "pages/class/addClass",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": 11,
+					"name": "编辑课程",
+					"pathName": "pages/class/addClass",
+					"query": "id=XGvwFZT75u22CFVU",
+					"scene": null
+				},
+				{
+					"id": 12,
+					"name": "课程详情",
+					"pathName": "pages/class/classDetail",
+					"query": "id=XGvwFZT75u22CFVU",
+					"scene": null
+				}
 			]
 		}
 	}

@@ -1,4 +1,4 @@
-@import '../index/index.wxss';
+@import '../index/class.wxss';
 
 page {
   box-sizing: border-box;

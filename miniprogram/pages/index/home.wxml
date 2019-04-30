@@ -1,0 +1,16 @@
+<view class="page page-bg">
+  <view class="page-title">
+    <view class="page-title-line">
+      <text class="page-title-word">艺</text>
+      <text class="page-title-word purple">术</text>
+    </view>
+    <view class="page-title-line">
+      <text class="page-title-word purple">书</text>
+      <text class="page-title-word">法</text>
+    </view>
+    <navigator class="signup-area purple" url="class" hover-class="none" open-type="switchTab">
+      <view>进入报名</view>
+      <view class="signup-icon"></view>
+    </navigator>
+  </view>
+</view>

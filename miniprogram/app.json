@@ -1,16 +1,17 @@
 {
   "pages": [
-    "pages/index/index",
+    "pages/index/home",
+    "pages/index/class",
     "pages/index/classDetail",
     "pages/user/index",
     "pages/user/class",
-    "pages/class/index",
-    "pages/class/addClass",
-    "pages/class/classDetail",
     "pages/user/childInfo/index",
     "pages/user/childInfo/addChild",
     "pages/user/userInfo/index",
-    "pages/user/userInfo/info"
+    "pages/user/userInfo/info",
+    "pages/class/index",
+    "pages/class/addClass",
+    "pages/class/classDetail"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -26,7 +27,7 @@
     "backgroundColor": "#000000",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/index/class",
         "text": "课程"
       },
       {
@@ -35,5 +36,6 @@
       }
     ]
   },
-  "usingComponents": {}
+  "usingComponents": {},
+  "sitemapLocation": "sitemap.json"
 }

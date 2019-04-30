@@ -1,4 +1,4 @@
-@import 'index.wxss';
+@import 'class.wxss';
 
 button[size=mini] {
   display: block;
