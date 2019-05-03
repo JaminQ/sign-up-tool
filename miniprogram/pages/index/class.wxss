@@ -7,7 +7,6 @@ swiper {
 swiper-item {
   width: 80vw !important;
   box-sizing: border-box;
-  padding: 60rpx 0;
   padding-bottom: 100rpx;
   left: 10vw;
 }
