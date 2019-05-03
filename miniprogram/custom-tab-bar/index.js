@@ -4,7 +4,7 @@ Component({
     color: "#7A7E83",
     selectedColor: "#3cc51f",
     list: [{
-      pagePath: "/pages/index/index",
+      pagePath: "/pages/index/class",
       iconPath: "/image/class.png",
       selectedIconPath: "/image/class-hl.png",
       text: "课程"

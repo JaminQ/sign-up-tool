@@ -18,7 +18,8 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#F8F8F8",
     "navigationBarTitleText": "罗老师艺术工作室",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "navigationStyle": "custom"
   },
   "tabBar": {
     "custom": true,

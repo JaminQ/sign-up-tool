@@ -1,14 +1,19 @@
 @import 'lib/weui.wxss';
 
-page {
+.page {
+  box-sizing: border-box;
+  padding-top: 130rpx;
   background-color: #f8f8f8;
   font-size: 16px;
   font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
-}
-
-.page {
   width: 100vw;
   overflow: hidden;
+}
+
+.page.page-bg {
+  height: 100vh;
+  background-image: url('https://res.wx.qq.com/op_res/s2le_ABGw-oox5bkke_bNkIldFQthVyCskmVsXw88Y1vtV6Qc_nrkJ0P-usfFmlJ');
+  background-size: cover;
 }
 
 .page.with-tab-bar {
@@ -59,7 +64,13 @@ page {
 }
 
 @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
-  page {
+  .page {
     padding-bottom: 34px;
+  }
+  .page.page-no-padding {
+    padding-bottom: 0;
+  }
+  .page.with-tab-bar {
+    padding-bottom: 82px;
   }
 }
