@@ -63,6 +63,24 @@
   display: inline;
 }
 
+.navbar__back {
+  padding: 14px 16px;
+  position: absolute;
+  left: 0;
+  top: 28px;
+  line-height: 1;
+  bottom: auto;
+}
+.navbar__back::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid #000;
+  border-left: 1px solid #000;
+  transform: rotate(-45deg);
+}
+
 @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
   .page {
     padding-bottom: 34px;
@@ -72,5 +90,9 @@
   }
   .page.with-tab-bar {
     padding-bottom: 82px;
+  }
+
+  .navbar__back {
+    top: 50px;
   }
 }

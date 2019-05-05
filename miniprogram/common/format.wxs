@@ -1,0 +1,63 @@
+// 处理时间，统一转为13位时间戳
+function parseDate(date) {
+  if (typeof date === 'object' && 'Date' === date.constructor) { // Date对象
+    return date * 1;
+  } else { // 字符串或数字，兼容10位和13位时间戳
+    return date.toString().length === 10 ? date * 1000 : date * 1;
+  }
+}
+
+module.exports = {
+  formatDate: function (date, formatStr) { // 格式化时间
+    !date && (date = getDate());
+    !formatStr && (formatStr = 'YYYY/MM/DD hh:mm:ss');
+
+    // 不足两位数的补0
+    var fix = function (num) {
+      return (num < 10 ? '0' : '') + num;
+    };
+
+    // 处理时间
+    date = getDate(parseDate(date));
+
+    var year = date.getFullYear(),
+      month = date.getMonth() + 1,
+      day = date.getDate(),
+      hour = date.getHours(),
+      minute = date.getMinutes(),
+      second = date.getSeconds();
+
+    return formatStr.replace(getRegExp('YYYY', 'g'), year)
+      .replace(getRegExp('YY', 'g'), year % 100)
+      .replace(getRegExp('MM', 'g'), fix(month))
+      .replace(getRegExp('M', 'g'), month)
+      .replace(getRegExp('DD', 'g'), fix(day))
+      .replace(getRegExp('D', 'g'), day)
+      .replace(getRegExp('hh', 'g'), fix(hour))
+      .replace(getRegExp('h', 'g'), hour)
+      .replace(getRegExp('mm', 'g'), fix(minute))
+      .replace(getRegExp('m', 'g'), minute)
+      .replace(getRegExp('ss', 'g'), fix(second))
+      .replace(getRegExp('s', 'g'), second);
+  },
+  formatTimeline: function (now, date) { // 格式化时间（几秒前，几分钟前，几小时前，几天前）
+    if (!date) return ''
+
+    // 处理时间
+    now = parseDate(now);
+    date = parseDate(date);
+
+    // 计算差值
+    var delta = (now - date) / 1000;
+
+    if (delta < 60) { // 1分钟内，显示几秒前
+      return (Math.floor(delta) || 1) + '秒前';
+    } else if (delta < 3600) { // 1小时内，显示几分钟前
+      return (Math.floor(delta / 60) || 1) + '分钟前';
+    } else if (delta < 86400) { // 1天内，显示几小时前
+      return (Math.floor(delta / 3600) || 1) + '小时前';
+    } else { // 1天或1天以上，显示几天前
+      return (Math.floor(delta / 86400) || 1) + '天前';
+    }
+  }
+}
