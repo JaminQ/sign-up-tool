@@ -1,6 +1,6 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
-<view hidden="{{ loading }}" class="page with-tab-bar">
+<view hidden="{{ loading }}" class="page page-bg full-screen">
   <view class="class-wrap">
     <view>课程名：{{ class.name }}</view>
     <view>课程类型：{{ class.type }}</view>

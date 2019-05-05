@@ -1,6 +1,6 @@
 movable-area.weui-cell {
   width: 130vw;
-  height: 44px;
+  height: 88rpx;
   padding: 0;
   left: -15vw;
 }
@@ -8,7 +8,7 @@ movable-area.weui-cell {
 movable-view {
   display: flex;
   width: 115vw;
-  height: 44px;
+  height: 88rpx;
   left: 15vw;
 }
 
@@ -16,21 +16,21 @@ navigator {
   position: relative;
   box-sizing:border-box;
   width: 100vw;
-  padding: 10px 15px;
+  padding: 20rpx 30rpx;
 }
 
 .weui-cell__ft_in-access {
-  top: -10px;
+  top: -20rpx;
 }
 
 .weui-cell.weui-cell_access:before {
-  content: " ";
+  content: "";
   position: absolute;
-  margin-left: 15px;
+  margin-left: 30rpx;
   left: 15vw;
   top: 0;
   right: 0;
-  height: 1px;
+  height: 2rpx;
   border-top: 1rpx solid #d9d9d9;
   color: #d9d9d9;
 }
