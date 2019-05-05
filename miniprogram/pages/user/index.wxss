@@ -1,7 +1,7 @@
 .user-avatar {
   display: flex;
   width: 100%;
-  height: 200rpx;
+  height: 240rpx;
   justify-content: center;
   align-items: center;
 }
@@ -9,8 +9,8 @@
 .user-avatar open-data {
   overflow: hidden;
   display: block;
-  width: 160rpx;
-  height: 160rpx;
+  width: 200rpx;
+  height: 200rpx;
   border-radius: 50%;
 }
 
@@ -27,11 +27,11 @@
 .user-main {
   width: 450rpx;
   margin: 0 auto;
+  font-size: 30rpx;
 }
 
 .user-btn {
   color: #4b4b4b;
-  font-size: 30rpx;
   line-height: 70rpx;
   height: 70rpx;
   border: 1px solid #4b4b4b;
@@ -39,4 +39,8 @@
   background-color: #fff;
   margin: 30rpx 0;
   text-align: center;
+}
+
+.user-btn-title {
+  color: #4b4b4b;
 }
