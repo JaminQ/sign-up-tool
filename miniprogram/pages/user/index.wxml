@@ -1,4 +1,4 @@
-<view class="page with-tab-bar page-bg">
+<view class="page with-tab-bar page-bg full-screen">
   <view class="user-avatar">
     <open-data type="userAvatarUrl"></open-data>
   </view>

@@ -4,7 +4,7 @@
 
 {{ class.init(classes.length) }}
 
-<view hidden="{{ loading }}" class="page page-bg with-tab-bar" change:classes="{{ class.classesObserver }}">
+<view hidden="{{ loading }}" class="page page-bg with-tab-bar full-screen" change:classes="{{ class.classesObserver }}">
   <swiper wx:if="{{ classes.length }}" indicator-dots circular bindchange="{{ class.change }}">
     <swiper-item wx:for="{{ classes }}" wx:key="_id">
       <navigator url="classDetail?id={{ item._id }}" class="class-wrap {{ class.getClassName(index) }}" hover-class="none">

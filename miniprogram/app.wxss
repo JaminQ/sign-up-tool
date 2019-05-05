@@ -1,13 +1,19 @@
 @import 'lib/weui.wxss';
 
+page {
+  background-color: #f8f8f8;
+  font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+  font-size: 16px;
+}
+
 .page {
   box-sizing: border-box;
-  padding-top: 190rpx;
-  background-color: #f8f8f8;
-  font-size: 16px;
-  font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
   width: 100vw;
   overflow: hidden;
+}
+
+.page.full-screen {
+  padding-top: 190rpx;
 }
 
 .page.page-bg {
