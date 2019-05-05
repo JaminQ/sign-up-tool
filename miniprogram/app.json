@@ -15,7 +15,7 @@
   ],
   "window": {
     "backgroundColor": "#F8F8F8",
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#F8F8F8",
     "navigationBarTitleText": "罗老师艺术工作室",
     "navigationBarTextStyle": "black"
