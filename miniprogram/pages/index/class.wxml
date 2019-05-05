@@ -1,17 +1,23 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
-<view hidden="{{ loading }}" class="page page-bg with-tab-bar">
-  <swiper wx:if="{{ classes.length }}" indicator-dots circular>
+<wxs src="class.wxs" module="class" />
+
+{{ class.init(classes.length) }}
+
+<view hidden="{{ loading }}" class="page page-bg with-tab-bar" change:classes="{{ class.classesObserver }}">
+  <swiper wx:if="{{ classes.length }}" indicator-dots circular bindchange="{{ class.change }}">
     <swiper-item wx:for="{{ classes }}" wx:key="_id">
-      <navigator url="classDetail?id={{ item._id }}" class="class-wrap" hover-class="none">
+      <navigator url="classDetail?id={{ item._id }}" class="class-wrap {{ class.getClassName(index) }}" hover-class="none">
         <view class="class-name">{{ item.name }}</view>
         <!-- <view>课程类型：{{ item.type }}</view> -->
-        <view>人数：{{ item.maxNum }}人</view>
-        <view>上课时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>
-        <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
-        <view>周期：{{ item.cycle }}课</view>
-        <view>费用：{{ item.cost }}元</view>
-        <view>剩余名额：{{ wxs.getSpaceLeft(item) }}</view>
+        <view class="class-body">
+          <view>人数：{{ item.maxNum }}人</view>
+          <view>时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>
+          <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
+          <view>周期：{{ item.cycle }}课</view>
+          <view>费用：{{ item.cost }}元</view>
+          <view>剩余名额：{{ wxs.getSpaceLeft(item) }}</view>
+        </view>
       </navigator>
     </swiper-item>
   </swiper>

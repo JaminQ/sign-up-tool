@@ -1,0 +1,42 @@
+var currentClassIdx = 0
+var classLen = 0
+
+function getClassName(index) {
+  if (index === currentClassIdx) {
+    return 'class-current'
+  } else if (index > currentClassIdx) {
+    if (currentClassIdx === 0 && index === classLen - 1) {
+      return 'class-prev'
+    } else {
+      return 'class-next'
+    }
+  } else {
+    if (currentClassIdx === classLen - 1 && index === 0) {
+      return 'class-next'
+    } else {
+      return 'class-prev'
+    }
+  }
+}
+
+module.exports = {
+  init: function (len) {
+    // 设置总数
+    classLen = len
+  },
+  change: function (e) {
+    // 设置当前索引值
+    currentClassIdx = e.detail.current
+
+    // 修改class
+    var classWrap = e.instance.selectAllComponents('.class-wrap')
+    for (var i = 0; i < classLen; i++) {
+      var item = classWrap[i]
+      item.removeClass('class-current')
+      item.removeClass('class-next')
+      item.removeClass('class-prev')
+      item.addClass(getClassName(i))
+    }
+  },
+  getClassName: getClassName
+}
