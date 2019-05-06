@@ -2,7 +2,7 @@
   <view class="weui-cells weui-cells_after-title">
     <view class="weui-cell weui-cell_input">
       <view class="weui-cell__bd">
-        <input class="weui-input" placeholder="请输入孩子真实姓名" bindinput="nameChange" value="{{ name }}" />
+        <input class="weui-input" placeholder="请输入学员真实姓名" bindinput="nameChange" value="{{ name }}" />
       </view>
     </view>
   </view>

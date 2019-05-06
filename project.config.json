@@ -77,21 +77,21 @@
 				},
 				{
 					"id": 5,
-					"name": "孩子信息",
+					"name": "学员信息",
 					"pathName": "pages/user/childInfo/index",
 					"query": "from=profile",
 					"scene": null
 				},
 				{
 					"id": 6,
-					"name": "添加孩子信息",
+					"name": "添加学员信息",
 					"pathName": "pages/user/childInfo/addChild",
 					"query": "",
 					"scene": null
 				},
 				{
 					"id": 7,
-					"name": "编辑孩子信息",
+					"name": "编辑学员信息",
 					"pathName": "pages/user/childInfo/addChild",
 					"query": "name=钱小宝",
 					"scene": null

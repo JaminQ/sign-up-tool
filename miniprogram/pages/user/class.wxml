@@ -29,12 +29,12 @@
       <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
       <view>周期：{{ item.cycle }}课时</view>
       <view>费用：{{ item.cost }}元</view>
-      <view>报名孩子：{{ wxs.getMyChildren(item.menberList, openid) }}</view>
+      <view>报名学员：{{ wxs.getMyChildren(item.menberList, openid) }}</view>
     </view>
   </scroll-view>
   <view wx:else class="weui-loadmore weui-loadmore_line">
     <view class="weui-loadmore__tips weui-loadmore__tips_in-line">
-      暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link inline">看看</navigator>
+      暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link">看看</navigator>
     </view>
   </view>
 </view>

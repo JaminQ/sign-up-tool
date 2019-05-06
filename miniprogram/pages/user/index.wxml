@@ -8,7 +8,7 @@
 
   <view class="user-main">
     <navigator url="userInfo/index" class="user-btn">个人信息</navigator>
-    <navigator url="childInfo/index?from=profile" class="user-btn">孩子信息</navigator>
+    <navigator url="childInfo/index?from=profile" class="user-btn">学员信息</navigator>
     <navigator url="class" class="user-btn">已报名课程</navigator>
 
     <block wx:if="{{ isManager }}">

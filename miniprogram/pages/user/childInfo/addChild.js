@@ -58,7 +58,7 @@ Page({
       this.setData({
         name
       }, () => {
-        showNoneToast('请输入孩子真实姓名')
+        showNoneToast('请输入学员真实姓名')
       })
       return false
     }
@@ -81,7 +81,7 @@ Page({
           this.setPrevPageData(res.data.childInfo, () => {
             wx.hideLoading({
               success() {
-                alert(`“${name}”该孩子已存在`)
+                alert(`“${name}”该学员已存在`)
               }
             })
           })
@@ -100,7 +100,7 @@ Page({
       newUserInfo.childInfo = childInfo
       app.setGlobalData('userInfo', newUserInfo)
 
-      if (this.options.from === 'class') { // 如果是从课程详情页（报名页）进入孩子信息页的，则更新这个页面的childInfo
+      if (this.options.from === 'class') { // 如果是从课程详情页（报名页）进入学员信息页的，则更新这个页面的childInfo
         pages[pages.length - 3].setData({
           childInfo
         }, cb)

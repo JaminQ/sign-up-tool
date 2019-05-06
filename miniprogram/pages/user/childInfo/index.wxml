@@ -1,7 +1,7 @@
 <view hidden="{{ loading }}" class="page">
   <view class="weui-cells__title"></view>
   <view class="weui-cells weui-cells_after-title">
-    <movable-area class="weui-cell weui-cell_access" wx:if="{{ childInfo.length }}" wx:for="{{ childInfo }}" wx:key="">
+    <movable-area class="weui-cell weui-cell_access" wx:if="{{ childInfo.length }}" wx:for="{{ childInfo }}" wx:key="item">
       <movable-view direction="horizontal" out-of-bounds inertia>
         <navigator url="addChild?name={{ item }}">
           <view class="weui-cell__bd">{{ item }}</view>
@@ -11,7 +11,7 @@
       </movable-view>
     </movable-area>
     <navigator url="addChild?from={{ from }}" class="weui-cell weui-cell_link">
-      <view class="weui-cell__bd">{{ childInfo.length ? '' : '暂无孩子信息，点击此处' }}添加</view>
+      <view class="weui-cell__bd">{{ childInfo.length ? '' : '暂无学员信息，点击此处' }}添加</view>
     </navigator>
   </view>
 </view>

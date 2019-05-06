@@ -79,9 +79,9 @@ Page({
               }, () => {
                 const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
                 const signedUpClassIdx = getClassIdx(newSignedUpClasses, newClass._id)
-                if (signedUpClassIdx === -1) { // 没有其余孩子报名过这门课
+                if (signedUpClassIdx === -1) { // 没有其余学员报名过这门课
                   newSignedUpClasses.unshift(newClass)
-                } else { // 其余孩子已报名过这门课
+                } else { // 其余学员已报名过这门课
                   newSignedUpClasses[signedUpClassIdx] = newClass
                 }
                 app.setGlobalData('signedUpClasses', newSignedUpClasses)
@@ -145,7 +145,7 @@ Page({
           }, () => {
             const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
             const signedUpClassIdx = getClassIdx(newSignedUpClasses, newClass._id)
-            // 如果所有孩子都未报名，就移除掉这条记录
+            // 如果所有学员都未报名，就移除掉这条记录
             let shouldSplice = true
             for (let i = 0, len = newIsSignedUp.length; i < len; i++) {
               if (newIsSignedUp[i]) {

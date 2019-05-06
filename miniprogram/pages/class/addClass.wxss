@@ -1,0 +1,9 @@
+@import '../../lib/weui.wxss';
+
+.page__bd {
+  padding-bottom: 40px;
+}
+
+.weui-select {
+  border-right: 0;
+}

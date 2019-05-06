@@ -1,3 +1,5 @@
+@import '../../lib/weui.wxss';
+
 scroll-view {
   height: 100vh;
   padding-bottom: 66px;
@@ -56,6 +58,10 @@ movable-area:last-child .class-wrap {
 
 .btn-wrap button {
   margin: 10px 15px;
+}
+
+.weui-loadmore__tips_in-line {
+  background-color: #f6f6f6;
 }
 
 @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
