@@ -1,20 +1,19 @@
 page {
   box-sizing: border-box;
   height: 100vh;
-  overflow: hidden;
 }
 
 .picker-bar {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 100vw;
   display: flex;
-  font-size: 14px;
-  line-height: 36px;
+  font-size: 28rpx;
+  line-height: 72rpx;
   background-color: #fff;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-top: 2rpx solid #ddd;
+  border-bottom: 2rpx solid #ddd;
 }
 
 .picker-bar-item {
@@ -28,25 +27,21 @@ page {
 }
 
 .picker-label {
-  padding: 0 5px;
+  padding: 0 10rpx;
 }
 
 .triangle {
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 5px 5px 0 5px;
-  border-color: #dddddd transparent transparent transparent;
+  border-width: 10rpx 10rpx 0 10rpx;
+  border-color: #ddd transparent transparent transparent;
 }
 
 scroll-view {
   height: 100vh;
-  padding-top: 38px;
+  padding-top: 76rpx;
   box-sizing: border-box;
-}
-
-.weui-loadmore__tips_in-line {
-  background-color: #f6f6f6;
 }
 
 @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {

@@ -1,6 +1,6 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
-<view hidden="{{ loading }}" class="page">
+<view hidden="{{ loading }}" class="page page-no-padding">
   <view class="picker-bar">
     <view class="picker-bar-item">
       <picker bindchange="pickerChange" value="{{ classTypeIdx }}" range="{{ classType }}" data-key="classTypeIdx">
