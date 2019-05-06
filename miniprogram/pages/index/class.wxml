@@ -9,7 +9,6 @@
     <swiper-item wx:for="{{ classes }}" wx:key="_id">
       <navigator url="classDetail?id={{ item._id }}" class="class-wrap {{ class.getClassName(index) }}" hover-class="none">
         <view class="class-name">{{ item.name }}</view>
-        <!-- <view>课程类型：{{ item.type }}</view> -->
         <view class="class-body">
           <view>人数：{{ item.maxNum }}人</view>
           <view>时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>

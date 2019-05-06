@@ -2,27 +2,52 @@
 
 <view hidden="{{ loading }}" class="page page-bg full-screen">
   <view class="class-wrap">
-    <view>课程名：{{ class.name }}</view>
-    <view>课程类型：{{ class.type }}</view>
-    <view>人数：{{ class.maxNum }}人</view>
-    <view>上课时间：{{ wxs.getStudyTime(class.studyDate) }} {{ class.beginTime }}-{{ class.endTime }}</view>
-    <view>时长：{{ wxs.getStudyDuration(class.beginTime, class.endTime) }}分钟</view>
-    <view>周期：{{ class.cycle }}课时</view>
-    <view>费用：{{ class.cost }}元</view>
-    <view>剩余名额：{{ spaceLeft }}</view>
-  </view>
-
-  <view class="weui-cells__title">报名</view>
-  <view wx:if="{{ childInfo.length }}" class="weui-cells weui-cells_after-title">
-    <view class="weui-cell" wx:for="{{ childInfo }}" wx:key="">
-      <view class="weui-cell__bd">{{ item }}</view>
-      <view class="weui-cell__ft">
-        <button wx:if="{{ !isSignedUp[index] }}" class="weui-btn mini-btn" type="primary" size="mini" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft <= 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
-        <button wx:else class="weui-btn mini-btn" size="mini" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
+    <view class="class-line">
+      <view class="class-label">
+        <text>课</text>
+        <text>程</text>
+        <text>名</text>
       </view>
+      <view class="class-value">{{ class.name }}</view>
+    </view>
+    <view class="class-line">
+      <view class="class-label">
+        <text>人</text>
+        <text>数</text>
+      </view>
+      <view class="class-value">{{ class.maxNum }}</view>
+    </view>
+    <view class="class-line">
+      <view class="class-label">
+        <text>上</text>
+        <text>课</text>
+        <text>时</text>
+        <text>间</text>
+      </view>
+      <view class="class-value">{{ wxs.getStudyTime(class.studyDate) }} {{ class.beginTime }}-{{ class.endTime }}</view>
+    </view>
+    <view class="class-line">
+      <view class="class-label">
+        <text>剩</text>
+        <text>余</text>
+        <text>名</text>
+        <text>额</text>
+      </view>
+      <view class="class-value">{{ spaceLeft }}</view>
     </view>
   </view>
-  <view wx:else class="weui-loadmore weui-loadmore_line">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无孩子信息，去<navigator url="../user/childInfo/index?from=class" class="weui-cell_link inline">添加</navigator></view>
+
+  <view class="sign-up-area">
+    <view class="sign-up-title">报名学员</view>
+    <view class="sign-up-user-list" wx:if="{{ childInfo.length }}">
+      <view class="sign-up-user" wx:for="{{ childInfo }}" wx:key="item">
+        <view class="sign-up-user-name">{{ item }}</view>
+        <button wx:if="{{ !isSignedUp[index] }}" class="sign-up-btn" size="mini" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ spaceLeft <= 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ spaceLeft > 0 ? '报名' : '已满' }}</button>
+        <button wx:else class="sign-out-btn" size="mini" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
+      </view>
+    </view>
+    <view wx:else class="weui-loadmore weui-loadmore_line">
+      <view class="weui-loadmore__tips weui-loadmore__tips_in-line">暂无孩子信息，去<navigator url="../user/childInfo/index?from=class" class="weui-cell_link inline">添加</navigator></view>
+    </view>
   </view>
 </view>
