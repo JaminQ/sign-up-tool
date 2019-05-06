@@ -1,5 +1,7 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
+<view class="navbar__back" wx:if="{{ showBackBtn }}" bindtap="back"></view>
+
 <view hidden="{{ loading }}" class="page page-bg full-screen">
   <view class="class-wrap">
     <view class="class-line">

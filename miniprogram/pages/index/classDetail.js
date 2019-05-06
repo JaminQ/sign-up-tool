@@ -9,11 +9,18 @@ const app = getApp()
 
 Page({
   data: {
+    showBackBtn: false,
     loading: true,
     class: {},
     spaceLeft: '',
     childInfo: [],
     isSignedUp: []
+  },
+
+  back() {
+    wx.navigateBack({
+      delta: 1
+    })
   },
 
   signUp(e) {
@@ -239,6 +246,13 @@ Page({
     }
   },
   onLoad() {
+    // 如果页面堆栈数大于1，显示返回按钮
+    if (getCurrentPages().length > 1) {
+      this.setData({
+        showBackBtn: true
+      })
+    }
+
     this.init()
   },
   onPullDownRefresh() {
