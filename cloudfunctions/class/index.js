@@ -5,6 +5,7 @@ const db = cloud.database()
 const _ = db.command
 const classesCollection = db.collection('classes')
 const userCollection = db.collection('user')
+const signListCollection = db.collection('sign-list')
 
 exports.main = async (event, context) => {
   console.log('event:', event)
@@ -13,7 +14,7 @@ exports.main = async (event, context) => {
     case 'add':
       try {
         const data = event.formValue
-        data.menberList = []
+        data.leftNum = data.maxNum
         data._openid = event.userInfo.openId
         data.createTime = db.serverDate()
 
@@ -47,27 +48,39 @@ exports.main = async (event, context) => {
       break
     case 'signUp':
       try {
-        const { data: { menberList, maxNum } } = await classesCollection.doc(event._id).get()
+        // 获取课程总名额
+        const { data: { maxNum } } = await classesCollection.doc(event._id).get()
 
-        if (menberList.length < maxNum) {
+        // 获取已报名人数
+
+        if (maxNum > 0) {
           const _openid = event.userInfo.openId
-          await classesCollection.doc(event._id).update({
+          return await signListCollection.add({
             data: {
-              menberList: _.push({
-                _openid,
-                name: event.name,
-                tel: event.tel,
-                createTime: db.serverDate()
-              })
+              classId: event._id,
+              _openid,
+              name: event.name,
+              tel: event.tel,
+              createTime: db.serverDate()
             }
           })
-          return await userCollection.where({
-            _openid
-          }).update({
-            data: {
-              classes: _.push(event._id)
-            }
-          })
+          // await classesCollection.doc(event._id).update({
+          //   data: {
+          //     menberList: _.push({
+          //       _openid,
+          //       name: event.name,
+          //       tel: event.tel,
+          //       createTime: db.serverDate()
+          //     })
+          //   }
+          // })
+          // return await userCollection.where({
+          //   _openid
+          // }).update({
+          //   data: {
+          //     classes: _.push(event._id)
+          //   }
+          // })
         } else {
           return {
             ret: -10001 // 课程报名人数已满
@@ -84,14 +97,18 @@ exports.main = async (event, context) => {
         let menberIdx = -1
         const _openid = event.userInfo.openId
         menberList.forEach((menber, idx) => {
-          if (menber !== null && menber._openid === _openid && menber.name === event.name) {
+          if (menber !== null && menber.name === event.name) {
             menberIdx = idx
           }
         })
+        console.log(menberIdx);
+        console.log(menberList);
         menberList.splice(menberIdx, 1)
+        console.log(menberList);
         console.log(await doc.update({
           data: {
             menberList: _.set(menberList)
+            // menberList: _.pop()
           }
         }))
 

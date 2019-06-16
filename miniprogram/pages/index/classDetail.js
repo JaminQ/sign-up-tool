@@ -53,58 +53,59 @@ Page({
           })
         } else {
           const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
-          newClasses[this.idx].menberList.push({
-            _openid: app.globalData.openid,
-            name,
-            tel
-          })
-          app.setClasses(newClasses)
+          hideLoadingAndShowSucToast('报名成功')
+          // newClasses[this.idx].menberList.push({
+          //   _openid: app.globalData.openid,
+          //   name,
+          //   tel
+          // })
+          // app.setClasses(newClasses)
 
-          const afterSetPrevPage = () => {
-            const afterGetSingedUpClasses = () => {
-              const newClass = JSON.parse(JSON.stringify(this.data.class))
-              newClass.menberList.push({
-                _openid: app.globalData.openid,
-                name,
-                tel
-              })
+          // const afterSetPrevPage = () => {
+          //   const afterGetSingedUpClasses = () => {
+          //     const newClass = JSON.parse(JSON.stringify(this.data.class))
+          //     newClass.menberList.push({
+          //       _openid: app.globalData.openid,
+          //       name,
+          //       tel
+          //     })
 
-              const newIsSignedUp = JSON.parse(JSON.stringify(this.data.isSignedUp))
-              newIsSignedUp[e.target.dataset.idx * 1] = true
+          //     const newIsSignedUp = JSON.parse(JSON.stringify(this.data.isSignedUp))
+          //     newIsSignedUp[e.target.dataset.idx * 1] = true
 
-              this.setData({
-                class: newClass,
-                spaceLeft: this.data.spaceLeft - 1,
-                isSignedUp: newIsSignedUp
-              }, () => {
-                const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-                const signedUpClassIdx = getClassIdx(newSignedUpClasses, newClass._id)
-                if (signedUpClassIdx === -1) { // 没有其余学员报名过这门课
-                  newSignedUpClasses.unshift(newClass)
-                } else { // 其余学员已报名过这门课
-                  newSignedUpClasses[signedUpClassIdx] = newClass
-                }
-                app.setGlobalData('signedUpClasses', newSignedUpClasses)
+          //     this.setData({
+          //       class: newClass,
+          //       spaceLeft: this.data.spaceLeft - 1,
+          //       isSignedUp: newIsSignedUp
+          //     }, () => {
+          //       const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+          //       const signedUpClassIdx = getClassIdx(newSignedUpClasses, newClass._id)
+          //       if (signedUpClassIdx === -1) { // 没有其余学员报名过这门课
+          //         newSignedUpClasses.unshift(newClass)
+          //       } else { // 其余学员已报名过这门课
+          //         newSignedUpClasses[signedUpClassIdx] = newClass
+          //       }
+          //       app.setGlobalData('signedUpClasses', newSignedUpClasses)
 
-                hideLoadingAndShowSucToast('报名成功')
-              })
-            }
+          //       hideLoadingAndShowSucToast('报名成功')
+          //     })
+          //   }
 
-            if (app.globalData.signedUpClasses === null) {
-              app.getSignedUpClasses(afterGetSingedUpClasses)
-            } else {
-              afterGetSingedUpClasses()
-            }
-          }
+          //   if (app.globalData.signedUpClasses === null) {
+          //     app.getSignedUpClasses(afterGetSingedUpClasses)
+          //   } else {
+          //     afterGetSingedUpClasses()
+          //   }
+          // }
 
-          const pages = getCurrentPages()
-          if (pages.length > 1) {
-            pages[pages.length - 2].setData({
-              classes: newClasses
-            }, afterSetPrevPage)
-          } else {
-            afterSetPrevPage()
-          }
+          // const pages = getCurrentPages()
+          // if (pages.length > 1) {
+          //   pages[pages.length - 2].setData({
+          //     classes: newClasses
+          //   }, afterSetPrevPage)
+          // } else {
+          //   afterSetPrevPage()
+          // }
         }
       })
     } else { // 拒绝授权
@@ -195,13 +196,14 @@ Page({
           const render = classItem => {
             const childInfo = app.globalData.userInfo.childInfo
             const isSignedUp = childInfo.map(() => false)
-            classItem.menberList.forEach(menber => {
-              if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
-            })
+            // classItem.menberList.forEach(menber => {
+            //   if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
+            // })
             this.setData({
               loading: false,
               class: classItem,
-              spaceLeft: classItem.maxNum - classItem.menberList.length,
+              // spaceLeft: classItem.maxNum - classItem.menberList.length,
+              spaceLeft: 5,
               childInfo,
               isSignedUp
             }, () => {

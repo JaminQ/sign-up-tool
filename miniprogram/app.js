@@ -13,13 +13,48 @@ App({
 
   // 不走缓存
   getClasses(cb) {
-    wx.cloud.database().collection('classes').orderBy('createTime', 'desc').get({
-      success: res => {
-        console.log('classes', res)
-        this.setClasses(res.data)
-        typeof cb === 'function' && cb()
-      }
-    })
+    const _getClasses = () => {
+      const db = wx.cloud.database()
+      const _ = db.command
+
+      // 按时间降序来获取所有课程
+      db.collection('classes').orderBy('createTime', 'desc').get({
+        success: classes => {
+          // 拉取所有课程的自己的报名记录
+          db.collection('sign-list').where({
+            _openid: this.globalData.openid,
+            classId: _.in(classes.data.map(item => item._id))
+          }).get({
+            success: list => {
+              const listMap = {}
+              list.data.forEach(item => {
+                const classId = item.classId
+                if (listMap[classId]) {
+                  listMap[classId].push(item)
+                } else {
+                  listMap[classId] = [item]
+                }
+              })
+
+              classes.data.forEach(item => {
+                item.menberList = listMap[item._id] || []
+              })
+
+              console.log(classes)
+
+              this.setClasses(classes.data)
+              typeof cb === 'function' && cb()
+            }
+          })
+        }
+      })
+    }
+
+    if (this.globalData.openid === null) {
+      this.getOpenid(_getClasses)
+    } else {
+      _getClasses()
+    }
   },
   setClasses(classes) {
     this.globalData.classes = classes

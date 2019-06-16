@@ -42,10 +42,6 @@ module.exports = {
     })
     return dateArr.join('、')
   },
-  getSpaceLeft: function (classItem) {
-    if (classItem === undefined || classItem.menberList === undefined) return ''
-    return classItem.maxNum - classItem.menberList.length
-  },
   getMyChildren: function (menberList, openid) {
     if (menberList === undefined) return ''
     var children = []
