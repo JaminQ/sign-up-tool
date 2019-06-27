@@ -1,7 +1,7 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
 <view hidden="{{ loading }}" class="page page-no-padding">
-  <view class="picker-bar">
+  <!-- <view class="picker-bar">
     <view class="picker-bar-item">
       <picker bindchange="pickerChange" value="{{ classTypeIdx }}" range="{{ classType }}" data-key="classTypeIdx">
         <view class="picker">
@@ -18,23 +18,18 @@
         </view>
       </picker>
     </view>
-  </view>
+  </view> -->
 
   <scroll-view wx:if="{{ classes.length }}" scroll-y>
     <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
-      <view>课程名：{{ item.name }}</view>
-      <view>课程类型：{{ item.type }}</view>
-      <view>人数：{{ item.maxNum }}人</view>
-      <view>上课时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>
-      <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
-      <view>周期：{{ item.cycle }}课时</view>
-      <view>费用：{{ item.cost }}元</view>
-      <view>报名学员：{{ wxs.getMyChildren(item.menberList, openid) }}</view>
+      <view>课程名：{{ item.classItem.name }}</view>
+      <view>课程类型：{{ item.classItem.type }}</view>
+      <view wx:if="{{ item.classItem.timeStr }}">上课时间：{{ item.classItem.timeStr }}</view>
+      <view wx:else>上课时间：{{ wxs.getStudyTime(item.classItem.studyDate) }} {{ item.classItem.beginTime }}-{{ item.classItem.endTime }}</view>
+      <view>报名学员：{{ item.name }}</view>
     </view>
   </scroll-view>
-  <view wx:else class="weui-loadmore weui-loadmore_line">
-    <view class="weui-loadmore__tips weui-loadmore__tips_in-line">
-      暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="weui-cell_link">看看</navigator>
-    </view>
+  <view wx:else class="no-class">
+    暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="link">看看</navigator>
   </view>
 </view>

@@ -6,11 +6,12 @@
       <view>课程名：{{ class.name }}</view>
       <view>课程类型：{{ class.type }}</view>
       <view>人数：{{ class.maxNum }}人</view>
-      <view>上课时间：{{ wxs.getStudyTime(class.studyDate) }} {{ class.beginTime }}-{{ class.endTime }}</view>
+      <view wx:if="{{ class.timeStr }}">上课时间：{{ class.timeStr }}</view>
+      <view wx:else>上课时间：{{ wxs.getStudyTime(class.studyDate) }} {{ class.beginTime }}-{{ class.endTime }}</view>
       <view>时长：{{ wxs.getStudyDuration(class.beginTime, class.endTime) }}分钟</view>
       <view>周期：{{ class.cycle }}课时</view>
       <view>费用：{{ class.cost }}元</view>
-      <view>剩余名额：{{ wxs.getSpaceLeft(class) }}</view>
+      <view>剩余名额：{{ class.leftNum }}</view>
     </view>
 
     <view class="weui-cells__title">报名人员</view>

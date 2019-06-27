@@ -48,39 +48,25 @@ exports.main = async (event, context) => {
       break
     case 'signUp':
       try {
-        // 获取课程总名额
-        const { data: { maxNum } } = await classesCollection.doc(event._id).get()
+        const doc = classesCollection.doc(event._id)
 
-        // 获取已报名人数
-
-        if (maxNum > 0) {
-          const _openid = event.userInfo.openId
+        // 获取课程剩余名额
+        const { data: { leftNum } } = await doc.get()
+        if (leftNum > 0) {
+          await doc.update({
+            data: {
+              leftNum: _.inc(-1)
+            }
+          })
           return await signListCollection.add({
             data: {
               classId: event._id,
-              _openid,
+              _openid: event.userInfo.openId,
               name: event.name,
               tel: event.tel,
               createTime: db.serverDate()
             }
           })
-          // await classesCollection.doc(event._id).update({
-          //   data: {
-          //     menberList: _.push({
-          //       _openid,
-          //       name: event.name,
-          //       tel: event.tel,
-          //       createTime: db.serverDate()
-          //     })
-          //   }
-          // })
-          // return await userCollection.where({
-          //   _openid
-          // }).update({
-          //   data: {
-          //     classes: _.push(event._id)
-          //   }
-          // })
         } else {
           return {
             ret: -10001 // 课程报名人数已满
@@ -92,40 +78,18 @@ exports.main = async (event, context) => {
       break
     case 'signOut':
       try {
-        const doc = classesCollection.doc(event._id)
-        const { data: { menberList } } = await doc.get()
-        let menberIdx = -1
-        const _openid = event.userInfo.openId
-        menberList.forEach((menber, idx) => {
-          if (menber !== null && menber.name === event.name) {
-            menberIdx = idx
-          }
-        })
-        console.log(menberIdx);
-        console.log(menberList);
-        menberList.splice(menberIdx, 1)
-        console.log(menberList);
-        console.log(await doc.update({
+        await signListCollection.where({
+          _openid: event.userInfo.openId,
+          classId: event._id,
+          name: event.name
+        }).remove()
+        await classesCollection.doc(event._id).update({
           data: {
-            menberList: _.set(menberList)
-            // menberList: _.pop()
-          }
-        }))
-
-        const query = userCollection.where({
-          _openid
-        })
-        const signedUpList = await query.get()
-        const classes = signedUpList.data[0].classes
-        classes.splice(classes.indexOf(event._id), 1)
-        await query.update({
-          data: {
-            classes: _.set(classes)
+            leftNum: _.inc(1)
           }
         })
         return {
-          ret: 0,
-          menberIdx
+          ret: 0
         }
       } catch (e) {
         console.error(e)

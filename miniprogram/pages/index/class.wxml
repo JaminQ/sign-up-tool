@@ -11,7 +11,8 @@
         <view class="class-name">{{ item.name }}</view>
         <view class="class-body">
           <view>人数：{{ item.maxNum }}人</view>
-          <view>时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>
+          <view wx:if="{{ item.timeStr }}">时间：{{ item.timeStr }}</view>
+          <view wx:else>时间：{{ wxs.getStudyTime(item.studyDate) }} {{ item.beginTime }}-{{ item.endTime }}</view>
           <view>时长：{{ wxs.getStudyDuration(item.beginTime, item.endTime) }}分钟</view>
           <view>周期：{{ item.cycle }}课</view>
           <view>费用：{{ item.cost }}元</view>

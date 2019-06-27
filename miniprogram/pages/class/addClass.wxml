@@ -157,6 +157,15 @@
           <view class="weui-cell__bd{{ formError.studyDate ? ' weui-cell_warn' : '' }}">星期日</view>
         </label>
       </checkbox-group>
+
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__hd">
+          <view class="weui-label">自定义时间</view>
+        </view>
+        <view class="weui-cell__bd">
+          <input class="weui-input" data-name="timeStr" bindinput="formItemChange" value="{{ formValue.timeStr }}" placeholder="优先用这个" />
+        </view>
+      </view>
     </view>
 
     <view class="weui-btn-area">

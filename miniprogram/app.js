@@ -40,8 +40,6 @@ App({
                 item.menberList = listMap[item._id] || []
               })
 
-              console.log(classes)
-
               this.setClasses(classes.data)
               typeof cb === 'function' && cb()
             }
@@ -112,23 +110,41 @@ App({
   },
   getSignedUpClasses(cb, forceUpdate) {
     this.getGlobalData('signedUpClasses', cb, key => {
-      const _getSignedUpClasses = () => {
-        const db = wx.cloud.database()
-        const _ = db.command
+      const _getClasses = () => {
+        const _getSignedUpClasses = () => {
+          const db = wx.cloud.database()
+          const _ = db.command
 
-        if (this.globalData.userInfo.classes.length) { // 有报过名
-          db.collection('classes').where({
-            _id: _.or(this.globalData.userInfo.classes.map(id => _.eq(id)))
-          }).get().then(res => this.afterAjax(key, res.data, cb))
+          db.collection('sign-list').where({
+            _openid: this.globalData.userInfo._openid
+          }).get().then(res => {
+            if (res.data.length) { // 有报过名
+              const classMap = {};
+              this.globalData.classes.forEach((classItem, idx) => {
+                classMap[classItem._id] = idx
+              })
+              this.afterAjax(key, res.data.map(item => {
+                const classItem = this.globalData.classes[classMap[item.classId]]
+                item.classItem = classItem
+                return item
+              }), cb);
+            } else {
+              this.afterAjax(key, [], cb)
+            }
+          })
+        }
+
+        if (this.globalData.classes === null) {
+          this.getClasses(_getSignedUpClasses)
         } else {
-          this.afterAjax(key, [], cb)
+          _getSignedUpClasses()
         }
       }
 
       if (forceUpdate || this.globalData.userInfo === null) {
-        this.getUserInfo(_getSignedUpClasses, forceUpdate)
+        this.getUserInfo(_getClasses, forceUpdate)
       } else {
-        _getSignedUpClasses()
+        _getClasses()
       }
     }, 1, forceUpdate) // 1天有效期
   },

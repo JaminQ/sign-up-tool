@@ -20,7 +20,8 @@ Page({
       cost: '',
       beginTime: '10:00',
       endTime: '11:00',
-      studyDate: [false, false, false, false, false, false, false]
+      studyDate: [false, false, false, false, false, false, false],
+      timeStr: ''
     },
     formError: {
       name: false,
@@ -75,11 +76,13 @@ Page({
         mask: true
       })
 
+      formValue.leftNum = formValue.leftNum + formValue.maxNum - this.oldMaxNum // 更新剩余名额
+
       wx.cloud.callFunction({
         name: 'class',
         data: {
           type: 'update',
-          _id: this._id,
+          _id: this.options.id,
           formValue
         }
       }).then(res => this.afterAjax(formValue))
@@ -100,6 +103,7 @@ Page({
   validFormValue(formValue) {
     let isFull = true // 表单是否完整
     let isTimeCorrect = true // 时间是否正确
+    let isMaxNumCorrect = true
     const formError = {}
 
     // 验证表单是否完整
@@ -136,7 +140,13 @@ Page({
       isTimeCorrect = false
     }
 
-    if (!isFull || !isTimeCorrect) {
+    // 验证是否小于剩余名额
+    if (this.data.mode === 'edit' && formValue.maxNum < this.oldMaxNum && this.oldMaxNum - formValue.maxNum > formValue.leftNum) {
+      formError.maxNum = true
+      isMaxNumCorrect = false
+    }
+
+    if (!isFull || !isTimeCorrect || !isMaxNumCorrect) {
       const data = {
         formValue: this.data.formValue,
         formError
@@ -147,6 +157,7 @@ Page({
       const titleArr = []
       if (!isFull) titleArr.push('请填写完整的信息')
       if (!isTimeCorrect) titleArr.push('结束时间不能小于开始时间')
+      if (!isMaxNumCorrect) titleArr.push('人数太少导致剩余名额不够啦')
       this.setData(data, () => {
         showNoneToast(titleArr.join('，'))
       })
@@ -181,6 +192,9 @@ Page({
       if (this.options.id !== undefined) { // 表示编辑
         const renderEditForm = () => {
           const formValue = getClass(app.globalData.classes, this.options.id)
+
+          this.oldMaxNum = formValue.maxNum // 记录旧剩余名额
+
           app.globalData.classType.forEach((val, idx) => {
             if (val.name === formValue.type) formValue.typeIdx = idx
           })

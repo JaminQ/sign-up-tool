@@ -38,10 +38,24 @@ page {
   border-color: #ddd transparent transparent transparent;
 }
 
+.no-class {
+  width: 100vw;
+  margin-top: 20rpx;
+  text-align: center;
+}
+
 scroll-view {
   height: 100vh;
   padding-top: 76rpx;
   box-sizing: border-box;
+}
+
+.class-wrap {
+  width: 80vw;
+  margin: 40rpx auto;
+  padding: 20rpx;
+  border: 2rpx solid #a9a9a9;
+  border-radius: 10rpx;
 }
 
 @media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {

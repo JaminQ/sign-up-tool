@@ -41,6 +41,10 @@ Page({
     return app.globalData.signedUpClasses
   },
 
+  viewDetail() {
+    console.log('detail')
+  },
+
   showLoading() {
     wx.showLoading({
       title: '加载中',
