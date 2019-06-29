@@ -4,6 +4,7 @@ import {
 
 App({
   globalData: {
+    isManager: false,
     classes: null,
     classType: null,
     userInfo: null,
@@ -21,10 +22,11 @@ App({
       db.collection('classes').orderBy('createTime', 'desc').get({
         success: classes => {
           // 拉取所有课程的自己的报名记录
-          db.collection('sign-list').where({
-            _openid: this.globalData.openid,
+          const condition = {
             classId: _.in(classes.data.map(item => item._id))
-          }).get({
+          }
+          !this.globalData.isManager && (condition._openid = this.globalData.openid)
+          db.collection('sign-list').where(condition).get({
             success: list => {
               const listMap = {}
               list.data.forEach(item => {
@@ -183,9 +185,21 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
       wx.cloud.init({
-        env: 'develop-zcve4',
+        // env: 'develop-zcve4',
+        env: 'sign-up-652910',
         traceUser: true
       })
+
+      const isManager = () => {
+        const managerList = ['op0Ga5SBv7L-WplYadTXdHH9k0vM', 'op0Ga5e1bCfwp44jLmE4I35KAnKg', 'op0Ga5RNo4x4BObCHj0mGCV89wbQ']
+        this.globalData.isManager = managerList.indexOf(this.globalData.openid) > -1
+      }
+
+      if (this.globalData.openid === null) {
+        this.getOpenid(isManager)
+      } else {
+        isManager()
+      }
     }
   }
 })

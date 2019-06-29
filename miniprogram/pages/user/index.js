@@ -12,19 +12,8 @@ Page({
     }
   },
   onLoad() {
-    const isManager = () => {
-      const managerList = ['op0Ga5SBv7L-WplYadTXdHH9k0vM', 'op0Ga5e1bCfwp44jLmE4I35KAnKg', 'op0Ga5RNo4x4BObCHj0mGCV89wbQ']
-      if (managerList.indexOf(app.globalData.openid) > -1) {
-        this.setData({
-          isManager: true
-        })
-      }
-    }
-
-    if (app.globalData.openid === null) {
-      app.getOpenid(isManager)
-    } else {
-      isManager()
-    }
+    this.setData({
+      isManager: app.globalData.isManager
+    })
   }
 })
