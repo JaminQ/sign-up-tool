@@ -26,10 +26,20 @@ App({
             classId: _.in(classes.data.map(item => item._id))
           }
           !this.globalData.isManager && (condition._openid = this.globalData.openid)
-          db.collection('sign-list').where(condition).get({
-            success: list => {
+          const signListCollection = db.collection('sign-list').where(condition)
+          signListCollection.count().then(({ total }) => {
+            const getAllData = (signList, cb) => {
+              signListCollection.skip(signList.length).get({
+                success: list => {
+                  signList = signList.concat(list.data)
+                  if (signList.length < total) getAllData(signList, cb)
+                  else typeof cb === 'function' && cb(signList)
+                }
+              })
+            }
+            getAllData([], signList => {
               const listMap = {}
-              list.data.forEach(item => {
+              signList.forEach(item => {
                 const classId = item.classId
                 if (listMap[classId]) {
                   listMap[classId].push(item)
@@ -44,7 +54,7 @@ App({
 
               this.setClasses(classes.data)
               typeof cb === 'function' && cb()
-            }
+            })
           })
         }
       })
