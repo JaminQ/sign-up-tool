@@ -1,5 +1,7 @@
 const cloud = require('wx-server-sdk')
-cloud.init()
+cloud.init({
+  env: 'develop-zcve4'
+})
 
 const db = cloud.database()
 const userCollection = db.collection('user')

@@ -1,0 +1,22 @@
+{
+  "name": "sign-up-tool",
+  "version": "0.0.2",
+  "description": "A wxapp for sister",
+  "scripts": {
+    "dev": "node build/switchEnv dev",
+    "pub": "node build/switchEnv pub"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JaminQ/sign-up-tool.git"
+  },
+  "keywords": [
+    "wxapp"
+  ],
+  "author": "JaminQian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JaminQ/sign-up-tool/issues"
+  },
+  "homepage": "https://github.com/JaminQ/sign-up-tool#readme"
+}
