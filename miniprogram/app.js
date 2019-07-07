@@ -70,31 +70,65 @@ App({
     this.globalData.classes = classes
   },
 
-  // 走永久缓存
-  getOpenid(cb) {
-    wx.getStorage({
-      key: 'openid',
-      success: res => { // 有缓存
-        this.globalData.openid = res.data
-        typeof cb === 'function' && cb()
-      },
-      fail: () => { // 无缓存
-        wx.cloud.callFunction({
-          name: 'login',
-          data: {},
-          success: res => {
-            this.globalData.openid = res.result.openid
-            wx.setStorage({ // 缓存openid
-              key: 'openid',
-              data: this.globalData.openid
-            })
-            typeof cb === 'function' && cb()
-          },
-          fail: err => {
-            console.error('[云函数] [login] 调用失败', err)
-          }
-        })
+  getData(dataList, cb) {
+    const _getData = (idx = 0) => {
+      let func = '';
+      switch (dataList[idx]) {
+        case 'openid':
+          func = 'getOpenid'
+          break
+        case 'classes':
+          func = 'getClassesSync'
+          break
+        case 'classType':
+          func = 'getClassTypeSync'
+          break
+        case 'userInfo':
+          func = 'getUserInfoSync'
+          break
+        case 'signedUpClasses':
+          func = 'getSignedUpClassesSync'
+          break
       }
+      this[func]().then(() => {
+        if (idx + 1 < dataList.length) {
+          _getData(idx + 1)
+        } else {
+          typeof cb === 'function' && cb()
+        }
+      })
+    }
+
+    _getData()
+  },
+
+  // 走永久缓存
+  getOpenid() {
+    return new Promise(resolve => {
+      wx.getStorage({
+        key: 'openid',
+        success: ({ data }) => { // 有缓存
+          this.globalData.openid = data
+          resolve()
+        },
+        fail: () => { // 无缓存
+          wx.cloud.callFunction({
+            name: 'login',
+            data: {},
+            success: ({ result }) => {
+              this.globalData.openid = result.openid
+              wx.setStorage({ // 缓存openid
+                key: 'openid',
+                data: this.globalData.openid
+              })
+              resolve()
+            },
+            fail(err) {
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })
+        }
+      })
     })
   },
 
