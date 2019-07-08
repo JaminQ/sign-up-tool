@@ -193,60 +193,36 @@ Page({
     })
   },
   init(forceUpdate, cb) {
-    const getClasses = () => {
-      const getOpenid = () => {
-        const getClass = () => {
-          const render = classItem => {
-            const childInfo = app.globalData.userInfo.childInfo
-            const isSignedUp = childInfo.map(() => false)
-            classItem.menberList.forEach(menber => {
-              if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
-            })
-            this.setData({
-              loading: false,
-              class: classItem,
-              childInfo,
-              isSignedUp
-            }, () => {
-              wx.hideLoading()
-              typeof cb === 'function' && cb()
-            })
-          }
+    this.showLoading()
 
-          this.idx = getClassIdx(app.globalData.classes, this.options.id)
-
-          if (this.options.share === '1') { // 从分享入口进来的
-            this.showLoading()
-            wx.cloud.database().collection('classes').doc(this.options.id).get({
-              success: res => render(res.data)
-            })
-          } else {
-            render(app.globalData.classes[this.idx])
-          }
-        }
-
-        if (app.globalData.openid === null) {
-          this.showLoading()
-          app.getOpenid(getClass)
-        } else {
-          getClass()
-        }
+    app.getData(['openid', 'classes', 'userInfo'], () => {
+      const render = classItem => {
+        const childInfo = app.globalData.userInfo.childInfo
+        const isSignedUp = childInfo.map(() => false)
+        classItem.menberList.forEach(menber => {
+          if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
+        })
+        this.setData({
+          loading: false,
+          class: classItem,
+          childInfo,
+          isSignedUp
+        }, () => {
+          wx.hideLoading()
+          typeof cb === 'function' && cb()
+        })
       }
 
-      if (this.options.share !== undefined || forceUpdate || app.globalData.classes === null) {
-        this.showLoading()
-        app.getClasses(getOpenid)
+      this.idx = getClassIdx(app.globalData.classes, this.options.id)
+
+      if (this.options.share === '1') { // 从分享入口进来的
+        wx.cloud.database().collection('classes').doc(this.options.id).get({
+          success: res => render(res.data)
+        })
       } else {
-        getOpenid()
+        render(app.globalData.classes[this.idx])
       }
-    }
-
-    if (forceUpdate || app.globalData.userInfo === null) {
-      this.showLoading()
-      app.getUserInfo(getClasses, forceUpdate)
-    } else {
-      getClasses()
-    }
+    })
   },
   onLoad() {
     // 如果页面堆栈数大于1，显示返回按钮
