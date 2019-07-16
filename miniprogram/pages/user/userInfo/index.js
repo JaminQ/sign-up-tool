@@ -9,7 +9,12 @@ Page({
   },
 
   init() {
-    const render = () => {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+
+    app.getData(['userInfo'], () => {
       const userInfo = app.globalData.userInfo
       this.setData({
         loading: false,
@@ -17,17 +22,7 @@ Page({
         tel: userInfo.tel || '',
         wxAlias: userInfo.wxAlias || ''
       }, wx.hideLoading)
-    }
-
-    if (app.globalData.userInfo === null) {
-      wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-      app.getUserInfo(render)
-    } else {
-      render()
-    }
+    })
   },
   onLoad() {
     this.init()

@@ -111,7 +111,7 @@ Page({
   },
 
   init() {
-    const render = () => {
+    app.getData(['userInfo'], () => {
       const name = this.options.name
       if (name !== undefined) { // 编辑模式
         this.setData({
@@ -124,17 +124,7 @@ Page({
           loading: false
         }, wx.hideLoading)
       }
-    }
-
-    if (app.globalData.userInfo === null) {
-      wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-      app.getUserInfo(render)
-    } else {
-      render()
-    }
+    })
   },
   onLoad() {
     this.init()

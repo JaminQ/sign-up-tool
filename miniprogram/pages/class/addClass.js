@@ -188,54 +188,40 @@ Page({
   },
 
   init() {
-    const initMode = () => {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+
+    const deps = ['classType']
+    this.options.id !== undefined && deps.push('classes')
+
+    app.getData(deps, () => {
       if (this.options.id !== undefined) { // 表示编辑
-        const renderEditForm = () => {
-          const formValue = getClass(app.globalData.classes, this.options.id)
+        const formValue = getClass(app.globalData.classes, this.options.id)
 
-          this.oldMaxNum = formValue.maxNum // 记录旧剩余名额
+        this.oldMaxNum = formValue.maxNum // 记录旧剩余名额
 
-          app.globalData.classType.forEach((val, idx) => {
-            if (val.name === formValue.type) formValue.typeIdx = idx
-          })
-          delete formValue._id
-          delete formValue._openid
-          delete formValue.createTime
-          delete formValue.type
-          this.setData({
-            loading: false,
-            mode: 'edit',
-            classType: app.globalData.classType,
-            formValue
-          }, wx.hideLoading)
-        }
-
-        if (app.globalData.classes === null) {
-          wx.showLoading({
-            title: '加载中',
-            mask: true
-          })
-          app.getClasses(renderEditForm)
-        } else {
-          renderEditForm()
-        }
+        app.globalData.classType.forEach((val, idx) => {
+          if (val.name === formValue.type) formValue.typeIdx = idx
+        })
+        delete formValue._id
+        delete formValue._openid
+        delete formValue.createTime
+        delete formValue.type
+        this.setData({
+          loading: false,
+          mode: 'edit',
+          classType: app.globalData.classType,
+          formValue
+        }, wx.hideLoading)
       } else {
         this.setData({
           loading: false,
           classType: app.globalData.classType
         }, wx.hideLoading)
       }
-    }
-
-    if (app.globalData.classType === null) {
-      wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-      app.getClassType(initMode)
-    } else {
-      initMode()
-    }
+    })
   },
   onLoad() {
     this.init()

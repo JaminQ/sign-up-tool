@@ -61,7 +61,7 @@ Page({
           app.setClasses(newClasses)
 
           const afterSetPrevPage = () => {
-            const afterGetSingedUpClasses = () => {
+            app.getData(['signedUpClasses'], () => {
               const newClass = JSON.parse(JSON.stringify(this.data.class))
               newClass.menberList.push({
                 classId: this.data.class._id,
@@ -95,13 +95,7 @@ Page({
 
                 hideLoadingAndShowSucToast('报名成功')
               })
-            }
-
-            if (app.globalData.signedUpClasses === null) {
-              app.getSignedUpClasses(afterGetSingedUpClasses)
-            } else {
-              afterGetSingedUpClasses()
-            }
+            })
           }
 
           const pages = getCurrentPages()
@@ -142,7 +136,7 @@ Page({
       app.setClasses(newClasses)
 
       const afterSetPrevPage = () => {
-        const afterGetSignedUpClasses = () => {
+        app.getData(['signedUpClasses'], () => {
           const newClass = JSON.parse(JSON.stringify(this.data.class))
           newClass.menberList.splice(menberIdx, 1)
           newClass.leftNum++
@@ -166,13 +160,7 @@ Page({
 
             hideLoadingAndShowSucToast('退出报名成功')
           })
-        }
-
-        if (app.globalData.signedUpClasses === null) {
-          app.getSignedUpClasses(afterGetSignedUpClasses)
-        } else {
-          afterGetSignedUpClasses()
-        }
+        })
       }
 
       const pages = getCurrentPages()

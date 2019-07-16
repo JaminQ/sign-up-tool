@@ -32,7 +32,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 13,
 			"list": [
 				{
 					"id": 0,
@@ -119,17 +119,17 @@
 					"scene": null
 				},
 				{
-					"id": 11,
+					"id": 12,
 					"name": "编辑课程",
 					"pathName": "pages/class/addClass",
-					"query": "id=XGvwFZT75u22CFVU",
+					"query": "id=f1006ad85d21a14c02a0285e7c3877cf",
 					"scene": null
 				},
 				{
-					"id": 12,
+					"id": 13,
 					"name": "课程详情",
 					"pathName": "pages/class/classDetail",
-					"query": "id=XGvwFZT75u22CFVU",
+					"query": "id=f1006ad85d21a14c02a0285e7c3877cf",
 					"scene": null
 				}
 			]

@@ -16,7 +16,12 @@ Page({
   },
 
   init(forceUpdate, cb) {
-    const render = () => {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+
+    app.getData(['classes'], () => {
       this.setData({
         loading: false,
         class: getClass(app.globalData.classes, this.options.id)
@@ -24,17 +29,7 @@ Page({
         wx.hideLoading()
         typeof cb === 'function' && cb()
       })
-    }
-
-    if (forceUpdate || app.globalData.classes === null) {
-      wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-      app.getClasses(render)
-    } else {
-      render()
-    }
+    })
   },
   onLoad(e) {
     this.init()

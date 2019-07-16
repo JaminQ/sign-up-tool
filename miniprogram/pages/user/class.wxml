@@ -30,6 +30,6 @@
     </view>
   </scroll-view>
   <view wx:else class="no-class">
-    暂无已报名课程，去<navigator url="../index/index" open-type="switchTab" class="link">看看</navigator>
+    暂无已报名课程，去<navigator url="../index/class" open-type="switchTab" class="link">看看</navigator>
   </view>
 </view>

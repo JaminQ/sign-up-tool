@@ -54,7 +54,12 @@ Page({
   },
 
   init(forceUpdate, cb) {
-    const render = () => {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+
+    app.getData(['userInfo'], () => {
       this.setData({
         loading: false,
         from: this.options.from,
@@ -63,17 +68,7 @@ Page({
         wx.hideLoading()
         typeof cb === 'function' && cb()
       })
-    }
-
-    if (forceUpdate || app.globalData.userInfo === null) {
-      wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-      app.getUserInfo(render, forceUpdate)
-    } else {
-      render()
-    }
+    })
   },
   onLoad() {
     this.init()

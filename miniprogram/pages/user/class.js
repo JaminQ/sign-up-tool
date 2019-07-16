@@ -52,49 +52,26 @@ Page({
     })
   },
   init(forceUpdate, cb) {
-    const getClassType = () => {
-      const getSignedUpClasses = () => {
-        const render = () => {
-          const globalData = app.globalData
-          const classType = globalData.classType.map(val => val.name)
-          classType.unshift('全部')
-          const childInfo = JSON.parse(JSON.stringify(globalData.userInfo.childInfo))
-          childInfo.unshift('全部')
+    this.showLoading()
 
-          this.setData({
-            loading: false,
-            classType,
-            childInfo,
-            classes: this.filterData(),
-            openid: globalData.openid
-          }, () => {
-            wx.hideLoading()
-            typeof cb === 'function' && cb()
-          })
-        }
+    app.getData(['signedUpClasses', 'classType', 'openid', 'userInfo'], () => {
+      const globalData = app.globalData
+      const classType = globalData.classType.map(val => val.name)
+      classType.unshift('全部')
+      const childInfo = JSON.parse(JSON.stringify(globalData.userInfo.childInfo))
+      childInfo.unshift('全部')
 
-        if (forceUpdate || app.globalData.signedUpClasses === null) {
-          this.showLoading()
-          app.getSignedUpClasses(render, forceUpdate)
-        } else {
-          render()
-        }
-      }
-
-      if (forceUpdate || app.globalData.classType === null) {
-        this.showLoading()
-        app.getClassType(getSignedUpClasses, forceUpdate)
-      } else {
-        getSignedUpClasses()
-      }
-    }
-
-    if (forceUpdate || app.globalData.openid === null) {
-      this.showLoading()
-      app.getOpenid(getClassType)
-    } else {
-      getClassType()
-    }
+      this.setData({
+        loading: false,
+        classType,
+        childInfo,
+        classes: this.filterData(),
+        openid: globalData.openid
+      }, () => {
+        wx.hideLoading()
+        typeof cb === 'function' && cb()
+      })
+    })
   },
   onLoad() {
     this.init()

@@ -47,7 +47,12 @@ Page({
   },
 
   init(forceUpdate, cb) {
-    const render = () => {
+    wx.showLoading({
+      title: '加载中',
+      mask: true
+    })
+
+    app.getData(['classes'], () => {
       this.setData({
         loading: false,
         classes: app.globalData.classes
@@ -55,17 +60,7 @@ Page({
         wx.hideLoading()
         typeof cb === 'function' && cb()
       })
-    }
-
-    if (forceUpdate || app.globalData.classes === null) {
-      wx.showLoading({
-        title: '加载中',
-        mask: true
-      })
-      app.getClasses(render)
-    } else {
-      render()
-    }
+    })
   },
   onLoad() {
     this.init()

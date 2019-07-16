@@ -50,20 +50,14 @@ Page({
   },
 
   init() {
-    const render = () => {
+    app.getData(['userInfo'], () => {
       const key = this.options.key
       this.setData({
         loading: false,
         key,
         val: app.globalData.userInfo[key]
       })
-    }
-
-    if (app.globalData.userInfo === null) {
-      app.getUserInfo(render)
-    } else {
-      render()
-    }
+    })
   },
   onLoad() {
     this.init()

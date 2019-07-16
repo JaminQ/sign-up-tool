@@ -24,13 +24,13 @@ App({
           func = 'getClasses'
           break
         case 'classType':
-          func = 'getClassTypeSync'
+          func = 'getClassType'
           break
         case 'userInfo':
           func = 'getUserInfo'
           break
         case 'signedUpClasses':
-          func = 'getSignedUpClassesSync'
+          func = 'getSignedUpClasses'
           break
       }
       this[func]().then(() => {
@@ -139,10 +139,16 @@ App({
   },
 
   // 以下3个走时效缓存
-  getClassType(cb, forceUpdate) {
-    this.getGlobalData('classType', cb, key => {
-      wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, cb))
-    }, 0, forceUpdate) // 暂时采用永久有效期
+  getClassType(forceUpdate) {
+    return new Promise(resolve => {
+      if (this.globalData.classType === null) { // 内存里没有
+        this.getGlobalData('classType', resolve, key => {
+          wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, resolve))
+        }, 0, forceUpdate) // 暂时采用永久有效期
+      } else { // 内存里有
+        resolve()
+      }
+    })
   },
   getUserInfo(forceUpdate) {
     return new Promise(resolve => {
@@ -159,45 +165,36 @@ App({
       }
     })
   },
-  getSignedUpClasses(cb, forceUpdate) {
-    this.getGlobalData('signedUpClasses', cb, key => {
-      const _getClasses = () => {
-        const _getSignedUpClasses = () => {
-          const db = wx.cloud.database()
-          const _ = db.command
+  getSignedUpClasses(forceUpdate) {
+    return new Promise(resolve => {
+      if (this.globalData.signedUpClasses === null) { // 内存里没有
+        this.getData(['openid', 'classes'], () => {
+          this.getGlobalData('signedUpClasses', resolve, key => {
+            const db = wx.cloud.database()
+            const _ = db.command
 
-          db.collection('sign-list').where({
-            _openid: this.globalData.userInfo._openid
-          }).get().then(res => {
-            if (res.data.length) { // 有报过名
-              const classMap = {};
-              this.globalData.classes.forEach((classItem, idx) => {
-                classMap[classItem._id] = idx
-              })
-              this.afterAjax(key, res.data.map(item => {
-                const classItem = this.globalData.classes[classMap[item.classId]]
-                item.classItem = classItem
-                return item
-              }), cb);
-            } else {
-              this.afterAjax(key, [], cb)
-            }
-          })
-        }
-
-        if (this.globalData.classes === null) {
-          this.getClasses(_getSignedUpClasses)
-        } else {
-          _getSignedUpClasses()
-        }
+            db.collection('sign-list').where({
+              _openid: this.globalData.openid
+            }).get().then(res => {
+              if (res.data.length) { // 有报过名
+                const classMap = {};
+                this.globalData.classes.forEach((classItem, idx) => {
+                  classMap[classItem._id] = idx
+                })
+                this.afterAjax(key, res.data.map(item => {
+                  item.classItem = this.globalData.classes[classMap[item.classId]]
+                  return item
+                }), resolve);
+              } else {
+                this.afterAjax(key, [], resolve)
+              }
+            })
+          }, 1, forceUpdate) // 1天有效期
+        })
+      } else { // 内存里有
+        resolve()
       }
-
-      if (forceUpdate || this.globalData.userInfo === null) {
-        this.getUserInfo(_getClasses, forceUpdate)
-      } else {
-        _getClasses()
-      }
-    }, 1, forceUpdate) // 1天有效期
+    })
   },
 
   // 时效缓存通用函数
@@ -238,16 +235,10 @@ App({
         traceUser: true
       })
 
-      const isManager = () => {
+      this.getData(['openid'], () => {
         const managerList = ['op0Ga5SBv7L-WplYadTXdHH9k0vM', 'op0Ga5e1bCfwp44jLmE4I35KAnKg', 'op0Ga5RNo4x4BObCHj0mGCV89wbQ']
         this.globalData.isManager = managerList.indexOf(this.globalData.openid) > -1
-      }
-
-      if (this.globalData.openid === null) {
-        this.getOpenid(isManager)
-      } else {
-        isManager()
-      }
+      })
     }
   }
 })
