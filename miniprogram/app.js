@@ -13,27 +13,33 @@ App({
   },
 
   // 获取globalData数据
-  getData(dataList, cb) {
+  getGlobalData(dataList, cb) {
     const _getData = (idx = 0) => {
       let func = '';
-      switch (dataList[idx]) {
-        case 'openid':
-          func = 'getOpenid'
-          break
-        case 'classes':
-          func = 'getClasses'
-          break
-        case 'classType':
-          func = 'getClassType'
-          break
-        case 'userInfo':
-          func = 'getUserInfo'
-          break
-        case 'signedUpClasses':
-          func = 'getSignedUpClasses'
-          break
-      }
-      this[func]().then(() => {
+      new Promise(resolve => {
+        if (this.globalData[dataList[idx]] === null) { // 内存里没有
+          switch (dataList[idx]) {
+            case 'openid':
+              func = 'getOpenid'
+              break
+            case 'classes':
+              func = 'getClasses'
+              break
+            case 'classType':
+              func = 'getClassType'
+              break
+            case 'userInfo':
+              func = 'getUserInfo'
+              break
+            case 'signedUpClasses':
+              func = 'getSignedUpClasses'
+              break
+          }
+          this[func]().then(resolve)
+        } else { // 内存里有
+          resolve()
+        }
+      }).then(() => {
         if (idx + 1 < dataList.length) {
           _getData(idx + 1)
         } else {
@@ -44,12 +50,16 @@ App({
 
     _getData()
   },
+  setGlobalData(key, val, notUpdateStorage) {
+    this.globalData[key] = val
+    !notUpdateStorage && setStorage(key, val)
+  },
 
   // 不走缓存
   getClasses() {
     return new Promise(resolve => {
       if (this.globalData.classes === null) { // 内存里没有
-        this.getData(['openid'], () => {
+        this.getGlobalData(['openid'], () => {
           const db = wx.cloud.database()
           const _ = db.command
 
@@ -100,41 +110,40 @@ App({
       }
     })
   },
-  setClasses(classes) {
-    this.globalData.classes = classes
+  setClasses(val) {
+    this.globalData.classes = val
   },
 
   // 走永久缓存
   getOpenid() {
     return new Promise(resolve => {
-      if (this.globalData.openid === null) { // 内存里没有
-        wx.getStorage({
-          key: 'openid',
-          success: ({ data }) => { // 有缓存
-            this.globalData.openid = data
-            resolve()
-          },
-          fail: () => { // 无缓存
-            wx.cloud.callFunction({
-              name: 'login',
-              data: {},
-              success: ({ result }) => {
-                this.globalData.openid = result.openid
-                wx.setStorage({ // 缓存openid
-                  key: 'openid',
-                  data: this.globalData.openid
-                })
-                resolve()
-              },
-              fail(err) {
-                console.error('[云函数] [login] 调用失败', err)
-              }
-            })
-          }
-        })
-      } else { // 内存里有
-        resolve()
-      }
+      wx.getStorage({
+        key: 'openid',
+        success: ({ data }) => { // 有缓存
+          this.globalData.openid = data
+          resolve()
+        },
+        fail: () => { // 无缓存
+          wx.cloud.callFunction({
+            name: 'login',
+            data: {},
+            success: ({ result }) => {
+              this.setOpenid(result.openid)
+              resolve()
+            },
+            fail(err) {
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })
+        }
+      })
+    })
+  },
+  setOpenid(val) {
+    this.globalData.openid = val
+    wx.setStorage({ // 缓存openid
+      key: 'openid',
+      data: val
     })
   },
 
@@ -142,8 +151,8 @@ App({
   getClassType(forceUpdate) {
     return new Promise(resolve => {
       if (this.globalData.classType === null) { // 内存里没有
-        this.getGlobalData('classType', resolve, key => {
-          wx.cloud.database().collection('class-type').get().then(res => this.afterAjax(key, res.data, resolve))
+        this.getTimelinessData('classType', resolve, key => {
+          wx.cloud.database().collection('class-type').get().then(res => this.setTimelinessData(key, res.data, resolve))
         }, 0, forceUpdate) // 暂时采用永久有效期
       } else { // 内存里有
         resolve()
@@ -153,11 +162,11 @@ App({
   getUserInfo(forceUpdate) {
     return new Promise(resolve => {
       if (this.globalData.userInfo === null) { // 内存里没有
-        this.getData(['openid'], () => {
-          this.getGlobalData('userInfo', resolve, key => {
+        this.getGlobalData(['openid'], () => {
+          this.getTimelinessData('userInfo', resolve, key => {
             wx.cloud.database().collection('user').where({
               _openid: this.globalData.openid
-            }).get().then(res => this.afterAjax(key, res.data[0], resolve))
+            }).get().then(res => this.setTimelinessData(key, res.data[0], resolve))
           }, 86400000, forceUpdate) // 1天有效期
         })
       } else { // 内存里有
@@ -168,8 +177,8 @@ App({
   getSignedUpClasses(forceUpdate) {
     return new Promise(resolve => {
       if (this.globalData.signedUpClasses === null) { // 内存里没有
-        this.getData(['openid', 'classes'], () => {
-          this.getGlobalData('signedUpClasses', resolve, key => {
+        this.getGlobalData(['openid', 'classes'], () => {
+          this.getTimelinessData('signedUpClasses', resolve, key => {
             const db = wx.cloud.database()
             const _ = db.command
 
@@ -181,12 +190,12 @@ App({
                 this.globalData.classes.forEach((classItem, idx) => {
                   classMap[classItem._id] = idx
                 })
-                this.afterAjax(key, res.data.map(item => {
+                this.setTimelinessData(key, res.data.map(item => {
                   item.classItem = this.globalData.classes[classMap[item.classId]]
                   return item
                 }), resolve);
               } else {
-                this.afterAjax(key, [], resolve)
+                this.setTimelinessData(key, [], resolve)
               }
             })
           }, 1, forceUpdate) // 1天有效期
@@ -198,30 +207,25 @@ App({
   },
 
   // 时效缓存通用函数
-  getGlobalData(key, cb, ajaxCb, timeout, forceUpdate) {
-    const ajax = () => {
-      typeof ajaxCb === 'function' && ajaxCb(key)
-    }
-
-    wx.getStorage({
-      key,
-      success: res => {
-        if (forceUpdate || timeout && ((new Date()) * 1 - res.data.time) > timeout) { // 超时，重新拉取数据
-          ajax()
-        } else {
-          this.setGlobalData(key, res.data.data, true) // 无需重新写入缓存
-          typeof cb === 'function' && cb()
-        }
-      },
-      fail: ajax
+  getTimelinessData(key, success, fail, timeout, forceUpdate) {
+    new Promise(resolve => {
+      wx.getStorage({
+        key,
+        success: res => {
+          if (forceUpdate || timeout && ((new Date()) * 1 - res.data.time) > timeout) { // 超时，重新拉取数据
+            resolve()
+          } else {
+            this.setGlobalData(key, res.data.data, true) // 无需重新写入缓存
+            typeof success === 'function' && success()
+          }
+        },
+        fail: resolve
+      })
+    }).then(() => {
+      typeof fail === 'function' && fail(key)
     })
   },
-  setGlobalData(key, val, notUpdate) {
-    this.globalData[key] = val
-    !notUpdate && setStorage(key, val)
-  },
-  afterAjax(key, val, cb) {
-    console.log(key, val)
+  setTimelinessData(key, val, cb) {
     this.setGlobalData(key, val) // 需要写入缓存
     typeof cb === 'function' && cb()
   },
@@ -235,7 +239,7 @@ App({
         traceUser: true
       })
 
-      this.getData(['openid'], () => {
+      this.getGlobalData(['openid'], () => {
         const managerList = ['op0Ga5SBv7L-WplYadTXdHH9k0vM', 'op0Ga5e1bCfwp44jLmE4I35KAnKg', 'op0Ga5RNo4x4BObCHj0mGCV89wbQ']
         this.globalData.isManager = managerList.indexOf(this.globalData.openid) > -1
       })

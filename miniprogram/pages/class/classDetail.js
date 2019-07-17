@@ -21,7 +21,7 @@ Page({
       mask: true
     })
 
-    app.getData(['classes'], () => {
+    app.getGlobalData(['classes'], () => {
       this.setData({
         loading: false,
         class: getClass(app.globalData.classes, this.options.id)

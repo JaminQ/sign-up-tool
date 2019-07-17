@@ -52,7 +52,7 @@ Page({
       mask: true
     })
 
-    app.getData(['classes'], () => {
+    app.getGlobalData(['classes'], () => {
       this.setData({
         loading: false,
         classes: app.globalData.classes

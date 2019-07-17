@@ -59,7 +59,7 @@ Page({
       mask: true
     })
 
-    app.getData(['userInfo'], () => {
+    app.getGlobalData(['userInfo'], () => {
       this.setData({
         loading: false,
         from: this.options.from,

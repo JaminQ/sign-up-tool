@@ -12,7 +12,7 @@ Page({
       mask: true
     })
 
-    app.getData(['openid', 'classes'], () => {
+    app.getGlobalData(['openid', 'classes'], () => {
       this.setData({
         loading: false,
         classes: app.globalData.classes

@@ -61,7 +61,7 @@ Page({
           app.setClasses(newClasses)
 
           const afterSetPrevPage = () => {
-            app.getData(['signedUpClasses'], () => {
+            app.getGlobalData(['signedUpClasses'], () => {
               const newClass = JSON.parse(JSON.stringify(this.data.class))
               newClass.menberList.push({
                 classId: this.data.class._id,
@@ -136,7 +136,7 @@ Page({
       app.setClasses(newClasses)
 
       const afterSetPrevPage = () => {
-        app.getData(['signedUpClasses'], () => {
+        app.getGlobalData(['signedUpClasses'], () => {
           const newClass = JSON.parse(JSON.stringify(this.data.class))
           newClass.menberList.splice(menberIdx, 1)
           newClass.leftNum++
@@ -183,7 +183,7 @@ Page({
   init(forceUpdate, cb) {
     this.showLoading()
 
-    app.getData(['openid', 'classes', 'userInfo'], () => {
+    app.getGlobalData(['openid', 'classes', 'userInfo'], () => {
       const render = classItem => {
         const childInfo = app.globalData.userInfo.childInfo
         const isSignedUp = childInfo.map(() => false)

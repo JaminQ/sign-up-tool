@@ -50,7 +50,7 @@ Page({
   },
 
   init() {
-    app.getData(['userInfo'], () => {
+    app.getGlobalData(['userInfo'], () => {
       const key = this.options.key
       this.setData({
         loading: false,

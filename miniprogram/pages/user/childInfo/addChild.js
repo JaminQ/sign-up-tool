@@ -111,7 +111,7 @@ Page({
   },
 
   init() {
-    app.getData(['userInfo'], () => {
+    app.getGlobalData(['userInfo'], () => {
       const name = this.options.name
       if (name !== undefined) { // 编辑模式
         this.setData({

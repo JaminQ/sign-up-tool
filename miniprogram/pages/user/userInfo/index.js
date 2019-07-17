@@ -14,7 +14,7 @@ Page({
       mask: true
     })
 
-    app.getData(['userInfo'], () => {
+    app.getGlobalData(['userInfo'], () => {
       const userInfo = app.globalData.userInfo
       this.setData({
         loading: false,

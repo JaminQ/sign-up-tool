@@ -196,7 +196,7 @@ Page({
     const deps = ['classType']
     this.options.id !== undefined && deps.push('classes')
 
-    app.getData(deps, () => {
+    app.getGlobalData(deps, () => {
       if (this.options.id !== undefined) { // 表示编辑
         const formValue = getClass(app.globalData.classes, this.options.id)
 

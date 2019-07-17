@@ -54,7 +54,7 @@ Page({
   init(forceUpdate, cb) {
     this.showLoading()
 
-    app.getData(['signedUpClasses', 'classType', 'openid', 'userInfo'], () => {
+    app.getGlobalData(['signedUpClasses', 'classType', 'openid', 'userInfo'], () => {
       const globalData = app.globalData
       const classType = globalData.classType.map(val => val.name)
       classType.unshift('全部')
