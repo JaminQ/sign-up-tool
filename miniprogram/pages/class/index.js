@@ -52,7 +52,10 @@ Page({
       mask: true
     })
 
-    app.getGlobalData(['classes'], () => {
+    app.getGlobalData([{
+      key: 'classes',
+      forceUpdate
+    }], () => {
       this.setData({
         loading: false,
         classes: app.globalData.classes

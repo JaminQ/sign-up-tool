@@ -21,7 +21,10 @@ Page({
       mask: true
     })
 
-    app.getGlobalData(['classes'], () => {
+    app.getGlobalData([{
+      key: 'classes',
+      forceUpdate
+    }], () => {
       this.setData({
         loading: false,
         class: getClass(app.globalData.classes, this.options.id)

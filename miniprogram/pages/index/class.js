@@ -12,7 +12,10 @@ Page({
       mask: true
     })
 
-    app.getGlobalData(['openid', 'classes'], () => {
+    app.getGlobalData(['openid', {
+      key: 'classes',
+      forceUpdate
+    }], () => {
       this.setData({
         loading: false,
         classes: app.globalData.classes

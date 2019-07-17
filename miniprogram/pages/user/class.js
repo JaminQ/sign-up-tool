@@ -26,6 +26,7 @@ Page({
       const childInfoVal = this.data.childInfo[childInfoIdx]
       app.globalData.signedUpClasses.forEach(item => {
         let menberExist = false
+        console.log(item)
         for (let menberI = 0, menberLen = item.menberList.length; menberI < menberLen; menberI++) {
           if (childInfoIdx === 0 || item.menberList[menberI].name === childInfoVal) {
             menberExist = true
@@ -54,7 +55,16 @@ Page({
   init(forceUpdate, cb) {
     this.showLoading()
 
-    app.getGlobalData(['signedUpClasses', 'classType', 'openid', 'userInfo'], () => {
+    app.getGlobalData(['openid', {
+      key: 'signedUpClasses',
+      forceUpdate
+    }, {
+      key: 'classType',
+      forceUpdate
+    }, {
+      key: 'userInfo',
+      forceUpdate
+    }], () => {
       const globalData = app.globalData
       const classType = globalData.classType.map(val => val.name)
       classType.unshift('全部')

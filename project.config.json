@@ -32,7 +32,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 13,
+			"current": 2,
 			"list": [
 				{
 					"id": 0,
@@ -45,14 +45,14 @@
 					"id": 1,
 					"name": "报名页面",
 					"pathName": "pages/index/classDetail",
-					"query": "id=281fb4bf5d05e67602682bcd2378c8c4",
+					"query": "id=f1006ad85d21a14c02a0285e7c3877cf",
 					"scene": null
 				},
 				{
 					"id": 2,
 					"name": "报名页面（分享）",
 					"pathName": "pages/index/classDetail",
-					"query": "id=281fb4bf5d05e67602682bcd2378c8c4&share=1",
+					"query": "id=f1006ad85d21a14c02a0285e7c3877cf&share=1",
 					"scene": 1008
 				},
 				{

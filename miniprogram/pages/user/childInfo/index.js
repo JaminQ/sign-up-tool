@@ -59,7 +59,10 @@ Page({
       mask: true
     })
 
-    app.getGlobalData(['userInfo'], () => {
+    app.getGlobalData([{
+      key: 'userInfo',
+      forceUpdate
+    }], () => {
       this.setData({
         loading: false,
         from: this.options.from,
