@@ -30,5 +30,16 @@ Page({
   },
   onLoad() {
     this.init()
+  },
+  onShow() {
+    // 更新数据
+    if (!this.data.loading) {
+      const userInfo = app.globalData.userInfo
+      this.setData({
+        name: userInfo.name || '',
+        tel: userInfo.tel || '',
+        wxAlias: userInfo.wxAlias || ''
+      })
+    }
   }
 })

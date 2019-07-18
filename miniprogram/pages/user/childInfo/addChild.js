@@ -23,9 +23,10 @@ Page({
           data: {
             childInfo: _.push([name])
           }
-        }).then(res => this.setPrevPageData(childInfo, () => {
+        }).then(res => {
+          this.updateChildInfo(childInfo)
           hideLoadingAndBack('添加成功')
-        }))
+        })
       })
     }
   },
@@ -39,9 +40,10 @@ Page({
           data: {
             childInfo: _.set(childInfo)
           }
-        }).then(res => this.setPrevPageData(childInfo, () => {
+        }).then(res => {
+          this.updateChildInfo(childInfo)
           hideLoadingAndBack('更新成功')
-        }))
+        })
       })
     }
   },
@@ -78,12 +80,11 @@ Page({
       const doc = db.collection('user').doc(app.globalData.userInfo._id)
       doc.get().then(res => {
         if (res.data.childInfo.indexOf(name) > -1) { // 查重
-          this.setPrevPageData(res.data.childInfo, () => {
-            wx.hideLoading({
-              success() {
-                alert(`“${name}”该学员已存在`)
-              }
-            })
+          this.updateChildInfo(res.data.childInfo)
+          wx.hideLoading({
+            success() {
+              alert(`“${name}”该学员已存在`)
+            }
           })
         } else {
           typeof cb === 'function' && cb(res.data.childInfo, doc, db.command)
@@ -91,23 +92,12 @@ Page({
       })
     }
   },
-  setPrevPageData(childInfo, cb) {
-    const pages = getCurrentPages()
-    pages[pages.length - 2].setData({
-      childInfo
-    }, () => {
-      const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
-      newUserInfo.childInfo = childInfo
-      app.setGlobalData('userInfo', newUserInfo)
 
-      if (this.options.from === 'class') { // 如果是从课程详情页（报名页）进入学员信息页的，则更新这个页面的childInfo
-        pages[pages.length - 3].setData({
-          childInfo
-        }, cb)
-      } else {
-        typeof cb === 'function' && cb()
-      }
-    })
+  updateChildInfo(childInfo) {
+    // 更新globalData.userInfo
+    const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
+    newUserInfo.childInfo = childInfo
+    app.setGlobalData('userInfo', newUserInfo)
   },
 
   init() {

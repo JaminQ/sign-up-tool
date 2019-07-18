@@ -80,6 +80,12 @@ Page({
   onLoad() {
     this.init()
   },
+  onShow() {
+    // 更新数据
+    !this.data.loading && this.setData({
+      childInfo: app.globalData.userInfo.childInfo
+    })
+  },
   onPullDownRefresh() {
     this.init(true, wx.stopPullDownRefresh)
   }

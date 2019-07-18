@@ -37,14 +37,10 @@ Page({
       wx.cloud.database().collection('user').doc(app.globalData.userInfo._id).update({
         data
       }).then(res => {
-        const pages = getCurrentPages()
-        pages[pages.length - 2].setData(data, () => {
-          const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
-          Object.assign(newUserInfo, data)
-          app.setGlobalData('userInfo', newUserInfo)
+        // 更新globalData.userInfo
+        app.setGlobalData('userInfo', Object.assign(JSON.parse(JSON.stringify(app.globalData.userInfo)), data))
 
-          hideLoadingAndBack('保存成功')
-        })
+        hideLoadingAndBack('保存成功')
       })
     }
   },

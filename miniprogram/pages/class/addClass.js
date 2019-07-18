@@ -177,14 +177,9 @@ Page({
     } else {
       Object.assign(newClasses[getClassIdx(app.globalData.classes, this.options.id)], classItem)
     }
-    app.setClasses(newClasses)
+    app.setGlobalData('classes', newClasses)
 
-    const pages = getCurrentPages()
-    pages[pages.length - 2].setData({
-      classes: newClasses
-    }, () => {
-      hideLoadingAndBack(`${mode === 'add' ? '添加' : '更新'}成功`)
-    })
+    hideLoadingAndBack(`${mode === 'add' ? '添加' : '更新'}成功`)
   },
 
   init() {

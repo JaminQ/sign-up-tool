@@ -59,7 +59,7 @@ Page({
         } else {
           // 报名学员对象
           const menber = {
-            // TODO: 加个_id
+            _id: res.result._id,
             _openid: app.globalData.openid,
             classId: this.data.class._id,
             name,
@@ -73,10 +73,10 @@ Page({
           app.setGlobalData('classes', newClasses)
 
           // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+          // TODO: 因为内存里可能有数据，所以还是要更新一下
           if (app.globalData.signedUpClasses) {
             const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
             newSignedUpClasses.push(Object.assign({
-              _id: res.result._id,
               classItem: newClass
             }, menber))
             app.setGlobalData('signedUpClasses', newSignedUpClasses)
@@ -132,6 +132,7 @@ Page({
       app.setGlobalData('classes', newClasses)
 
       // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+      // TODO: 因为内存里可能有数据，所以还是要更新一下
       if (app.globalData.signedUpClasses) {
         const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
         let signedUpClassIdx = -1
@@ -216,6 +217,12 @@ Page({
     }
 
     this.init()
+  },
+  onShow() {
+    // 更新数据
+    !this.data.loading && this.setData({
+      childInfo: app.globalData.userInfo.childInfo
+    })
   },
   onPullDownRefresh() {
     this.init(true, wx.stopPullDownRefresh)

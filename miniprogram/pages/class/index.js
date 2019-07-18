@@ -34,7 +34,7 @@ Page({
           }).then(res => {
             const newClasses = JSON.parse(JSON.stringify(this.data.classes))
             newClasses.splice(idx, 1)
-            app.setClasses(newClasses)
+            app.setGlobalData('classes', newClasses)
             this.setData({
               classes: newClasses
             }, () => {
@@ -71,6 +71,12 @@ Page({
   },
   onLoad() {
     this.init()
+  },
+  onShow() {
+    // 更新数据
+    !this.data.loading && this.setData({
+      classes: app.globalData.classes
+    })
   },
   onPullDownRefresh() {
     this.init(true, wx.stopPullDownRefresh)
