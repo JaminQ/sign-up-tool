@@ -8,7 +8,6 @@
 
 ## 优化
 
-- showLoading
 - 更新页面数据机制
 
 ## bugs

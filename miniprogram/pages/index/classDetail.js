@@ -174,49 +174,50 @@ Page({
     })
   },
 
-  showLoading() {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-  },
   init(forceUpdate, cb) {
-    this.showLoading()
+    app.getGlobalData({
+      keys: ['openid', {
+        key: 'classes',
+        forceUpdate
+      }, {
+        key: 'userInfo',
+        forceUpdate
+      }],
+      showLoading() {
+        wx.showLoading({
+          title: '加载中',
+          mask: true
+        })
+      },
+      success: () => {
+        new Promise(resolve => {
+          this.idx = getClassIdx(app.globalData.classes, this.options.id)
 
-    app.getGlobalData(['openid', {
-      key: 'classes',
-      forceUpdate
-    }, {
-      key: 'userInfo',
-      forceUpdate
-    }], () => {
-      new Promise(resolve => {
-        this.idx = getClassIdx(app.globalData.classes, this.options.id)
-
-        if (this.options.share === '1') { // 从分享入口进来的
-          wx.cloud.database().collection('classes').doc(this.options.id).get({
-            success: res => resolve(res.data)
+          if (this.options.share === '1') { // 从分享入口进来的
+            wx.cloud.database().collection('classes').doc(this.options.id).get({
+              success: res => resolve(res.data)
+            })
+          } else {
+            resolve(app.globalData.classes[this.idx])
+          }
+        }).then(classItem => {
+          const childInfo = app.globalData.userInfo.childInfo
+          const isSignedUp = childInfo.map(() => false)
+          console.log(classItem)
+          classItem.menberList.forEach(menber => {
+            if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
           })
-        } else {
-          resolve(app.globalData.classes[this.idx])
-        }
-      }).then(classItem => {
-        const childInfo = app.globalData.userInfo.childInfo
-        const isSignedUp = childInfo.map(() => false)
-        console.log(classItem)
-        classItem.menberList.forEach(menber => {
-          if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
+          this.setData({
+            loading: false,
+            class: classItem,
+            childInfo,
+            isSignedUp
+          }, () => {
+            wx.hideLoading()
+            typeof cb === 'function' && cb()
+          })
         })
-        this.setData({
-          loading: false,
-          class: classItem,
-          childInfo,
-          isSignedUp
-        }, () => {
-          wx.hideLoading()
-          typeof cb === 'function' && cb()
-        })
-      })
+      }
     })
   },
   onLoad() {

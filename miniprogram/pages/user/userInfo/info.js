@@ -50,13 +50,16 @@ Page({
   },
 
   init() {
-    app.getGlobalData(['userInfo'], () => {
-      const key = this.options.key
-      this.setData({
-        loading: false,
-        key,
-        val: app.globalData.userInfo[key]
-      })
+    app.getGlobalData({
+      keys: ['userInfo'],
+      success: () => {
+        const key = this.options.key
+        this.setData({
+          loading: false,
+          key,
+          val: app.globalData.userInfo[key]
+        })
+      }
     })
   },
   onLoad() {

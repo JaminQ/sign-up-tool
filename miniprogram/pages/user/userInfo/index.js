@@ -9,19 +9,23 @@ Page({
   },
 
   init() {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-
-    app.getGlobalData(['userInfo'], () => {
-      const userInfo = app.globalData.userInfo
-      this.setData({
-        loading: false,
-        name: userInfo.name || '',
-        tel: userInfo.tel || '',
-        wxAlias: userInfo.wxAlias || ''
-      }, wx.hideLoading)
+    app.getGlobalData({
+      keys: ['userInfo'],
+      showLoading() {
+        wx.showLoading({
+          title: '加载中',
+          mask: true
+        })
+      },
+      success: () => {
+        const userInfo = app.globalData.userInfo
+        this.setData({
+          loading: false,
+          name: userInfo.name || '',
+          tel: userInfo.tel || '',
+          wxAlias: userInfo.wxAlias || ''
+        }, wx.hideLoading)
+      }
     })
   },
   onLoad() {

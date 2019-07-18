@@ -188,38 +188,42 @@ Page({
   },
 
   init() {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
+    const keys = ['classType']
+    this.options.id !== undefined && keys.push('classes')
 
-    const deps = ['classType']
-    this.options.id !== undefined && deps.push('classes')
-
-    app.getGlobalData(deps, () => {
-      if (this.options.id !== undefined) { // 表示编辑
-        const formValue = getClass(app.globalData.classes, this.options.id)
-
-        this.oldMaxNum = formValue.maxNum // 记录旧剩余名额
-
-        app.globalData.classType.forEach((val, idx) => {
-          if (val.name === formValue.type) formValue.typeIdx = idx
+    app.getGlobalData({
+      keys,
+      showLoading() {
+        wx.showLoading({
+          title: '加载中',
+          mask: true
         })
-        delete formValue._id
-        delete formValue._openid
-        delete formValue.createTime
-        delete formValue.type
-        this.setData({
-          loading: false,
-          mode: 'edit',
-          classType: app.globalData.classType,
-          formValue
-        }, wx.hideLoading)
-      } else {
-        this.setData({
-          loading: false,
-          classType: app.globalData.classType
-        }, wx.hideLoading)
+      },
+      success: () => {
+        if (this.options.id !== undefined) { // 表示编辑
+          const formValue = getClass(app.globalData.classes, this.options.id)
+
+          this.oldMaxNum = formValue.maxNum // 记录旧剩余名额
+
+          app.globalData.classType.forEach((val, idx) => {
+            if (val.name === formValue.type) formValue.typeIdx = idx
+          })
+          delete formValue._id
+          delete formValue._openid
+          delete formValue.createTime
+          delete formValue.type
+          this.setData({
+            loading: false,
+            mode: 'edit',
+            classType: app.globalData.classType,
+            formValue
+          }, wx.hideLoading)
+        } else {
+          this.setData({
+            loading: false,
+            classType: app.globalData.classType
+          }, wx.hideLoading)
+        }
       }
     })
   },

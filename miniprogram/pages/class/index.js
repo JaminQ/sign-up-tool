@@ -47,22 +47,26 @@ Page({
   },
 
   init(forceUpdate, cb) {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-
-    app.getGlobalData([{
-      key: 'classes',
-      forceUpdate
-    }], () => {
-      this.setData({
-        loading: false,
-        classes: app.globalData.classes
-      }, () => {
-        wx.hideLoading()
-        typeof cb === 'function' && cb()
-      })
+    app.getGlobalData({
+      keys: [{
+        key: 'classes',
+        forceUpdate
+      }],
+      showLoading() {
+        wx.showLoading({
+          title: '加载中',
+          mask: true
+        })
+      },
+      success: () => {
+        this.setData({
+          loading: false,
+          classes: app.globalData.classes
+        }, () => {
+          wx.hideLoading()
+          typeof cb === 'function' && cb()
+        })
+      }
     })
   },
   onLoad() {

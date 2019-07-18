@@ -111,18 +111,21 @@ Page({
   },
 
   init() {
-    app.getGlobalData(['userInfo'], () => {
-      const name = this.options.name
-      if (name !== undefined) { // 编辑模式
-        this.setData({
-          loading: false,
-          mode: 'edit',
-          name
-        }, wx.hideLoading)
-      } else {
-        this.setData({
-          loading: false
-        }, wx.hideLoading)
+    app.getGlobalData({
+      keys: ['userInfo'],
+      success: () => {
+        const name = this.options.name
+        if (name !== undefined) { // 编辑模式
+          this.setData({
+            loading: false,
+            mode: 'edit',
+            name
+          }, wx.hideLoading)
+        } else {
+          this.setData({
+            loading: false
+          }, wx.hideLoading)
+        }
       }
     })
   },

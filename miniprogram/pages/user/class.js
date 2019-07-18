@@ -46,41 +46,42 @@ Page({
     console.log('detail')
   },
 
-  showLoading() {
-    wx.showLoading({
-      title: '加载中',
-      mask: true
-    })
-  },
   init(forceUpdate, cb) {
-    this.showLoading()
+    app.getGlobalData({
+      keys: ['openid', {
+        key: 'signedUpClasses',
+        forceUpdate
+      }, {
+        key: 'classType',
+        forceUpdate
+      }, {
+        key: 'userInfo',
+        forceUpdate
+      }],
+      showLoading() {
+        wx.showLoading({
+          title: '加载中',
+          mask: true
+        })
+      },
+      success: () => {
+        const globalData = app.globalData
+        const classType = globalData.classType.map(val => val.name)
+        classType.unshift('全部')
+        const childInfo = JSON.parse(JSON.stringify(globalData.userInfo.childInfo))
+        childInfo.unshift('全部')
 
-    app.getGlobalData(['openid', {
-      key: 'signedUpClasses',
-      forceUpdate
-    }, {
-      key: 'classType',
-      forceUpdate
-    }, {
-      key: 'userInfo',
-      forceUpdate
-    }], () => {
-      const globalData = app.globalData
-      const classType = globalData.classType.map(val => val.name)
-      classType.unshift('全部')
-      const childInfo = JSON.parse(JSON.stringify(globalData.userInfo.childInfo))
-      childInfo.unshift('全部')
-
-      this.setData({
-        loading: false,
-        classType,
-        childInfo,
-        classes: this.filterData(),
-        openid: globalData.openid
-      }, () => {
-        wx.hideLoading()
-        typeof cb === 'function' && cb()
-      })
+        this.setData({
+          loading: false,
+          classType,
+          childInfo,
+          classes: this.filterData(),
+          openid: globalData.openid
+        }, () => {
+          wx.hideLoading()
+          typeof cb === 'function' && cb()
+        })
+      }
     })
   },
   onLoad() {
