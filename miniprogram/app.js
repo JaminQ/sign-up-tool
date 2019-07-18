@@ -3,6 +3,8 @@ import {
 } from 'common/utils'
 
 App({
+  /****************************************** 公共属性 BEGIN ******************************************/
+
   globalData: {
     isManager: false,
     classes: null,
@@ -12,11 +14,19 @@ App({
     openid: null
   },
 
+  /******************************************  公共属性 END  ******************************************/
+
+
+
+
+
+  /****************************************** 公共方法 BEGIN ******************************************/
+
   // 获取globalData数据
   getGlobalData({ keys, showLoading, success }) {
     // 递归func
     const _getGlobalData = (idx = 0) => {
-      let func = '';
+      let func = ''
       new Promise(resolve => {
         const item = keys[idx]
         let key = ''
@@ -31,19 +41,19 @@ App({
         if (this.globalData[key] === null || forceUpdate) { // 内存里没有或者强制更新
           switch (key) {
             case 'openid':
-              func = 'getOpenid'
+              func = '_getOpenid'
               break
             case 'classes':
-              func = 'getClasses'
+              func = '_getClasses'
               break
             case 'classType':
-              func = 'getClassType'
+              func = '_getClassType'
               break
             case 'userInfo':
-              func = 'getUserInfo'
+              func = '_getUserInfo'
               break
             case 'signedUpClasses':
-              func = 'getSignedUpClasses'
+              func = '_getSignedUpClasses'
               break
           }
           this[func]({ forceUpdate, showLoading }).then(resolve)
@@ -83,13 +93,74 @@ App({
     // Go
     _getGlobalData()
   },
-  setGlobalData(key, val, notUpdateStorage) {
-    this.globalData[key] = val
-    !notUpdateStorage && setStorage(key, val)
+
+  // 设置globalData数据
+  setGlobalData(key, val, notSetStorage) {
+    let func = ''
+    switch (key) {
+      case 'openid':
+        this.globalData.openid = val
+        !notSetStorage && wx.setStorage({ // 永久缓存
+          key: 'openid',
+          data: val
+        })
+        break
+      case 'classes': // 不缓存
+        this.globalData.classes = val
+        break
+      case 'classType':
+      case 'userInfo':
+      case 'signedUpClasses':
+      default:
+        this.globalData[key] = val
+        !notSetStorage && wx.setStorage({ // 时效缓存
+          key,
+          data: {
+            data: val,
+            time: new Date() * 1
+          }
+        })
+    }
+  },
+
+  /******************************************  公共方法 END  ******************************************/
+
+
+
+
+
+  /****************************************** 私有方法 BEGIN ******************************************/
+
+  // 走永久缓存
+  _getOpenid({ showLoading }) {
+    return new Promise(resolve => {
+      wx.getStorage({
+        key: 'openid',
+        success: ({ data }) => { // 有缓存
+          this.globalData.openid = data
+          resolve()
+        },
+        fail: () => { // 无缓存
+          typeof showLoading === 'function' && showLoading()
+
+          wx.cloud.callFunction({
+            name: 'login',
+            data: {},
+            success: ({ result }) => {
+              this.setGlobalData('openid', result.openid)
+              resolve()
+            },
+            fail(err) {
+              console.error('[云函数] [login] 调用失败', err)
+            }
+          })
+        }
+      })
+    })
   },
 
   // 不走缓存
-  getClasses({ showLoading }) {
+  _getClasses({ showLoading }) {
     return new Promise(resolve => {
       this.getGlobalData({
         keys: ['openid'],
@@ -134,7 +205,7 @@ App({
                     item.menberList = listMap[item._id] || []
                   })
 
-                  this.setClasses(classes.data)
+                  this.setGlobalData('classes', classes.data)
                   resolve()
                 })
               })
@@ -144,77 +215,45 @@ App({
       })
     })
   },
-  setClasses(val) {
-    this.globalData.classes = val
-  },
-
-  // 走永久缓存
-  getOpenid({ showLoading }) {
-    return new Promise(resolve => {
-      wx.getStorage({
-        key: 'openid',
-        success: ({ data }) => { // 有缓存
-          this.globalData.openid = data
-          resolve()
-        },
-        fail: () => { // 无缓存
-          typeof showLoading === 'function' && showLoading()
-
-          wx.cloud.callFunction({
-            name: 'login',
-            data: {},
-            success: ({ result }) => {
-              this.setOpenid(result.openid)
-              resolve()
-            },
-            fail(err) {
-              console.error('[云函数] [login] 调用失败', err)
-            }
-          })
-        }
-      })
-    })
-  },
-  setOpenid(val) {
-    this.globalData.openid = val
-    wx.setStorage({ // 缓存openid
-      key: 'openid',
-      data: val
-    })
-  },
 
   // 以下3个走时效缓存
-  getClassType({ forceUpdate, showLoading }) {
+  _getClassType({ forceUpdate, showLoading }) {
     return new Promise(resolve => {
-      this.getTimelinessData('classType', resolve, key => {
+      this._getTimelinessData('classType', resolve, key => {
         typeof showLoading === 'function' && showLoading()
 
-        wx.cloud.database().collection('class-type').get().then(res => this.setTimelinessData(key, res.data, resolve))
+        wx.cloud.database().collection('class-type').get().then(res => {
+          this.setGlobalData(key, res.data)
+          resolve()
+        })
       }, 0, forceUpdate) // 暂时采用永久有效期
     })
   },
-  getUserInfo({ forceUpdate, showLoading }) {
+  _getUserInfo({ forceUpdate, showLoading }) {
     return new Promise(resolve => {
       this.getGlobalData({
         keys: ['openid'],
         success: () => {
-          this.getTimelinessData('userInfo', resolve, key => {
+          this._getTimelinessData('userInfo', resolve, key => {
             typeof showLoading === 'function' && showLoading()
 
             wx.cloud.database().collection('user').where({
               _openid: this.globalData.openid
-            }).get().then(res => this.setTimelinessData(key, res.data[0], resolve))
+            }).get().then(res => {
+              this.setGlobalData(key, res.data[0])
+              resolve()
+            })
           }, 86400000, forceUpdate) // 1天有效期
         }
       })
     })
   },
-  getSignedUpClasses({ forceUpdate, showLoading }) {
+  _getSignedUpClasses({ forceUpdate, showLoading }) {
     return new Promise(resolve => {
       this.getGlobalData({
         keys: ['openid', 'classes'],
         success: () => {
-          this.getTimelinessData('signedUpClasses', resolve, key => {
+          this._getTimelinessData('signedUpClasses', resolve, key => {
             typeof showLoading === 'function' && showLoading()
 
             const db = wx.cloud.database()
@@ -224,16 +263,18 @@ App({
               _openid: this.globalData.openid
             }).get().then(res => {
               if (res.data.length) { // 有报过名
-                const classMap = {};
+                const classMap = {}
                 this.globalData.classes.forEach((classItem, idx) => {
                   classMap[classItem._id] = idx
                 })
-                this.setTimelinessData(key, res.data.map(item => {
+                this.setGlobalData(key, res.data.map(item => {
                   item.classItem = this.globalData.classes[classMap[item.classId]]
                   return item
-                }), resolve);
+                }))
+                resolve()
               } else {
-                this.setTimelinessData(key, [], resolve)
+                this.setGlobalData(key, [])
+                resolve()
               }
             })
           }, 86400000, forceUpdate) // 1天有效期
@@ -243,7 +284,7 @@ App({
   },
 
   // 时效缓存通用函数
-  getTimelinessData(key, success, fail, timeout, forceUpdate) {
+  _getTimelinessData(key, success, fail, timeout, forceUpdate) {
     new Promise(resolve => {
       wx.getStorage({
         key,
@@ -261,10 +302,14 @@ App({
       typeof fail === 'function' && fail(key)
     })
   },
-  setTimelinessData(key, val, cb) {
-    this.setGlobalData(key, val) // 需要写入缓存
-    typeof cb === 'function' && cb()
-  },
+
+  /******************************************  私有方法 END  ******************************************/
+
+
+
+
+
+  /****************************************** APP事件 BEGIN ******************************************/
 
   onLaunch() {
     if (!wx.cloud) {
@@ -284,4 +329,6 @@ App({
       })
     }
   }
+
+  /******************************************  APP事件 END  ******************************************/
 })

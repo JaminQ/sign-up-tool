@@ -16,12 +16,14 @@ Page({
     isSignedUp: []
   },
 
+  // 返回
   back() {
     wx.navigateBack({
       delta: 1
     })
   },
 
+  // 报名
   signUp(e) {
     if (e.detail.userInfo !== undefined) {
       wx.showLoading({
@@ -41,77 +43,65 @@ Page({
         }
       }).then(res => {
         if (res.result.ret === -10001) { // 课程报名人数已满
-          this.setData({
-            spaceLeft: 0
-          }, () => {
-            wx.hideLoading({
-              success() {
-                alert('已经没有名额啦~')
-              }
-            })
-          })
-        } else {
+          // 更新globalData.classes
           const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
-          newClasses[this.idx].menberList.push({
-            classId: this.data.class._id,
+          newClasses[this.idx].leftNum = 0 // 将剩余名额设为0
+          app.setGlobalData('classes', newClasses)
+
+          // 更新页面数据
+          this.setData({
+            class: newClasses[this.idx]
+          }, () => wx.hideLoading({
+            success() {
+              alert('已经没有名额啦~')
+            }
+          }))
+        } else {
+          // 报名学员对象
+          const menber = {
+            // TODO: 加个_id
             _openid: app.globalData.openid,
+            classId: this.data.class._id,
             name,
             tel
-          })
-          app.setClasses(newClasses)
-
-          const afterSetPrevPage = () => {
-            app.getGlobalData(['signedUpClasses'], () => {
-              const newClass = JSON.parse(JSON.stringify(this.data.class))
-              newClass.menberList.push({
-                classId: this.data.class._id,
-                _openid: app.globalData.openid,
-                name,
-                tel
-              })
-              newClass.leftNum--
-
-              const newIsSignedUp = JSON.parse(JSON.stringify(this.data.isSignedUp))
-              newIsSignedUp[e.target.dataset.idx * 1] = true
-
-              this.setData({
-                class: newClass,
-                isSignedUp: newIsSignedUp
-              }, () => {
-                const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-                let hasPushed = false
-                newSignedUpClasses.forEach(classItem => {
-                  if (classItem._id === res.result._id) hasPushed = true
-                })
-                !hasPushed && newSignedUpClasses.push({
-                  classId: this.data.class._id,
-                  classItem: newClass,
-                  name,
-                  tel,
-                  _id: res.result._id,
-                  _openid: app.globalData.openid
-                })
-                app.setGlobalData('signedUpClasses', newSignedUpClasses)
-
-                hideLoadingAndShowSucToast('报名成功')
-              })
-            })
           }
 
-          const pages = getCurrentPages()
-          if (pages.length > 1) {
-            pages[pages.length - 2].setData({
-              classes: newClasses
-            }, afterSetPrevPage)
-          } else {
-            afterSetPrevPage()
+          // 更新globalData.classes
+          const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
+          newClasses[this.idx].menberList.push(menber)
+          newClasses[this.idx].leftNum-- // 名额-1
+          app.setGlobalData('classes', newClasses)
+
+          // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+          if (app.globalData.signedUpClasses) {
+            const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+            newSignedUpClasses.push(Object.assign({
+              _id: res.result._id,
+              classItem: newClass
+            }, menber))
+            app.setGlobalData('signedUpClasses', newSignedUpClasses)
           }
+
+          // 更新页面数据
+          const newClass = this.data.class
+          newClass.menberList.push(menber)
+          newClass.leftNum-- // 名额-1
+
+          const newIsSignedUp = this.data.isSignedUp
+          newIsSignedUp[e.target.dataset.idx * 1] = true
+
+          this.setData({
+            class: newClass,
+            isSignedUp: newIsSignedUp
+          }, () => hideLoadingAndShowSucToast('报名成功'))
         }
       })
     } else { // 拒绝授权
       alert('拒绝授权的话不能报名哦~')
     }
   },
+
+  // 退出报名
   signOut(e) {
     wx.showLoading({
       title: '退出报名中',
@@ -127,50 +117,47 @@ Page({
         name: childName
       }
     }).then(res => {
-      let menberIdx = -1
+      // 更新globalData.classes
       const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
-      newClasses[this.idx].menberList.forEach((menber, idx) => {
-        if (menber._openid === app.globalData.openid && menber.name === childName) menberIdx = idx
+      let menberIdx = -1
+      newClasses[this.idx].menberList.some((menber, idx) => {
+        if (menber._openid === app.globalData.openid && menber.name === childName) {
+          menberIdx = idx
+          return true
+        }
+        return false
       })
       newClasses[this.idx].menberList.splice(menberIdx, 1)
-      app.setClasses(newClasses)
+      newClasses[this.idx].leftNum++ // 名额+1
+      app.setGlobalData('classes', newClasses)
 
-      const afterSetPrevPage = () => {
-        app.getGlobalData(['signedUpClasses'], () => {
-          const newClass = JSON.parse(JSON.stringify(this.data.class))
-          newClass.menberList.splice(menberIdx, 1)
-          newClass.leftNum++
-
-          const newIsSignedUp = JSON.parse(JSON.stringify(this.data.isSignedUp))
-          newIsSignedUp[e.target.dataset.idx * 1] = false
-
-          this.setData({
-            class: newClass,
-            isSignedUp: newIsSignedUp
-          }, () => {
-            const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-            let signedUpClassIdx = -1
-            newSignedUpClasses.forEach((classItem, idx) => {
-              if (classItem.classItem._id === this.data.class._id && classItem.name === childName) signedUpClassIdx = idx
-            })
-            if (signedUpClassIdx > -1) {
-              newSignedUpClasses.splice(signedUpClassIdx, 1)
-              app.setGlobalData('signedUpClasses', newSignedUpClasses)
-            }
-
-            hideLoadingAndShowSucToast('退出报名成功')
-          })
+      // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+      if (app.globalData.signedUpClasses) {
+        const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+        let signedUpClassIdx = -1
+        newSignedUpClasses.some((classItem, idx) => {
+          if (classItem.classItem._id === this.data.class._id && classItem.name === childName) {
+            signedUpClassIdx = idx
+            return true
+          }
+          return false
         })
+        newSignedUpClasses.splice(signedUpClassIdx, 1)
+        app.setGlobalData('signedUpClasses', newSignedUpClasses)
       }
 
-      const pages = getCurrentPages()
-      if (pages.length > 1) {
-        pages[pages.length - 2].setData({
-          classes: newClasses
-        }, afterSetPrevPage)
-      } else {
-        afterSetPrevPage()
-      }
+      // 更新页面数据
+      const newClass = this.data.class
+      newClass.menberList.splice(menberIdx, 1)
+      newClass.leftNum++ // 名额+1
+
+      const newIsSignedUp = this.data.isSignedUp
+      newIsSignedUp[e.target.dataset.idx * 1] = false
+
+      this.setData({
+        class: newClass,
+        isSignedUp: newIsSignedUp
+      }, () => hideLoadingAndShowSucToast('退出报名成功'))
     })
   },
 
@@ -180,9 +167,9 @@ Page({
         key: 'classes',
         forceUpdate
       }, {
-        key: 'userInfo',
-        forceUpdate
-      }],
+          key: 'userInfo',
+          forceUpdate
+        }],
       showLoading() {
         wx.showLoading({
           title: '加载中',
