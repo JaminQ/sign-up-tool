@@ -168,9 +168,9 @@ Page({
         key: 'classes',
         forceUpdate
       }, {
-          key: 'userInfo',
-          forceUpdate
-        }],
+        key: 'userInfo',
+        forceUpdate
+      }],
       showLoading() {
         wx.showLoading({
           title: '加载中',
@@ -183,7 +183,7 @@ Page({
 
           if (this.options.share === '1') { // 从分享入口进来的
             wx.cloud.database().collection('classes').doc(this.options.id).get({
-              success: res => resolve(res.data)
+              success: res => app.getMenberList([res.data], classes => resolve(classes[0])) // 获取menberList
             })
           } else {
             resolve(app.globalData.classes[this.idx])
@@ -191,7 +191,6 @@ Page({
         }).then(classItem => {
           const childInfo = app.globalData.userInfo.childInfo
           const isSignedUp = childInfo.map(() => false)
-          console.log(classItem)
           classItem.menberList.forEach(menber => {
             if (menber._openid === app.globalData.openid) isSignedUp[childInfo.indexOf(menber.name)] = true
           })

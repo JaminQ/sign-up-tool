@@ -119,6 +119,48 @@ App({
     }
   },
 
+  // 获取课程报名成员
+  getMenberList(classes, cb) {
+    const db = wx.cloud.database()
+    const _ = db.command
+
+    // 拉取所有课程的自己的报名记录
+    const condition = {
+      classId: _.in(classes.map(item => item._id))
+    }
+    !this.globalData.isManager && (condition._openid = this.globalData.openid)
+    const signListCollection = db.collection('sign-list').where(condition)
+    signListCollection.count().then(({ total }) => { // 先获取总数
+      // 递归获取所有数据
+      const getAllData = (signList, cb) => {
+        signListCollection.skip(signList.length).get({
+          success: list => {
+            signList = signList.concat(list.data)
+            if (signList.length < total) getAllData(signList, cb)
+            else typeof cb === 'function' && cb(signList)
+          }
+        })
+      }
+      getAllData([], signList => {
+        const listMap = {}
+        signList.forEach(item => {
+          const classId = item.classId
+          if (listMap[classId]) {
+            listMap[classId].push(item)
+          } else {
+            listMap[classId] = [item]
+          }
+        })
+
+        classes.forEach(item => {
+          item.menberList = listMap[item._id] || []
+        })
+
+        typeof cb === 'function' && cb(classes)
+      })
+    })
+  },
+
   /******************************************  公共方法 END  ******************************************/
 
 
@@ -169,41 +211,10 @@ App({
           // 按时间降序来获取所有课程
           db.collection('classes').orderBy('createTime', 'desc').get({
             success: classes => {
-              // 拉取所有课程的自己的报名记录
-              const condition = {
-                classId: _.in(classes.data.map(item => item._id))
-              }
-              !this.globalData.isManager && (condition._openid = this.globalData.openid)
-              const signListCollection = db.collection('sign-list').where(condition)
-              signListCollection.count().then(({ total }) => { // 先获取总数
-                // 递归获取所有数据
-                const getAllData = (signList, cb) => {
-                  signListCollection.skip(signList.length).get({
-                    success: list => {
-                      signList = signList.concat(list.data)
-                      if (signList.length < total) getAllData(signList, cb)
-                      else typeof cb === 'function' && cb(signList)
-                    }
-                  })
-                }
-                getAllData([], signList => {
-                  const listMap = {}
-                  signList.forEach(item => {
-                    const classId = item.classId
-                    if (listMap[classId]) {
-                      listMap[classId].push(item)
-                    } else {
-                      listMap[classId] = [item]
-                    }
-                  })
-
-                  classes.data.forEach(item => {
-                    item.menberList = listMap[item._id] || []
-                  })
-
-                  this.setGlobalData('classes', classes.data)
-                  resolve()
-                })
+              // 获取menberList
+              this.getMenberList(classes.data, newClasses => {
+                this.setGlobalData('classes', newClasses)
+                resolve()
               })
             }
           })
