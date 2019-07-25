@@ -44,7 +44,7 @@
 
 .sign-up-area {
   width: 90%;
-  margin: 20rpx auto 0;
+  margin: 20rpx auto 40rpx;
   color: #4b4b4b;
 }
 

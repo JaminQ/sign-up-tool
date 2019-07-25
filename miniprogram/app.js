@@ -129,35 +129,41 @@ App({
       classId: _.in(classes.map(item => item._id))
     }
     !this.globalData.isManager && (condition._openid = this.globalData.openid)
-    const signListCollection = db.collection('sign-list').where(condition)
-    signListCollection.count().then(({ total }) => { // 先获取总数
-      // 递归获取所有数据
-      const getAllData = (signList, cb) => {
-        signListCollection.skip(signList.length).get({
-          success: list => {
-            signList = signList.concat(list.data)
-            if (signList.length < total) getAllData(signList, cb)
-            else typeof cb === 'function' && cb(signList)
+    this.getDBData(db.collection('sign-list').where(condition), signList => {
+      const listMap = {}
+      signList.forEach(item => {
+        const classId = item.classId
+        if (listMap[classId]) {
+          listMap[classId].push(item)
+        } else {
+          listMap[classId] = [item]
+        }
+      })
+
+      classes.forEach(item => {
+        item.menberList = listMap[item._id] || []
+      })
+
+      typeof cb === 'function' && cb(classes)
+    })
+  },
+
+  // 递归获取所有数据
+  getDBData(collection, success) {
+    collection.count().then(({ total }) => { // 先获取总数
+      // 递归函数
+      const recursive = (dataList = []) => {
+        collection.skip(dataList.length).get({
+          success: ({ data }) => {
+            dataList = dataList.concat(data)
+            if (dataList.length < total) recursive(dataList)
+            else typeof success === 'function' && success(dataList)
           }
         })
       }
-      getAllData([], signList => {
-        const listMap = {}
-        signList.forEach(item => {
-          const classId = item.classId
-          if (listMap[classId]) {
-            listMap[classId].push(item)
-          } else {
-            listMap[classId] = [item]
-          }
-        })
 
-        classes.forEach(item => {
-          item.menberList = listMap[item._id] || []
-        })
-
-        typeof cb === 'function' && cb(classes)
-      })
+      // GO
+      recursive()
     })
   },
 
@@ -266,18 +272,24 @@ App({
             const db = wx.cloud.database()
             const _ = db.command
 
-            db.collection('sign-list').where({
+            this.getDBData(db.collection('sign-list').where({
               _openid: this.globalData.openid
-            }).get().then(res => {
-              if (res.data.length) { // 有报过名
+            }), signList => {
+              if (signList.length) { // 有报过名
                 const classMap = {}
                 this.globalData.classes.forEach((classItem, idx) => {
                   classMap[classItem._id] = idx
                 })
-                this.setGlobalData(key, res.data.map(item => {
-                  item.classItem = this.globalData.classes[classMap[item.classId]]
-                  return item
-                }))
+
+                const signedUpClasses = []
+                signList.forEach(item => {
+                  const classItem = this.globalData.classes[classMap[item.classId]]
+                  if (classItem) {
+                    item.classItem = classItem
+                    signedUpClasses.push(item)
+                  }
+                })
+                this.setGlobalData(key, signedUpClasses)
                 resolve()
               } else {
                 this.setGlobalData(key, [])
@@ -323,7 +335,7 @@ App({
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
       wx.cloud.init({
-        env: 'develop-zcve4',
+        env: 'sign-up-652910',
         traceUser: true
       })
 

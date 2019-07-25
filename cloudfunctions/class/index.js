@@ -1,6 +1,6 @@
 const cloud = require('wx-server-sdk')
 cloud.init({
-  env: 'develop-zcve4'
+  env: 'sign-up-652910'
 })
 
 const db = cloud.database()

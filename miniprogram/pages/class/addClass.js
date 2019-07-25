@@ -174,6 +174,7 @@ Page({
     const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
 
     if (mode === 'add') {
+      classItem.menberList = []
       newClasses.unshift(classItem)
     } else {
       Object.assign(newClasses[getClassIdx(app.globalData.classes, this.options.id)], classItem)

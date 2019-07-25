@@ -15,9 +15,10 @@ page {
 }
 
 .page.page-bg {
-  height: 100vh;
+  min-height: 100vh;
   background-image: url('https://res.wx.qq.com/op_res/s2le_ABGw-oox5bkke_bNkIldFQthVyCskmVsXw88Y1vtV6Qc_nrkJ0P-usfFmlJ');
   background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .page.with-tab-bar {
@@ -31,7 +32,7 @@ page {
 
 .navbar__back {
   padding: 14px 16px;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 28px;
   line-height: 1;

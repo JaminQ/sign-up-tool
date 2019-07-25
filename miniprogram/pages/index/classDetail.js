@@ -72,6 +72,10 @@ Page({
           newClasses[this.idx].leftNum-- // 名额-1
           app.setGlobalData('classes', newClasses)
 
+          const newClass = this.data.class
+          newClass.menberList.push(menber)
+          newClass.leftNum-- // 名额-1
+
           // 更新globalData.signedUpClasses
           new Promise(resolve => {
             if (app.globalData.signedUpClasses) { // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
@@ -92,10 +96,6 @@ Page({
             }
           }).then(() => {
             // 更新页面数据
-            const newClass = this.data.class
-            newClass.menberList.push(menber)
-            newClass.leftNum-- // 名额-1
-
             const newIsSignedUp = this.data.isSignedUp
             newIsSignedUp[e.target.dataset.idx * 1] = true
 
