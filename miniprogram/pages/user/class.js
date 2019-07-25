@@ -20,15 +20,15 @@ Page({
     this.setData(data)
   },
   filterData(classTypeIdx = this.data.classTypeIdx, childInfoIdx = this.data.childInfoIdx) {
-    if (this.data.classType.length) {
+    if (this.data.classType.length) { // 非页面初次加载
       const newClasses = []
       const classTypeVal = this.data.classType[classTypeIdx]
       const childInfoVal = this.data.childInfo[childInfoIdx]
       app.globalData.signedUpClasses.forEach(item => {
         let menberExist = false
-        console.log(item)
-        for (let menberI = 0, menberLen = item.menberList.length; menberI < menberLen; menberI++) {
-          if (childInfoIdx === 0 || item.menberList[menberI].name === childInfoVal) {
+        const menberList = item.classItem.menberList
+        for (let menberI = 0, menberLen = menberList.length; menberI < menberLen; menberI++) {
+          if (childInfoIdx === 0 || menberList[menberI].name === childInfoVal) {
             menberExist = true
             break
           }
@@ -39,7 +39,7 @@ Page({
       })
       return newClasses
     }
-    return app.globalData.signedUpClasses
+    return app.globalData.signedUpClasses // 页面初次加载直接返回signedUpClasses
   },
 
   viewDetail() {

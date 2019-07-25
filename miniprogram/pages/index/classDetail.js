@@ -72,28 +72,38 @@ Page({
           newClasses[this.idx].leftNum-- // 名额-1
           app.setGlobalData('classes', newClasses)
 
-          // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
-          // TODO: 因为内存里可能有数据，所以还是要更新一下
-          if (app.globalData.signedUpClasses) {
-            const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-            newSignedUpClasses.push(Object.assign({
-              classItem: newClass
-            }, menber))
-            app.setGlobalData('signedUpClasses', newSignedUpClasses)
-          }
+          // 更新globalData.signedUpClasses
+          new Promise(resolve => {
+            if (app.globalData.signedUpClasses) { // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+              const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+              newSignedUpClasses.push(Object.assign({
+                classItem: newClass
+              }, menber))
+              app.setGlobalData('signedUpClasses', newSignedUpClasses)
+              resolve()
+            } else { // 内存里没有则强制获取一次，获取后会自动更新到内存和缓存里
+              app.getGlobalData({
+                keys: [{
+                  key: 'signedUpClasses',
+                  forceUpdate: true
+                }],
+                success: resolve
+              })
+            }
+          }).then(() => {
+            // 更新页面数据
+            const newClass = this.data.class
+            newClass.menberList.push(menber)
+            newClass.leftNum-- // 名额-1
 
-          // 更新页面数据
-          const newClass = this.data.class
-          newClass.menberList.push(menber)
-          newClass.leftNum-- // 名额-1
+            const newIsSignedUp = this.data.isSignedUp
+            newIsSignedUp[e.target.dataset.idx * 1] = true
 
-          const newIsSignedUp = this.data.isSignedUp
-          newIsSignedUp[e.target.dataset.idx * 1] = true
-
-          this.setData({
-            class: newClass,
-            isSignedUp: newIsSignedUp
-          }, () => hideLoadingAndShowSucToast('报名成功'))
+            this.setData({
+              class: newClass,
+              isSignedUp: newIsSignedUp
+            }, () => hideLoadingAndShowSucToast('报名成功'))
+          })
         }
       })
     } else { // 拒绝授权
@@ -131,34 +141,44 @@ Page({
       newClasses[this.idx].leftNum++ // 名额+1
       app.setGlobalData('classes', newClasses)
 
-      // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
-      // TODO: 因为内存里可能有数据，所以还是要更新一下
-      if (app.globalData.signedUpClasses) {
-        const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
-        let signedUpClassIdx = -1
-        newSignedUpClasses.some((classItem, idx) => {
-          if (classItem.classItem._id === this.data.class._id && classItem.name === childName) {
-            signedUpClassIdx = idx
-            return true
-          }
-          return false
-        })
-        newSignedUpClasses.splice(signedUpClassIdx, 1)
-        app.setGlobalData('signedUpClasses', newSignedUpClasses)
-      }
+      // 更新globalData.signedUpClasses
+      new Promise(resolve => {
+        if (app.globalData.signedUpClasses) { // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+          const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+          let signedUpClassIdx = -1
+          newSignedUpClasses.some((classItem, idx) => {
+            if (classItem.classItem._id === this.data.class._id && classItem.name === childName) {
+              signedUpClassIdx = idx
+              return true
+            }
+            return false
+          })
+          newSignedUpClasses.splice(signedUpClassIdx, 1)
+          app.setGlobalData('signedUpClasses', newSignedUpClasses)
+          resolve()
+        } else { // 内存里没有则强制获取一次，获取后会自动更新到内存和缓存里
+          app.getGlobalData({
+            keys: [{
+              key: 'signedUpClasses',
+              forceUpdate: true
+            }],
+            success: resolve
+          })
+        }
+      }).then(() => {
+        // 更新页面数据
+        const newClass = this.data.class
+        newClass.menberList.splice(menberIdx, 1)
+        newClass.leftNum++ // 名额+1
 
-      // 更新页面数据
-      const newClass = this.data.class
-      newClass.menberList.splice(menberIdx, 1)
-      newClass.leftNum++ // 名额+1
+        const newIsSignedUp = this.data.isSignedUp
+        newIsSignedUp[e.target.dataset.idx * 1] = false
 
-      const newIsSignedUp = this.data.isSignedUp
-      newIsSignedUp[e.target.dataset.idx * 1] = false
-
-      this.setData({
-        class: newClass,
-        isSignedUp: newIsSignedUp
-      }, () => hideLoadingAndShowSucToast('退出报名成功'))
+        this.setData({
+          class: newClass,
+          isSignedUp: newIsSignedUp
+        }, () => hideLoadingAndShowSucToast('退出报名成功'))
+      })
     })
   },
 

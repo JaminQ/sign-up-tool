@@ -1,6 +1,8 @@
 page {
   box-sizing: border-box;
   height: 100vh;
+  /* picker-bar启用的时候再加上 */
+  /* padding-top: 76rpx; */
 }
 
 .picker-bar {
@@ -44,22 +46,10 @@ page {
   text-align: center;
 }
 
-scroll-view {
-  height: 100vh;
-  padding-top: 76rpx;
-  box-sizing: border-box;
-}
-
 .class-wrap {
   width: 80vw;
   margin: 40rpx auto;
   padding: 20rpx;
   border: 2rpx solid #a9a9a9;
   border-radius: 10rpx;
-}
-
-@media only screen and (device-width : 375px) and (device-height : 812px) and (-webkit-device-pixel-ratio : 3) {
-  scroll-view {
-    padding-bottom: 34px;
-  }
 }

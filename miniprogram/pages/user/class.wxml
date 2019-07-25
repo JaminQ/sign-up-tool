@@ -1,6 +1,6 @@
 <wxs src="../class/index.wxs" module="wxs" />
 
-<view hidden="{{ loading }}" class="page page-no-padding">
+<view hidden="{{ loading }}" class="page">
   <!-- <view class="picker-bar">
     <view class="picker-bar-item">
       <picker bindchange="pickerChange" value="{{ classTypeIdx }}" range="{{ classType }}" data-key="classTypeIdx">
@@ -20,7 +20,7 @@
     </view>
   </view> -->
 
-  <scroll-view wx:if="{{ classes.length }}" scroll-y>
+  <block wx:if="{{ classes.length }}">
     <view class="class-wrap" wx:for="{{ classes }}" wx:key="_id" bindtap="viewDetail" data-idx="{{ index }}">
       <view>课程名：{{ item.classItem.name }}</view>
       <view>课程类型：{{ item.classItem.type }}</view>
@@ -28,7 +28,7 @@
       <view wx:else>上课时间：{{ wxs.getStudyTime(item.classItem.studyDate) }} {{ item.classItem.beginTime }}-{{ item.classItem.endTime }}</view>
       <view>报名学员：{{ item.name }}</view>
     </view>
-  </scroll-view>
+  </block>
   <view wx:else class="no-class">
     暂无已报名课程，去<navigator url="../index/class" open-type="switchTab" class="link">看看</navigator>
   </view>

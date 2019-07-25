@@ -97,6 +97,7 @@ Page({
     formValue.maxNum = formValue.maxNum * 1
     formValue.cycle = formValue.cycle * 1
     formValue.cost = formValue.cost * 1
+    delete formValue.menberList
 
     return formValue
   },
