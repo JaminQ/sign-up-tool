@@ -7,7 +7,8 @@ const app = getApp()
 Page({
   data: {
     loading: true,
-    classes: []
+    classes: [],
+    xList: []
   },
 
   removeClass(e) {
@@ -61,7 +62,8 @@ Page({
       success: () => {
         this.setData({
           loading: false,
-          classes: app.globalData.classes
+          classes: app.globalData.classes,
+          xList: app.globalData.classes.map(item => 0)
         }, () => {
           wx.hideLoading()
           typeof cb === 'function' && cb()
@@ -73,9 +75,10 @@ Page({
     this.init()
   },
   onShow() {
-    // 更新数据
+    // 更新数据，顺便重置movableView
     !this.data.loading && this.setData({
-      classes: app.globalData.classes
+      classes: app.globalData.classes,
+      xList: this.data.xList.map(x => 0)
     })
   },
   onPullDownRefresh() {

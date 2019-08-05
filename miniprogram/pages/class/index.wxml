@@ -3,7 +3,7 @@
 <view hidden="{{ loading }}" class="page">
   <scroll-view wx:if="{{ classes.length }}" scroll-y>
     <movable-area wx:for="{{ classes }}" wx:key="_id">
-      <movable-view direction="horizontal" out-of-bounds inertia>
+      <movable-view direction="horizontal" out-of-bounds inertia x="{{ xList[index] }}">
         <navigator url="classDetail?id={{ item._id }}" class="class-wrap">
           <view>课程名：{{ item.name }}</view>
           <view>课程类型：{{ item.type }}</view>
