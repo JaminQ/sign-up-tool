@@ -16,7 +16,7 @@ movable-view {
 
 navigator {
   position: relative;
-  box-sizing:border-box;
+  box-sizing: border-box;
   width: 100vw;
   padding: 20rpx 30rpx;
 }

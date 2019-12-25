@@ -5,6 +5,7 @@ cloud.init({
 
 const db = cloud.database()
 const _ = db.command
+const managerList = ['op0Ga5SBv7L-WplYadTXdHH9k0vM', 'op0Ga5e1bCfwp44jLmE4I35KAnKg', 'op0Ga5RNo4x4BObCHj0mGCV89wbQ'] // 管理员openId
 const classesCollection = db.collection('classes')
 const userCollection = db.collection('user')
 const signListCollection = db.collection('sign-list')
@@ -12,12 +13,26 @@ const signListCollection = db.collection('sign-list')
 exports.main = async (event, context) => {
   console.log('event:', event)
 
+  const openId = event.userInfo.openId
+
+  // 拦截请求
+  if (['add', 'update', 'remove'].indexOf(event.type) > -1) { // 管理员相关操作
+    // 拦截非管理员用户的请求
+    if (managerList.indexOf(openId) === -1) {
+      console.log('非管理员')
+      return {
+        ret: -10000 // 非管理员
+      }
+    }
+  } else { // 非管理员相关操作
+  }
+
   switch (event.type) {
     case 'add':
       try {
         const data = event.formValue
         data.leftNum = data.maxNum
-        data._openid = event.userInfo.openId
+        data._openid = openId
         data.createTime = db.serverDate()
 
         const res = await classesCollection.add({
@@ -63,7 +78,7 @@ exports.main = async (event, context) => {
           return await signListCollection.add({
             data: {
               classId: event._id,
-              _openid: event.userInfo.openId,
+              _openid: openId,
               name: event.name,
               tel: event.tel,
               createTime: db.serverDate()
@@ -81,7 +96,7 @@ exports.main = async (event, context) => {
     case 'signOut':
       try {
         await signListCollection.where({
-          _openid: event.userInfo.openId,
+          _openid: openId,
           classId: event._id,
           name: event.name
         }).remove()

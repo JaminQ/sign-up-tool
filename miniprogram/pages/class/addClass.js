@@ -64,7 +64,7 @@ Page({
           type: 'add',
           formValue
         }
-      }).then(res => this.afterAjax(res.result._data))
+      }).then(res => this.afterAjax(res, res.result._data))
     }
   },
   editClass() {
@@ -85,7 +85,7 @@ Page({
           _id: this.options.id,
           formValue
         }
-      }).then(res => this.afterAjax(formValue))
+      }).then(res => this.afterAjax(res, formValue))
     }
   },
   getFormValue() {
@@ -169,7 +169,13 @@ Page({
     })
     return true
   },
-  afterAjax(classItem) {
+  afterAjax(res, classItem) {
+    // 拦截非管理员
+    if (res.result.ret === -10000) {
+      showNoneToast('非管理员不可操作')
+      return
+    }
+
     const mode = this.data.mode
     const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
 

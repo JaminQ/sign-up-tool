@@ -1,4 +1,5 @@
 import {
+  showNoneToast,
   hideLoadingAndShowSucToast
 } from '../../common/utils'
 
@@ -33,6 +34,12 @@ Page({
               _id: classItem._id
             }
           }).then(res => {
+            // 拦截非管理员
+            if (res.result.ret === -10000) {
+              showNoneToast('非管理员不可操作')
+              return
+            }
+
             const newClasses = JSON.parse(JSON.stringify(this.data.classes))
             newClasses.splice(idx, 1)
             app.setGlobalData('classes', newClasses)
