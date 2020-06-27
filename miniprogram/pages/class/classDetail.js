@@ -1,6 +1,7 @@
 import {
   alert,
-  getClass
+  hideLoadingAndShowSucToast,
+  getClassIdx
 } from '../../common/utils'
 
 const app = getApp()
@@ -8,8 +9,7 @@ const app = getApp()
 Page({
   data: {
     loading: true,
-    class: {},
-    xList: []
+    class: {}
   },
 
   exportData() {
@@ -25,36 +25,61 @@ Page({
       cancelText: '取消',
       success: res => {
         if (res.confirm) {
-          alert('最近忙，晚点再弄，记得提醒我')
+          wx.showLoading({
+            title: '删除中',
+            mask: true
+          })
 
-          // wx.showLoading({
-          //   title: '删除中',
-          //   mask: true
-          // })
-
-          // const db = wx.cloud.database()
-          // const doc = db.collection('user').doc(app.globalData.userInfo._id)
-          // const _ = db.command
-
-          // doc.get().then(res => {
-          //   const childInfo = res.data.childInfo
-          //   childInfo.splice(childInfo.indexOf(name), 1)
-          //   doc.update({
-          //     data: {
-          //       childInfo: _.set(childInfo)
-          //     }
-          //   }).then(res => {
-          //     this.setData({
-          //       childInfo
-          //     }, () => {
-          //       const newUserInfo = JSON.parse(JSON.stringify(app.globalData.userInfo))
-          //       newUserInfo.childInfo = childInfo
-          //       app.setGlobalData('userInfo', newUserInfo)
-
-          //       hideLoadingAndShowSucToast('删除成功')
-          //     })
-          //   })
-          // })
+          wx.cloud.callFunction({
+            name: 'class',
+            data: {
+              type: 'signOut',
+              _id: this.data.class._id,
+              name
+            }
+          }).then(res => {
+            // 更新globalData.classes
+            const newClasses = JSON.parse(JSON.stringify(app.globalData.classes))
+            const menberIdx = e.currentTarget.dataset.idx
+            newClasses[this.idx].menberList.splice(menberIdx, 1)
+            newClasses[this.idx].leftNum++ // 名额+1
+            app.setGlobalData('classes', newClasses)
+      
+            // 更新globalData.signedUpClasses
+            new Promise(resolve => {
+              if (app.globalData.signedUpClasses) { // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
+                const newSignedUpClasses = JSON.parse(JSON.stringify(app.globalData.signedUpClasses))
+                let signedUpClassIdx = -1
+                newSignedUpClasses.some((classItem, idx) => {
+                  if (classItem.classItem._id === this.data.class._id && classItem.name === name) {
+                    signedUpClassIdx = idx
+                    return true
+                  }
+                  return false
+                })
+                newSignedUpClasses.splice(signedUpClassIdx, 1)
+                app.setGlobalData('signedUpClasses', newSignedUpClasses)
+                resolve()
+              } else { // 内存里没有则强制获取一次，获取后会自动更新到内存和缓存里
+                app.getGlobalData({
+                  keys: [{
+                    key: 'signedUpClasses',
+                    forceUpdate: true
+                  }],
+                  success: resolve
+                })
+              }
+            }).then(() => {
+              // 更新页面数据
+              const newClass = this.data.class
+              newClass.menberList.splice(menberIdx, 1)
+              newClass.leftNum++ // 名额+1
+      
+              this.setData({
+                class: newClass
+              }, () => hideLoadingAndShowSucToast('删除成功'))
+            })
+          })
         }
       }
     })
@@ -75,11 +100,11 @@ Page({
         })
       },
       success: () => {
-        const classItem = getClass(app.globalData.classes, this.options.id)
+        this.idx = getClassIdx(app.globalData.classes, this.options.id)
+        const classItem = app.globalData.classes[this.idx]
         this.setData({
           loading: false,
-          class: classItem,
-          xList: classItem.menberList.map(item => 0)
+          class: classItem
         }, () => {
           wx.hideLoading()
           typeof cb === 'function' && cb()

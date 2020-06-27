@@ -1,6 +1,6 @@
 {
   "name": "sign-up-tool",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "A wxapp for sister",
   "scripts": {
     "dev": "node build/switchEnv dev",
