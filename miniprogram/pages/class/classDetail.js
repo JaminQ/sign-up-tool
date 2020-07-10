@@ -17,10 +17,9 @@ Page({
   },
 
   removeMenber(e) {
-    const name = e.currentTarget.dataset.name
     wx.showModal({
       title: '确定删除吗',
-      content: name,
+      content: e.currentTarget.dataset.name,
       confirmText: '删除',
       cancelText: '取消',
       success: res => {
@@ -34,8 +33,8 @@ Page({
             name: 'class',
             data: {
               type: 'signOut',
-              _id: this.data.class._id,
-              name
+              id: e.currentTarget.dataset.id, // 报名记录id
+              _id: this.data.class._id // 课程id
             }
           }).then(res => {
             // 更新globalData.classes
@@ -44,7 +43,7 @@ Page({
             newClasses[this.idx].menberList.splice(menberIdx, 1)
             newClasses[this.idx].leftNum++ // 名额+1
             app.setGlobalData('classes', newClasses)
-      
+
             // 更新globalData.signedUpClasses
             new Promise(resolve => {
               if (app.globalData.signedUpClasses) { // 如果内存里有signedUpClasses则更新globalData.signedUpClasses
@@ -74,7 +73,7 @@ Page({
               const newClass = this.data.class
               newClass.menberList.splice(menberIdx, 1)
               newClass.leftNum++ // 名额+1
-      
+
               this.setData({
                 class: newClass
               }, () => hideLoadingAndShowSucToast('删除成功'))

@@ -1,6 +1,6 @@
 const cloud = require('wx-server-sdk')
 cloud.init({
-  env: 'sign-up-652910'
+  env: 'develop-zcve4'
 })
 
 const db = cloud.database()
@@ -16,7 +16,7 @@ exports.main = async (event, context) => {
   const openId = event.userInfo.openId
 
   // 拦截请求
-  if (['add', 'update', 'remove'].indexOf(event.type) > -1) { // 管理员相关操作
+  if (['add', 'update', 'remove'].indexOf(event.type) > -1 || (event.type === 'signOut' && event.id !== undefined)) { // 管理员相关操作
     // 拦截非管理员用户的请求
     if (managerList.indexOf(openId) === -1) {
       console.log('非管理员')
@@ -95,16 +95,26 @@ exports.main = async (event, context) => {
       break
     case 'signOut':
       try {
-        await signListCollection.where({
-          _openid: openId,
-          classId: event._id,
-          name: event.name
-        }).remove()
-        await classesCollection.doc(event._id).update({
-          data: {
-            leftNum: _.inc(1)
+        let searchObj = {}
+        if (event.id !== undefined) { // 指定id来删除
+          searchObj = {
+            _id: event.id
           }
-        })
+        } else {
+          searchObj = {
+            _openid: openId,
+            classId: event._id,
+            name: event.name
+          }
+        }
+        const res = await signListCollection.where(searchObj).remove()
+        if (res && res.stats && res.stats.removed) {
+          await classesCollection.doc(event._id).update({
+            data: {
+              leftNum: _.inc(res.stats.removed)
+            }
+          })
+        }
         return {
           ret: 0
         }
