@@ -7,7 +7,6 @@ const db = cloud.database()
 const _ = db.command
 const managerList = ['op0Ga5SBv7L-WplYadTXdHH9k0vM', 'op0Ga5e1bCfwp44jLmE4I35KAnKg', 'op0Ga5RNo4x4BObCHj0mGCV89wbQ'] // 管理员openId
 const classesCollection = db.collection('classes')
-const userCollection = db.collection('user')
 const signListCollection = db.collection('sign-list')
 
 exports.main = async (event, context) => {

@@ -211,18 +211,12 @@ App({
         success: () => {
           typeof showLoading === 'function' && showLoading()
 
-          const db = wx.cloud.database()
-          const _ = db.command
-
-          // 按时间降序来获取所有课程
-          db.collection('classes').orderBy('createTime', 'desc').get({
-            success: classes => {
-              // 获取menberList
-              this.getMenberList(classes.data, newClasses => {
-                this.setGlobalData('classes', newClasses)
-                resolve()
-              })
-            }
+          this.getDBData(wx.cloud.database().collection('classes').orderBy('createTime', 'desc'), classes => {
+            // 获取menberList
+            this.getMenberList(classes, newClasses => {
+              this.setGlobalData('classes', newClasses)
+              resolve()
+            })
           })
         }
       })
@@ -269,10 +263,7 @@ App({
           this._getTimelinessData('signedUpClasses', resolve, key => {
             typeof showLoading === 'function' && showLoading()
 
-            const db = wx.cloud.database()
-            const _ = db.command
-
-            this.getDBData(db.collection('sign-list').where({
+            this.getDBData(wx.cloud.database().collection('sign-list').where({
               _openid: this.globalData.openid
             }), signList => {
               if (signList.length) { // 有报过名
