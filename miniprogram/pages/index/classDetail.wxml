@@ -45,7 +45,7 @@
     <view class="sign-up-user-list" wx:if="{{ childInfo.length }}">
       <view class="sign-up-user" wx:for="{{ childInfo }}" wx:key="item">
         <view class="sign-up-user-name">{{ item }}</view>
-        <button wx:if="{{ !isSignedUp[index] }}" class="sign-up-btn" size="mini" open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="signUp" disabled="{{ class.leftNum <= 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ class.leftNum > 0 ? '报名' : '已满' }}</button>
+        <button wx:if="{{ !isSignedUp[index] }}" class="sign-up-btn" size="mini" lang="zh_CN" bindtap="signUp" disabled="{{ class.leftNum <= 0 }}" data-name="{{ item }}" data-idx="{{ index }}">{{ class.leftNum > 0 ? '报名' : '已满' }}</button>
         <button wx:else class="sign-out-btn" size="mini" bindtap="signOut" data-name="{{ item }}" data-idx="{{ index }}">退出</button>
       </view>
     </view>

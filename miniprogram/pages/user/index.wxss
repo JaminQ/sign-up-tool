@@ -6,7 +6,7 @@
   align-items: center;
 }
 
-.user-avatar open-data {
+.user-avatar image {
   overflow: hidden;
   display: block;
   width: 200rpx;

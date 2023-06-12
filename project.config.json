@@ -26,122 +26,97 @@
     "minifyWXSS": true,
     "bundle": false,
     "useApiHook": true,
-    "useApiHostProcess": false
+    "useApiHostProcess": false,
+    "condition": false
   },
   "appid": "wx07c39ed912de3e72",
   "projectname": "%E6%8A%A5%E5%90%8D%E5%B0%8F%E7%A8%8B%E5%BA%8F",
   "libVersion": "2.7.2",
   "simulatorType": "wechat",
   "simulatorPluginLibVersion": {},
-  "cloudfunctionTemplateRoot": "cloudfunctionTemplate",
+  "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "condition": {
-    "search": {
-      "list": []
-    },
-    "conversation": {
-      "list": []
-    },
-    "plugin": {
-      "list": []
-    },
-    "game": {
-      "list": []
-    },
     "miniprogram": {
       "list": [
         {
-          "id": 0,
           "name": "报名课程列表",
           "pathName": "pages/index/class",
           "query": "",
           "scene": null
         },
         {
-          "id": 1,
           "name": "报名页面",
           "pathName": "pages/index/classDetail",
           "query": "id=f1006ad85d21a14c02a0285e7c3877cf",
           "scene": null
         },
         {
-          "id": 2,
           "name": "报名页面（分享）",
           "pathName": "pages/index/classDetail",
           "query": "id=f1006ad85d21a14c02a0285e7c3877cf&share=1",
           "scene": 1008
         },
         {
-          "id": 2,
           "name": "用户profile",
           "pathName": "pages/user/index",
           "query": "",
           "scene": null
         },
         {
-          "id": 3,
           "name": "个人信息",
           "pathName": "pages/user/userInfo/index",
           "query": "",
           "scene": null
         },
         {
-          "id": 4,
           "name": "编辑名字",
           "pathName": "pages/user/userInfo/info",
           "query": "key=name",
           "scene": null
         },
         {
-          "id": 5,
           "name": "学员信息",
           "pathName": "pages/user/childInfo/index",
           "query": "from=profile",
           "scene": null
         },
         {
-          "id": 6,
           "name": "添加学员信息",
           "pathName": "pages/user/childInfo/addChild",
           "query": "",
           "scene": null
         },
         {
-          "id": 7,
           "name": "编辑学员信息",
           "pathName": "pages/user/childInfo/addChild",
           "query": "name=钱小宝",
           "scene": null
         },
         {
-          "id": 8,
           "name": "已报名课程",
           "pathName": "pages/user/class",
           "query": "",
           "scene": null
         },
         {
-          "id": 9,
           "name": "课程管理",
           "pathName": "pages/class/index",
           "query": "",
           "scene": null
         },
         {
-          "id": 10,
           "name": "添加课程",
           "pathName": "pages/class/addClass",
           "query": "",
           "scene": null
         },
         {
-          "id": 12,
           "name": "编辑课程",
           "pathName": "pages/class/addClass",
           "query": "id=f1006ad85d21a14c02a0285e7c3877cf",
           "scene": null
         },
         {
-          "id": 13,
           "name": "课程详情",
           "pathName": "pages/class/classDetail",
           "query": "id=f1006ad85d21a14c02a0285e7c3877cf",
@@ -149,5 +124,15 @@
         }
       ]
     }
+  },
+  "compileType": "miniprogram",
+  "srcMiniprogramRoot": "miniprogram/",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
   }
 }

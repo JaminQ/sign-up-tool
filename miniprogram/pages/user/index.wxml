@@ -1,9 +1,9 @@
 <view class="page with-tab-bar page-bg full-screen">
   <view class="user-avatar">
-    <open-data type="userAvatarUrl"></open-data>
+    <image src="../../image/avatar.jpeg" />
   </view>
   <view class="user-nickname">
-    <open-data type="userNickName"></open-data>
+    罗老师艺术工作室
   </view>
 
   <view class="user-main">
